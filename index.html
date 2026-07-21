@@ -20,6 +20,13 @@
             <span class="brand-name">HifzQuest</span>
         </div>
 
+        <div class="theme-toggle-wrapper" style="margin-bottom: 1.5rem;">
+            <button class="btn btn-secondary" id="theme-toggle-btn" style="width:100%; display:flex; align-items:center; justify-content:center; gap:0.5rem; padding:0.6rem;">
+                <svg viewBox="0 0 24 24" id="theme-toggle-icon" style="width:18px; height:18px; fill:currentColor;"><path d="M12,18C11.11,18 10.26,17.8 9.5,17.45C11.56,16.5 13,14.42 13,12C13,9.58 11.56,7.5 9.5,6.55C10.26,6.2 11.11,6 12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18M20,8.69V4H15.31L12,0.69L8.69,4H4V8.69L0.69,12L4,15.31V20H8.69L12,23.31L15.31,20H20V15.31L23.31,12L20,8.69Z"/></svg>
+                <span id="theme-toggle-text">Light Mode</span>
+            </button>
+        </div>
+
         <ul class="nav-menu">
             <li class="nav-item active" data-tab="dashboard">
                 <a href="#dashboard">
@@ -440,7 +447,7 @@
         <!-- GLOBAL FOOTER -->
         <footer class="app-footer">
             <span>&copy; 2026 HifzQuest. All rights reserved.</span>
-            <span id="footer-version-label">v1.0.1 (updated 2026-07-21 16:54)</span>
+            <span id="footer-version-label">v1.0.2 (updated 2026-07-21 17:11)</span>
         </footer>
     </main>
 
@@ -486,6 +493,30 @@
             </div>
         </div>
     </div>
+
+    <!-- MOBILE BOTTOM NAVIGATION -->
+    <nav class="mobile-bottom-nav">
+        <div class="mobile-nav-item active" data-tab="dashboard">
+            <svg viewBox="0 0 24 24"><path d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z"/></svg>
+            <span>Home</span>
+        </div>
+        <div class="mobile-nav-item" data-tab="map">
+            <svg viewBox="0 0 24 24"><path d="M15,3H21V9H19V5.41L12.41,12L19,18.59V15H21V21H15V19H18.59L12,12.41L5.41,19H9V21H3V15H5V18.59L11.59,12L5,5.41V9H3V3H9V5H5.41L12,11.59L18.59,5H15V3Z"/></svg>
+            <span>Map</span>
+        </div>
+        <div class="mobile-nav-item" data-tab="reciter">
+            <svg viewBox="0 0 24 24"><path d="M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M19,11C19,14.53 16.39,17.44 13,17.93V21H11V17.93C7.61,17.44 5,14.53 5,11H7A5,5 0 0,0 12,16A5,5 0 0,0 17,11H19Z"/></svg>
+            <span>Recite</span>
+        </div>
+        <div class="mobile-nav-item" data-tab="canvas">
+            <svg viewBox="0 0 24 24"><path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.07,6.19L3,17.25Z"/></svg>
+            <span>Write</span>
+        </div>
+        <div class="mobile-nav-item" data-tab="detox">
+            <svg viewBox="0 0 24 24"><path d="M12,17A2,2 0 0,0 14,15C14,13.89 13.1,13 12,13A2,2 0 0,0 10,15A2,2 0 0,0 12,17M18,8A2,2 0 0,1 20,10V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V10C4,8.89 4.9,8 6,8H7V6A5,5 0 0,1 12,1A5,5 0 0,1 17,6V8H18M12,3A3,3 0 0,0 9,6V8H15V6A3,3 0 0,0 12,3Z"/></svg>
+            <span>Detox</span>
+        </div>
+    </nav>
 
     <script src="app.js"></script>
 </body>

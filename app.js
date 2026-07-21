@@ -33,25 +33,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- TAB SWITCH ENGINE ---
     const navItems = document.querySelectorAll('.nav-item');
+    const mobileNavItems = document.querySelectorAll('.mobile-nav-item');
     const sections = document.querySelectorAll('.app-section');
 
-    navItems.forEach(item => {
-        item.addEventListener('click', (e) => {
-            e.preventDefault();
-            const targetTab = item.getAttribute('data-tab');
-            switchTab(targetTab);
+    function bindNavEvents(elements) {
+        elements.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetTab = item.getAttribute('data-tab');
+                switchTab(targetTab);
+            });
         });
-    });
+    }
+
+    bindNavEvents(navItems);
+    bindNavEvents(mobileNavItems);
 
     function switchTab(tabId) {
+        // Sync active states on all nav wrappers
         navItems.forEach(nav => nav.classList.remove('active'));
+        mobileNavItems.forEach(nav => nav.classList.remove('active'));
         sections.forEach(sec => sec.classList.remove('active'));
 
         const targetNav = document.querySelector(`.nav-item[data-tab="${tabId}"]`);
+        const targetMobileNav = document.querySelector(`.mobile-nav-item[data-tab="${tabId}"]`);
         const targetSection = document.getElementById(tabId);
 
-        if (targetNav && targetSection) {
-            targetNav.classList.add('active');
+        if (targetSection) {
+            if (targetNav) targetNav.classList.add('active');
+            if (targetMobileNav) targetMobileNav.classList.add('active');
+            
             targetSection.classList.add('active');
             appState.currentTab = tabId;
             window.location.hash = tabId;
@@ -69,6 +80,29 @@ document.addEventListener('DOMContentLoaded', () => {
         if (['dashboard', 'map', 'reciter', 'canvas', 'matching', 'detox'].includes(hash)) {
             switchTab(hash);
         }
+    }
+
+    // --- THEME SWITCH ENGINE ---
+    const themeToggleBtn = document.getElementById('theme-toggle-btn');
+    const themeToggleText = document.getElementById('theme-toggle-text');
+    const themeToggleIcon = document.getElementById('theme-toggle-icon');
+
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', () => {
+            const isLight = document.body.classList.toggle('light-theme');
+            if (isLight) {
+                themeToggleText.textContent = 'Dark Mode';
+                themeToggleIcon.innerHTML = `<path d="M12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7M12,2A1,1 0 0,1 13,3V5A1,1 0 0,1 11,5V3A1,1 0 0,1 12,2M12,19A1,1 0 0,1 13,20V22A1,1 0 0,1 11,22V20A1,1 0 0,1 12,19M2,12A1,1 0 0,1 3,11H5A1,1 0 0,1 5,13H3A1,1 0 0,1 2,12M19,12A1,1 0 0,1 20,11H22A1,1 0 0,1 22,13H20A1,1 0 0,1 19,12M4.93,4.93A1,1 0 0,1 6.34,4.93L7.76,6.34A1,1 0 0,1 6.34,7.76L4.93,6.34A1,1 0 0,1 4.93,4.93M16.24,16.24A1,1 0 0,1 17.66,16.24L19.07,17.66A1,1 0 0,1 17.66,19.07L16.24,17.66A1,1 0 0,1 16.24,16.24M19.07,4.93A1,1 0 0,1 19.07,6.34L17.66,7.76A1,1 0 0,1 16.24,6.34L17.66,4.93A1,1 0 0,1 19.07,4.93M6.34,16.24L7.76,17.66A1,1 0 0,1 6.34,19.07L4.93,17.66A1,1 0 0,1 6.34,16.24Z"/>`;
+            } else {
+                themeToggleText.textContent = 'Light Mode';
+                themeToggleIcon.innerHTML = `<path d="M12,18C11.11,18 10.26,17.8 9.5,17.45C11.56,16.5 13,14.42 13,12C13,9.58 11.56,7.5 9.5,6.55C10.26,6.2 11.11,6 12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18M20,8.69V4H15.31L12,0.69L8.69,4H4V8.69L0.69,12L4,15.31V20H8.69L12,23.31L15.31,20H20V15.31L23.31,12L20,8.69Z"/>`;
+            }
+            
+            // Re-initialize canvas to fetch the correct light/dark line color
+            if (appState.currentTab === 'canvas') {
+                initCanvasSize();
+            }
+        });
     }
 
 
@@ -311,7 +345,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
         ctx.lineWidth = 4;
-        ctx.strokeStyle = '#ffffff';
+        ctx.strokeStyle = getComputedStyle(document.body).getPropertyValue('--text-primary').trim() || '#ffffff';
         redrawCanvasHistory();
     }
 

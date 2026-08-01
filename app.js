@@ -433,21 +433,121 @@ document.addEventListener('DOMContentLoaded', () => {
         const resultPanel = document.getElementById('canvas-result-panel');
         const badge = document.getElementById('canvas-result-badge');
         const desc = document.getElementById('canvas-result-text');
+        const title = document.getElementById('canvas-result-title');
         
         resultPanel.style.display = 'block';
         
         if (canvasHistory.length === 0) {
             badge.className = 'feedback-score score-error';
             badge.textContent = 'Empty Board';
+            title.textContent = 'No Input Detected';
             desc.textContent = 'Please write something on the drawing canvas before verifying.';
             return;
         }
 
-        // Simulating handwriting analysis matching
-        badge.className = 'feedback-score score-perfect';
-        badge.textContent = '95% Accuracy';
-        desc.textContent = `The handwriting coordinates match the outline target '${canvasGuideText.textContent}' with correct stroke order. Good job!`;
+        // --- Dynamic Handwriting Analysis Engine ---
+        const targetWord = canvasGuideText.textContent;
+        const analysis = analyzeHandwriting(canvasHistory, canvas.width, canvas.height, targetWord);
+        
+        badge.className = `feedback-score ${analysis.scoreClass}`;
+        badge.textContent = `${analysis.score}% Match`;
+        title.textContent = analysis.title;
+        desc.textContent = analysis.feedback;
     });
+
+    function analyzeHandwriting(strokes, canvasW, canvasH, targetWord) {
+        // 1. Total point count across all strokes
+        const totalPoints = strokes.reduce((sum, s) => sum + s.length, 0);
+        const strokeCount = strokes.length;
+
+        // 2. Bounding box coverage — how much of the canvas was used
+        let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+        strokes.forEach(stroke => {
+            stroke.forEach(pt => {
+                if (pt.x < minX) minX = pt.x;
+                if (pt.x > maxX) maxX = pt.x;
+                if (pt.y < minY) minY = pt.y;
+                if (pt.y > maxY) maxY = pt.y;
+            });
+        });
+        const bboxWidth = maxX - minX;
+        const bboxHeight = maxY - minY;
+        const coverageRatio = (bboxWidth * bboxHeight) / (canvasW * canvasH);
+
+        // 3. Stroke complexity — total path length in pixels
+        let totalPathLength = 0;
+        strokes.forEach(stroke => {
+            for (let i = 1; i < stroke.length; i++) {
+                const dx = stroke[i].x - stroke[i - 1].x;
+                const dy = stroke[i].y - stroke[i - 1].y;
+                totalPathLength += Math.sqrt(dx * dx + dy * dy);
+            }
+        });
+
+        // 4. Directional changes (approximates curves and loops in Arabic script)
+        let directionChanges = 0;
+        strokes.forEach(stroke => {
+            for (let i = 2; i < stroke.length; i++) {
+                const prevDx = stroke[i - 1].x - stroke[i - 2].x;
+                const prevDy = stroke[i - 1].y - stroke[i - 2].y;
+                const currDx = stroke[i].x - stroke[i - 1].x;
+                const currDy = stroke[i].y - stroke[i - 1].y;
+                const cross = prevDx * currDy - prevDy * currDx;
+                if (Math.abs(cross) > 15) directionChanges++;
+            }
+        });
+
+        // 5. Estimate expected complexity from target word length
+        const expectedStrokes = Math.max(targetWord.length, 2);
+        const expectedPoints = expectedStrokes * 40;
+        const expectedPathLen = expectedStrokes * 120;
+
+        // 6. Scoring rubric (each factor weighted)
+        const strokeScore = Math.min(strokeCount / expectedStrokes, 1.5) * 20;       // max 30
+        const densityScore = Math.min(totalPoints / expectedPoints, 1.5) * 20;       // max 30
+        const pathScore = Math.min(totalPathLength / expectedPathLen, 1.5) * 15;     // max 22.5
+        const coverageScore = Math.min(coverageRatio / 0.15, 1.2) * 10;             // max 12
+        const dirScore = Math.min(directionChanges / (expectedStrokes * 8), 1.3) * 10; // max 13
+
+        let rawScore = strokeScore + densityScore + pathScore + coverageScore + dirScore;
+        
+        // Penalty: too few strokes or too little ink
+        if (strokeCount <= 1 && totalPoints < 20) rawScore *= 0.3;
+        else if (totalPoints < 15) rawScore *= 0.5;
+        
+        // Penalty: tiny scribble that doesn't cover much area
+        if (coverageRatio < 0.01) rawScore *= 0.6;
+
+        // Clamp to 0–100
+        const finalScore = Math.round(Math.max(0, Math.min(100, rawScore)));
+
+        // 7. Generate contextual feedback
+        let scoreClass, title, feedback;
+
+        if (finalScore >= 90) {
+            scoreClass = 'score-perfect';
+            title = 'Excellent Script!';
+            feedback = `Your handwriting of '${targetWord}' demonstrates strong stroke structure with ${strokeCount} strokes and good spatial coverage. The letter formations align well with the expected Arabic script pattern.`;
+        } else if (finalScore >= 70) {
+            scoreClass = 'score-warn';
+            title = 'Good Attempt';
+            const tips = [];
+            if (strokeCount < expectedStrokes) tips.push(`try using ${expectedStrokes} distinct strokes for the ${targetWord.length} characters`);
+            if (coverageRatio < 0.05) tips.push('use more of the canvas area for larger, clearer letters');
+            if (directionChanges < expectedStrokes * 3) tips.push('add smoother curves for connected Arabic ligatures');
+            feedback = `Recognized attempt at '${targetWord}'. ${tips.length > 0 ? 'Tips: ' + tips.join('; ') + '.' : 'Keep practicing for higher accuracy.'}`;
+        } else if (finalScore >= 40) {
+            scoreClass = 'score-warn';
+            title = 'Needs Improvement';
+            feedback = `The writing partially matches '${targetWord}' but lacks ${strokeCount < expectedStrokes ? 'sufficient strokes' : 'proper letter formation'}. Try enabling the trace guide and practice the stroke order carefully.`;
+        } else {
+            scoreClass = 'score-error';
+            title = 'Try Again';
+            feedback = `The input does not resemble '${targetWord}'. Make sure you are writing Arabic characters. Enable the trace guidelines, use slow deliberate strokes, and try to match the reference shape.`;
+        }
+
+        return { score: finalScore, scoreClass, title, feedback };
+    }
 
 
     // --- MULTI-STEP TEACHER MATCHING WIZARD ---

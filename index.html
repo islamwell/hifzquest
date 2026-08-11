@@ -67,11 +67,11 @@
         </ul>
 
         <!-- USER PROFILE / STREAK STATUS -->
-        <div class="user-status-card">
+        <div class="user-status-card" onclick="openProfileModal()" title="Click to view & edit profile">
             <div class="user-status-header">
                 <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100" alt="User Avatar" class="avatar" id="sidebar-avatar">
                 <div>
-                    <h4 style="font-weight:600;font-size:0.95rem;">Muslim Ahmed</h4>
+                    <h4 style="font-weight:600;font-size:0.95rem;" id="user-display-name">Muslim Ahmed</h4>
                     <span style="font-size:0.75rem;color:var(--text-secondary);">Student Elite</span>
                 </div>
             </div>
@@ -95,17 +95,17 @@
             </div>
 
             <div class="dashboard-grid">
-                <div class="card">
+                <div class="card" onclick="openPracticeModal('Al-Ikhlas')" style="cursor:pointer;" title="Click to practice today's target">
                     <h3 class="card-title">Daily Wird Target</h3>
                     <div class="card-value" id="dash-wird">5 Ayahs</div>
                     <p style="color:var(--text-secondary);font-size:0.85rem;">Surah An-Naba: Ayahs 6 - 10</p>
                 </div>
-                <div class="card">
+                <div class="card" onclick="openStatsModal()" style="cursor:pointer;" title="Click to view total memorization stats">
                     <h3 class="card-title">Total Memorized</h3>
                     <div class="card-value" style="color:var(--primary-solid)">1.2 Juz'</div>
                     <p style="color:var(--text-secondary);font-size:0.85rem;">36 Surahs complete</p>
                 </div>
-                <div class="card">
+                <div class="card" onclick="switchTab('detox')" style="cursor:pointer;" title="Click to manage Digital Detox">
                     <h3 class="card-title">Focus & Detox Score</h3>
                     <div class="card-value" style="color:var(--accent-gold)" id="dash-focus-score">94%</div>
                     <p style="color:var(--text-secondary);font-size:0.85rem;">Blocked 3 app distractions today</p>
@@ -114,33 +114,33 @@
 
             <div class="card" style="margin-bottom: 2rem;">
                 <h3 style="font-size:1.1rem;font-weight:600;margin-bottom:1rem;">Your Weekly Memorization Journey</h3>
-                <!-- Simple dynamic visualizer grid -->
+                <!-- Dynamic visualizer grid -->
                 <div style="display:flex; justify-content:space-between; align-items:flex-end; height:180px; padding:1rem 0; gap:0.5rem;">
-                    <div style="flex-grow:1; display:flex; flex-direction:column; align-items:center; gap:0.5rem;">
+                    <div class="day-bar-item" onclick="openDayDetailsModal('Wednesday', 4, '92%')" style="flex-grow:1; display:flex; flex-direction:column; align-items:center; gap:0.5rem;" title="Click for Wednesday breakdown">
                         <div style="width:100%; height:40px; background:var(--primary-grad); border-radius:6px; opacity:0.6;"></div>
                         <span style="font-size:0.75rem; color:var(--text-secondary)">Wed</span>
                     </div>
-                    <div style="flex-grow:1; display:flex; flex-direction:column; align-items:center; gap:0.5rem;">
+                    <div class="day-bar-item" onclick="openDayDetailsModal('Thursday', 6, '95%')" style="flex-grow:1; display:flex; flex-direction:column; align-items:center; gap:0.5rem;" title="Click for Thursday breakdown">
                         <div style="width:100%; height:60px; background:var(--primary-grad); border-radius:6px; opacity:0.7;"></div>
                         <span style="font-size:0.75rem; color:var(--text-secondary)">Thu</span>
                     </div>
-                    <div style="flex-grow:1; display:flex; flex-direction:column; align-items:center; gap:0.5rem;">
+                    <div class="day-bar-item" onclick="openDayDetailsModal('Friday', 10, '98%')" style="flex-grow:1; display:flex; flex-direction:column; align-items:center; gap:0.5rem;" title="Click for Friday breakdown">
                         <div style="width:100%; height:110px; background:var(--primary-grad); border-radius:6px; opacity:0.8;"></div>
                         <span style="font-size:0.75rem; color:var(--text-secondary)">Fri</span>
                     </div>
-                    <div style="flex-grow:1; display:flex; flex-direction:column; align-items:center; gap:0.5rem;">
+                    <div class="day-bar-item" onclick="openDayDetailsModal('Saturday', 2, '88%')" style="flex-grow:1; display:flex; flex-direction:column; align-items:center; gap:0.5rem;" title="Click for Saturday breakdown">
                         <div style="width:100%; height:20px; background:var(--primary-grad); border-radius:6px; opacity:0.4;"></div>
                         <span style="font-size:0.75rem; color:var(--text-secondary)">Sat</span>
                     </div>
-                    <div style="flex-grow:1; display:flex; flex-direction:column; align-items:center; gap:0.5rem;">
+                    <div class="day-bar-item" onclick="openDayDetailsModal('Sunday', 8, '94%')" style="flex-grow:1; display:flex; flex-direction:column; align-items:center; gap:0.5rem;" title="Click for Sunday breakdown">
                         <div style="width:100%; height:90px; background:var(--primary-grad); border-radius:6px; opacity:0.75;"></div>
                         <span style="font-size:0.75rem; color:var(--text-secondary)">Sun</span>
                     </div>
-                    <div style="flex-grow:1; display:flex; flex-direction:column; align-items:center; gap:0.5rem;">
+                    <div class="day-bar-item" onclick="openDayDetailsModal('Monday', 12, '96%')" style="flex-grow:1; display:flex; flex-direction:column; align-items:center; gap:0.5rem;" title="Click for Monday breakdown">
                         <div style="width:100%; height:130px; background:var(--primary-grad); border-radius:6px; opacity:0.9;"></div>
                         <span style="font-size:0.75rem; color:var(--text-secondary)">Mon</span>
                     </div>
-                    <div style="flex-grow:1; display:flex; flex-direction:column; align-items:center; gap:0.5rem;">
+                    <div class="day-bar-item" onclick="openDayDetailsModal('Today', 15, '99%')" style="flex-grow:1; display:flex; flex-direction:column; align-items:center; gap:0.5rem;" title="Click for Today's breakdown">
                         <div style="width:100%; height:150px; background:var(--primary-grad); border-radius:6px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3)"></div>
                         <span style="font-weight:600; font-size:0.75rem; color:var(--text-primary)">Today</span>
                     </div>
@@ -198,6 +198,19 @@
 
             <div class="reciter-layout">
                 <div class="reciter-main">
+                    <div style="display:flex; justify-content:space-between; align-items:center; gap:1rem; margin-bottom:1rem;">
+                        <select class="form-select" id="reciter-surah-select" style="max-width:220px;">
+                            <option value="Al-Ikhlas" selected>Surah Al-Ikhlas (112)</option>
+                            <option value="Al-Falaq">Surah Al-Falaq (113)</option>
+                            <option value="An-Nas">Surah An-Nas (114)</option>
+                            <option value="Al-Kafirun">Surah Al-Kafirun (109)</option>
+                        </select>
+                        <div style="display:flex; gap:0.5rem;">
+                            <button class="btn btn-secondary" id="reciter-prev-btn" style="padding:0.5rem 0.9rem;">&larr; Prev</button>
+                            <button class="btn btn-secondary" id="reciter-next-btn" style="padding:0.5rem 0.9rem;">Next &rarr;</button>
+                        </div>
+                    </div>
+
                     <div class="ayah-box">
                         <div class="ayah-text-arabic" id="target-ayah-arabic">قُلْ هُوَ اللَّهُ أَحَدٌ</div>
                         <div class="ayah-text-translation" id="target-ayah-translation">"Say, 'He is Allah, [who is] One'"</div>
@@ -247,14 +260,21 @@
             </div>
 
             <div class="card canvas-card">
-                <div class="canvas-controls">
-                    <div style="display:flex; gap:1rem;">
+                <div class="canvas-controls" style="flex-wrap:wrap; gap:1rem;">
+                    <div style="display:flex; gap:0.75rem; align-items:center;">
                         <button class="btn btn-secondary" id="canvas-undo-btn">Undo</button>
                         <button class="btn btn-secondary" id="canvas-clear-btn">Clear Canvas</button>
                     </div>
-                    <div style="display:flex; align-items:center; gap:0.5rem;">
+                    <div style="display:flex; align-items:center; gap:0.75rem;">
+                        <label for="canvas-guide-select" style="font-size:0.85rem; color:var(--text-secondary); white-space:nowrap;">Target Word:</label>
+                        <select class="form-select" id="canvas-guide-select" style="padding:0.4rem 0.8rem; font-size:0.9rem;">
+                            <option value="الله" selected>الله (Allah)</option>
+                            <option value="الناس">الناس (An-Nas)</option>
+                            <option value="الفلق">الفلق (Al-Falaq)</option>
+                            <option value="الكافرون">الكافرون (Al-Kafirun)</option>
+                        </select>
                         <input type="checkbox" id="canvas-guide-toggle">
-                        <label for="canvas-guide-toggle" style="font-size:0.9rem; color:var(--text-secondary); cursor:pointer;">Show Trace Guidelines</label>
+                        <label for="canvas-guide-toggle" style="font-size:0.85rem; color:var(--text-secondary); cursor:pointer; white-space:nowrap;">Show Trace</label>
                     </div>
                     <button class="btn btn-primary" id="canvas-test-btn">Verify Script</button>
                 </div>
@@ -447,7 +467,7 @@
         <!-- GLOBAL FOOTER -->
         <footer class="app-footer">
             <span>&copy; 2026 HifzQuest. All rights reserved.</span>
-            <span id="footer-version-label">v1.0.3 (updated 2026-08-01 04:56)</span>
+            <span id="footer-version-label">v1.0.4 (updated 2026-08-11 19:58)</span>
         </footer>
     </main>
 
@@ -460,9 +480,10 @@
             <div class="challenge-box">
                 <h4 style="font-weight:600; font-size:1rem; margin-bottom:0.5rem;">Solve Challenge to Unlock Early</h4>
                 <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:1rem;" id="detox-challenge-prompt">Write the word "الله" on the Writing Canvas to verify your presence.</p>
-                <div style="display:flex; justify-content:center; gap:1rem;">
+                <div style="display:flex; justify-content:center; gap:1rem; flex-wrap:wrap;">
                     <button class="btn btn-primary" onclick="solveLockChallenge('write')">Solve Writing Test</button>
                     <button class="btn btn-secondary" onclick="solveLockChallenge('recite')">Solve Recitation Test</button>
+                    <button class="btn btn-secondary" onclick="dismissDetoxLock()" style="border-color:rgba(239,68,68,0.4); color:#f87171;">Dismiss (Demo Mode)</button>
                 </div>
             </div>
 
@@ -493,6 +514,156 @@
             </div>
         </div>
     </div>
+
+    <!-- BOOKING MODAL -->
+    <div class="modal-backdrop" id="booking-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 style="font-weight:700; font-size:1.2rem;" id="booking-modal-title">Book Mentorship Session</h3>
+                <button class="modal-close" onclick="closeModal('booking-modal')">&times;</button>
+            </div>
+            <div style="display:flex; align-items:center; gap:1rem; margin-bottom:1.5rem; background:var(--bg-card-sub); padding:1rem; border-radius:14px; border:1px solid var(--border-color);">
+                <img id="booking-teacher-avatar" src="" alt="Teacher Avatar" class="avatar" style="width:52px; height:52px;">
+                <div>
+                    <h4 id="booking-teacher-name" style="font-weight:600; font-size:1rem;">Teacher Name</h4>
+                    <p id="booking-teacher-meta" style="font-size:0.8rem; color:var(--primary-solid); font-weight:600;">Hafs Qira'at Specialist • $25/hr</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="booking-date-select">Preferred Date</label>
+                <select class="form-select" id="booking-date-select">
+                    <option value="Today">Today (Same Day)</option>
+                    <option value="Tomorrow" selected>Tomorrow</option>
+                    <option value="Saturday">Saturday</option>
+                    <option value="Sunday">Sunday</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="booking-time-select">Preferred Time Slot</label>
+                <select class="form-select" id="booking-time-select">
+                    <option value="10:00 AM">10:00 AM - 11:00 AM</option>
+                    <option value="02:00 PM">02:00 PM - 03:00 PM</option>
+                    <option value="06:00 PM" selected>06:00 PM - 07:00 PM</option>
+                    <option value="08:30 PM">08:30 PM - 09:30 PM</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="booking-session-type">Session Focus</label>
+                <select class="form-select" id="booking-session-type">
+                    <option value="Tajweed Correction" selected>Tajweed & Makharij Correction</option>
+                    <option value="New Memorization">New Hifz Recitation</option>
+                    <option value="Murajah Revision">Murajah (Revision & Testing)</option>
+                </select>
+            </div>
+            <div style="display:flex; justify-content:flex-end; gap:0.75rem; margin-top:1.5rem;">
+                <button class="btn btn-secondary" onclick="closeModal('booking-modal')">Cancel</button>
+                <button class="btn btn-primary" onclick="confirmTeacherBooking()">Confirm Booking</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PROFILE MODAL -->
+    <div class="modal-backdrop" id="profile-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 style="font-weight:700; font-size:1.2rem;">Student Profile & Goals</h3>
+                <button class="modal-close" onclick="closeModal('profile-modal')">&times;</button>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="profile-name-input">Full Name</label>
+                <input type="text" class="form-input" id="profile-name-input" value="Muslim Ahmed">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="profile-target-select">Daily Wird Target</label>
+                <select class="form-select" id="profile-target-select">
+                    <option value="3 Ayahs">3 Ayahs per day</option>
+                    <option value="5 Ayahs" selected>5 Ayahs per day (Standard)</option>
+                    <option value="10 Ayahs">10 Ayahs per day (Intensive)</option>
+                    <option value="1 Page">1 Page per day (Hafiz Track)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="profile-qiraat-select">Preferred Qira'at</label>
+                <select class="form-select" id="profile-qiraat-select">
+                    <option value="Hafs 'an 'Asim" selected>Hafs 'an 'Asim (Standard)</option>
+                    <option value="Warsh 'an Nafi'">Warsh 'an Nafi'</option>
+                    <option value="Qalun 'an Nafi'">Qalun 'an Nafi'</option>
+                </select>
+            </div>
+            <div style="display:flex; justify-content:flex-end; gap:0.75rem; margin-top:1.5rem;">
+                <button class="btn btn-secondary" onclick="closeModal('profile-modal')">Cancel</button>
+                <button class="btn btn-primary" onclick="saveUserProfile()">Save Profile</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- STATS MODAL -->
+    <div class="modal-backdrop" id="stats-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 style="font-weight:700; font-size:1.2rem;">Memorization Progress Breakdown</h3>
+                <button class="modal-close" onclick="closeModal('stats-modal')">&times;</button>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1.5rem;">
+                <div style="background:var(--bg-card-sub); padding:1rem; border-radius:14px; border:1px solid var(--border-color); text-align:center;">
+                    <span style="font-size:0.75rem; color:var(--text-secondary); text-transform:uppercase;">Surahs Mastered</span>
+                    <div style="font-size:1.6rem; font-weight:700; color:var(--primary-solid);">36 / 114</div>
+                </div>
+                <div style="background:var(--bg-card-sub); padding:1rem; border-radius:14px; border:1px solid var(--border-color); text-align:center;">
+                    <span style="font-size:0.75rem; color:var(--text-secondary); text-transform:uppercase;">Avg Tajweed Score</span>
+                    <div style="font-size:1.6rem; font-weight:700; color:var(--accent-gold);">94%</div>
+                </div>
+            </div>
+            <h4 style="font-size:0.9rem; font-weight:600; margin-bottom:0.75rem;">Juz 30 Mastery Status:</h4>
+            <div style="display:flex; flex-direction:column; gap:0.5rem; margin-bottom:1.5rem;">
+                <div style="display:flex; justify-content:space-between; font-size:0.85rem; padding:0.5rem 0.75rem; background:var(--bg-card-sub); border-radius:8px;">
+                    <span>114. An-Nas</span>
+                    <span style="color:#10b981; font-weight:600;">Verified (98%)</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:0.85rem; padding:0.5rem 0.75rem; background:var(--bg-card-sub); border-radius:8px;">
+                    <span>113. Al-Falaq</span>
+                    <span style="color:#10b981; font-weight:600;">Verified (96%)</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:0.85rem; padding:0.5rem 0.75rem; background:var(--bg-card-sub); border-radius:8px;">
+                    <span>112. Al-Ikhlas</span>
+                    <span style="color:#10b981; font-weight:600;">Verified (95%)</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:0.85rem; padding:0.5rem 0.75rem; background:var(--bg-card-sub); border-radius:8px;">
+                    <span>109. Al-Kafirun</span>
+                    <span style="color:#10b981; font-weight:600;">Verified (94%)</span>
+                </div>
+            </div>
+            <button class="btn btn-primary" style="width:100%;" onclick="closeModal('stats-modal'); switchTab('map');">View Constellation Map</button>
+        </div>
+    </div>
+
+    <!-- DAY DETAILS MODAL -->
+    <div class="modal-backdrop" id="day-details-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 style="font-weight:700; font-size:1.2rem;" id="day-modal-title">Wednesday Summary</h3>
+                <button class="modal-close" onclick="closeModal('day-details-modal')">&times;</button>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:1rem; margin-bottom:1.5rem;">
+                <div style="display:flex; justify-content:space-between; padding:0.75rem; background:var(--bg-card-sub); border-radius:10px; border:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">Ayahs Memorized</span>
+                    <strong id="day-modal-ayahs" style="color:var(--text-primary);">4 Ayahs</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; padding:0.75rem; background:var(--bg-card-sub); border-radius:10px; border:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">Average Precision</span>
+                    <strong id="day-modal-precision" style="color:#10b981;">92%</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; padding:0.75rem; background:var(--bg-card-sub); border-radius:10px; border:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">Practice Session Time</span>
+                    <strong style="color:var(--text-primary);">18 Minutes</strong>
+                </div>
+            </div>
+            <button class="btn btn-primary" style="width:100%;" onclick="closeModal('day-details-modal')">Close Summary</button>
+        </div>
+    </div>
+
+    <!-- TOAST CONTAINER -->
+    <div class="toast-container" id="toast-container"></div>
 
     <!-- MOBILE BOTTOM NAVIGATION -->
     <nav class="mobile-bottom-nav">

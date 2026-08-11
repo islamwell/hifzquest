@@ -550,6 +550,161 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
+    // --- TOAST NOTIFICATION ENGINE ---
+    window.showToast = function(text, type = 'info') {
+        const container = document.getElementById('toast-container');
+        if (!container) return;
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        
+        let iconSvg = '';
+        if (type === 'success') iconSvg = '<svg style="width:18px;height:18px;fill:#10b981;flex-shrink:0;" viewBox="0 0 24 24"><path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"/></svg>';
+        else if (type === 'warn') iconSvg = '<svg style="width:18px;height:18px;fill:#f59e0b;flex-shrink:0;" viewBox="0 0 24 24"><path d="M13,13H11V7H13M13,17H11V15H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z"/></svg>';
+        else if (type === 'error') iconSvg = '<svg style="width:18px;height:18px;fill:#ef4444;flex-shrink:0;" viewBox="0 0 24 24"><path d="M11,15H13V17H11V15M11,7H13V13H11V7M12,2C6.47,2 2,6.47 2,12C2,17.53 6.47,22 12,22C17.53,22 22,17.53 22,12C22,6.47 17.53,2 12,2Z"/></svg>';
+        else iconSvg = '<svg style="width:18px;height:18px;fill:#0d9488;flex-shrink:0;" viewBox="0 0 24 24"><path d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z"/></svg>';
+
+        toast.innerHTML = `${iconSvg}<span>${text}</span>`;
+        container.appendChild(toast);
+
+        setTimeout(() => {
+            toast.classList.add('toast-closing');
+            setTimeout(() => toast.remove(), 250);
+        }, 3500);
+    };
+
+    // --- MODAL ENGINE ---
+    window.openModal = function(id) {
+        const modal = document.getElementById(id);
+        if (modal) modal.classList.add('active');
+    };
+
+    window.closeModal = function(id) {
+        const modal = document.getElementById(id);
+        if (modal) modal.classList.remove('active');
+    };
+
+    // Close modals on backdrop click or ESC key
+    document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
+        backdrop.addEventListener('click', (e) => {
+            if (e.target === backdrop) {
+                backdrop.classList.remove('active');
+            }
+        });
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            document.querySelectorAll('.modal-backdrop.active').forEach(m => m.classList.remove('active'));
+        }
+    });
+
+    // Profile Modal Handlers
+    window.openProfileModal = function() {
+        openModal('profile-modal');
+    };
+
+    window.saveUserProfile = function() {
+        const nameInput = document.getElementById('profile-name-input');
+        const targetSelect = document.getElementById('profile-target-select');
+        if (nameInput && nameInput.value.trim()) {
+            const newName = nameInput.value.trim();
+            document.getElementById('user-display-name').textContent = newName;
+            const dashTitle = document.querySelector('.section-title');
+            if (dashTitle && dashTitle.textContent.startsWith('Salaam')) {
+                dashTitle.textContent = `Salaam, ${newName.split(' ')[0]}`;
+            }
+        }
+        if (targetSelect) {
+            document.getElementById('dash-wird').textContent = targetSelect.value;
+        }
+        closeModal('profile-modal');
+        showToast('Profile & daily learning target updated!', 'success');
+    };
+
+    // Stats Modal Handler
+    window.openStatsModal = function() {
+        openModal('stats-modal');
+    };
+
+    // Day Details Modal Handler
+    window.openDayDetailsModal = function(dayName, ayahs, precision) {
+        document.getElementById('day-modal-title').textContent = `${dayName} Summary`;
+        document.getElementById('day-modal-ayahs').textContent = `${ayahs} Ayahs`;
+        document.getElementById('day-modal-precision').textContent = precision;
+        openModal('day-details-modal');
+    };
+
+    // Booking Modal Handlers
+    window.openBookingModal = function(name, avatar, meta) {
+        document.getElementById('booking-teacher-name').textContent = name;
+        document.getElementById('booking-teacher-avatar').src = avatar;
+        document.getElementById('booking-teacher-meta').textContent = meta;
+        openModal('booking-modal');
+    };
+
+    window.confirmTeacherBooking = function() {
+        const teacherName = document.getElementById('booking-teacher-name').textContent;
+        const date = document.getElementById('booking-date-select').value;
+        const time = document.getElementById('booking-time-select').value;
+        const focus = document.getElementById('booking-session-type').value;
+
+        closeModal('booking-modal');
+        showToast(`Session booked with ${teacherName} for ${date} at ${time} (${focus})!`, 'success');
+    };
+
+    // --- RECITERS AYAH & SURAH NAVIGATOR ---
+    const reciterSurahSelect = document.getElementById('reciter-surah-select');
+    const reciterPrevBtn = document.getElementById('reciter-prev-btn');
+    const reciterNextBtn = document.getElementById('reciter-next-btn');
+    const surahList = ['Al-Ikhlas', 'Al-Falaq', 'An-Nas', 'Al-Kafirun'];
+
+    function updateReciterAyah(surahName) {
+        appState.selectedSurah = surahName;
+        const data = surahData[surahName];
+        if (data) {
+            document.getElementById('target-ayah-arabic').textContent = data.arabic;
+            document.getElementById('target-ayah-translation').textContent = data.translation;
+            if (reciterSurahSelect) reciterSurahSelect.value = surahName;
+        }
+    }
+
+    if (reciterSurahSelect) {
+        reciterSurahSelect.addEventListener('change', (e) => {
+            updateReciterAyah(e.target.value);
+            showToast(`Switched to Surah ${e.target.value}`, 'info');
+        });
+    }
+
+    if (reciterPrevBtn) {
+        reciterPrevBtn.addEventListener('click', () => {
+            let idx = surahList.indexOf(appState.selectedSurah);
+            idx = (idx - 1 + surahList.length) % surahList.length;
+            updateReciterAyah(surahList[idx]);
+            showToast(`Switched to Surah ${surahList[idx]}`, 'info');
+        });
+    }
+
+    if (reciterNextBtn) {
+        reciterNextBtn.addEventListener('click', () => {
+            let idx = surahList.indexOf(appState.selectedSurah);
+            idx = (idx + 1) % surahList.length;
+            updateReciterAyah(surahList[idx]);
+            showToast(`Switched to Surah ${surahList[idx]}`, 'info');
+        });
+    }
+
+    // --- CANVAS GUIDE SELECTOR ---
+    const canvasGuideSelect = document.getElementById('canvas-guide-select');
+    if (canvasGuideSelect) {
+        canvasGuideSelect.addEventListener('change', (e) => {
+            canvasGuideText.textContent = e.target.value;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            canvasHistory = [];
+            document.getElementById('canvas-result-panel').style.display = 'none';
+            showToast(`Writing guide target set to ${e.target.value}`, 'info');
+        });
+    }
+
     // --- MULTI-STEP TEACHER MATCHING WIZARD ---
     window.selectOption = function(category, value) {
         appState.selectedWizardOptions[category] = value;
@@ -627,11 +782,12 @@ document.addEventListener('DOMContentLoaded', () => {
                             <span>Compatibility: ${t.compat}%</span>
                         </div>
                     </div>
-                    <button class="btn btn-primary" onclick="alert('Lesson schedule requested with ${t.name}. A message has been dispatched to their dashboard.')">Book Lesson</button>
+                    <button class="btn btn-primary" onclick="openBookingModal('${t.name}', '${t.avatar}', '${t.qiraat} Qira\'at Specialist • ${t.rate}')">Book Lesson</button>
                 `;
                 deck.appendChild(card);
             });
-        }, 1200);
+            showToast(`Found ${matches.length} compatible teacher matches!`, 'success');
+        }, 1000);
     };
 
     window.resetWizard = function() {
@@ -641,7 +797,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
 
-    // --- DIGITAL DETOX ACCOUNTABILITY ENGIMES ---
+    // --- DIGITAL DETOX ACCOUNTABILITY ENGINES ---
     const detoxTriggerBtn = document.getElementById('trigger-detox-sim-btn');
     const detoxPanel = document.getElementById('detox-lock-panel');
     const detoxCountdown = document.getElementById('detox-countdown-timer');
@@ -650,6 +806,18 @@ document.addEventListener('DOMContentLoaded', () => {
     detoxTriggerBtn.addEventListener('click', () => {
         const durationSeconds = parseInt(lockDurationSelector.value);
         startDetoxLockout(durationSeconds);
+        showToast('Islamic Focus Lockout initiated!', 'warn');
+    });
+
+    ['toggle-youtube', 'toggle-instagram', 'toggle-tiktok'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('change', () => {
+                const appName = id.replace('toggle-', '').toUpperCase();
+                const status = el.checked ? 'Shielded' : 'Unshielded';
+                showToast(`${appName} is now ${status}`, el.checked ? 'warn' : 'info');
+            });
+        }
     });
 
     function startDetoxLockout(seconds) {
@@ -681,17 +849,23 @@ document.addEventListener('DOMContentLoaded', () => {
         if (type === 'write') {
             appState.selectedSurah = 'Al-Ikhlas';
             startPracticeMode('write');
-            alert('Detox challenge bypassed! Focus on the trace coordinate writing board to unlock app access.');
+            showToast('Detox challenge bypassed! Complete the writing test.', 'success');
         } else {
             appState.selectedSurah = 'Al-Ikhlas';
             startPracticeMode('recite');
-            alert('Detox challenge bypassed! Tap the voice recorder to recite the verse correctly.');
+            showToast('Detox challenge bypassed! Recite the verse to unlock.', 'success');
         }
+    };
+
+    window.dismissDetoxLock = function() {
+        clearInterval(appState.detoxLockTimer);
+        detoxPanel.classList.remove('active');
+        showToast('Detox lockout dismissed (Demo Mode).', 'info');
     };
 
     function unlockDetoxScreen() {
         clearInterval(appState.detoxLockTimer);
         detoxPanel.classList.remove('active');
-        alert('Timeout complete. Access restored to external system applications. Make sure to complete your Wird target soon!');
+        showToast('Timeout complete. Access restored!', 'success');
     }
 });

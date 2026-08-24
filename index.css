@@ -435,27 +435,219 @@ body {
     background: var(--bg-ayah-box);
     border-radius: 20px;
     border: 1px solid var(--border-color);
-    padding: 2.5rem;
+    padding: 2rem;
     text-align: center;
     min-height: 200px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 1.5rem;
+    gap: 1.25rem;
+    position: relative;
 }
 
-.ayah-text-arabic {
-    font-family: var(--font-arabic);
-    font-size: 2.5rem;
-    line-height: 4.5rem;
+.ayah-words-deck {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0.75rem 1rem;
     direction: rtl;
+    font-family: var(--font-arabic);
+    margin: 0.5rem 0;
+}
+
+.ayah-word-chip {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.4rem 0.85rem;
+    border-radius: 12px;
+    font-size: 2.2rem;
+    line-height: 3.5rem;
     color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1.5px solid transparent;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.25s ease;
+    user-select: none;
+}
+
+.ayah-word-chip:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.ayah-word-chip .word-status-tag {
+    font-size: 0.7rem;
+    font-family: var(--font-sans);
+    line-height: 1;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: -0.25rem;
+    padding: 2px 6px;
+    border-radius: 6px;
+    display: none;
+}
+
+/* 1. Correct Match */
+.ayah-word-chip.word-matched {
+    background: rgba(16, 185, 129, 0.12);
+    border-color: #10b981;
+    color: #10b981;
+    box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
+}
+.ayah-word-chip.word-matched .word-status-tag {
+    display: block;
+    background: #10b981;
+    color: #064e3b;
+}
+
+/* 2. Mispronounced / Substituted */
+.ayah-word-chip.word-mispronounced {
+    background: rgba(245, 158, 11, 0.15);
+    border-color: #f59e0b;
+    color: #f59e0b;
+    box-shadow: 0 0 15px rgba(245, 158, 11, 0.25);
+    animation: shakeWarn 0.4s ease;
+}
+.ayah-word-chip.word-mispronounced .word-status-tag {
+    display: block;
+    background: #f59e0b;
+    color: #78350f;
+}
+
+/* 3. Missing / Skipped */
+.ayah-word-chip.word-missing {
+    background: rgba(239, 68, 68, 0.12);
+    border-color: #ef4444;
+    color: #ef4444;
+    text-decoration: line-through;
+    text-decoration-thickness: 3px;
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.2);
+    opacity: 0.85;
+}
+.ayah-word-chip.word-missing .word-status-tag {
+    display: block;
+    background: #ef4444;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+/* 4. Live Speaking Pulse */
+.ayah-word-chip.word-active-speaking {
+    border-color: #0d9488;
+    background: rgba(13, 148, 136, 0.25);
+    box-shadow: 0 0 20px rgba(13, 148, 136, 0.5);
+    transform: scale(1.05);
+}
+
+@keyframes shakeWarn {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-3px); }
+    75% { transform: translateX(3px); }
 }
 
 .ayah-text-translation {
     color: var(--text-secondary);
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     font-style: italic;
+}
+
+/* Recitation Quick Diagnostic & Testing Bar */
+.reciter-test-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    padding: 0.75rem 1rem;
+    background: var(--bg-card-sub);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    margin-top: 0.5rem;
+}
+
+.test-pill-btn {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.test-pill-btn:hover {
+    background: var(--primary-light);
+    color: var(--primary-solid);
+    border-color: var(--primary-solid);
+}
+
+.test-pill-btn.test-pill-danger:hover {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border-color: #ef4444;
+}
+
+.test-pill-btn.test-pill-warn:hover {
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+    border-color: #f59e0b;
+}
+
+.test-pill-btn.test-pill-success:hover {
+    background: rgba(16, 185, 129, 0.15);
+    color: #10b981;
+    border-color: #10b981;
+}
+
+/* Mistakes Breakdown List in Sidebar */
+.mistakes-breakdown-card {
+    background: var(--bg-card-sub);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.mistake-item-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    border-left: 3px solid transparent;
+}
+
+.mistake-item-row.err-missing {
+    background: rgba(239, 68, 68, 0.08);
+    border-left-color: #ef4444;
+}
+
+.mistake-item-row.err-mispronounced {
+    background: rgba(245, 158, 11, 0.08);
+    border-left-color: #f59e0b;
+}
+
+.mistake-item-row.err-success {
+    background: rgba(16, 185, 129, 0.08);
+    border-left-color: #10b981;
+}
+
+.mistake-arabic-highlight {
+    font-family: var(--font-arabic);
+    font-size: 1.15rem;
+    direction: rtl;
+    display: inline-block;
 }
 
 .recording-controls-panel {

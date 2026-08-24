@@ -542,7 +542,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // ==========================================
-    // 8. AI RECITER, QARI AUDIO & SPEECH-TO-TEXT
+    // 8. AI RECITER, ARABIC MISTAKE DETECTION & DIFF ENGINE
     // ==========================================
     const micBtn = document.getElementById('mic-trigger-btn');
     const recStatus = document.getElementById('recording-status');
@@ -571,28 +571,379 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const surahKeys = Object.keys(surahData);
 
+    // --- ARABIC NORMALIZATION & PHONETIC COMPARISON ENGINE ---
+    function normalizeArabic(text, stripTashkeel = true) {
+        if (!text) return '';
+        let res = text.trim();
+        if (stripTashkeel) {
+            // Strip Arabic diacritics (fatha, damma, kasra, sukun, shaddah, tanween, small alef, stop signs)
+            res = res.replace(/[\u064B-\u065F\u0670\u06D6-\u06ED]/g, '');
+        }
+        // Normalize Arabic letters
+        res = res.replace(/[أإآٱ]/g, 'ا')
+                 .replace(/ة/g, 'ه')
+                 .replace(/ى/g, 'ي')
+                 .replace(/[ؤئ]/g, 'ء')
+                 .replace(/ـ/g, '') // strip tatweel
+                 .replace(/[^\u0621-\u064A\s]/g, '') // keep only Arabic letters and spaces
+                 .replace(/\s+/g, ' ')
+                 .trim();
+        return res;
+    }
+
+    function levenshtein(a, b) {
+        const matrix = [];
+        for (let i = 0; i <= b.length; i++) matrix[i] = [i];
+        for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
+        for (let i = 1; i <= b.length; i++) {
+            for (let j = 1; j <= a.length; j++) {
+                if (b.charAt(i - 1) === a.charAt(j - 1)) {
+                    matrix[i][j] = matrix[i - 1][j - 1];
+                } else {
+                    matrix[i][j] = Math.min(
+                        matrix[i - 1][j - 1] + 1, // substitution
+                        matrix[i][j - 1] + 1,     // insertion
+                        matrix[i - 1][j] + 1      // deletion
+                    );
+                }
+            }
+        }
+        return matrix[b.length][a.length];
+    }
+
+    function wordSimilarity(w1, w2) {
+        const n1 = normalizeArabic(w1);
+        const n2 = normalizeArabic(w2);
+        if (!n1 && !n2) return 1.0;
+        if (!n1 || !n2) return 0.0;
+        if (n1 === n2) return 1.0;
+        const maxLen = Math.max(n1.length, n2.length);
+        const dist = levenshtein(n1, n2);
+        return Math.max(0, 1.0 - (dist / maxLen));
+    }
+
+    // --- REAL RECITATION EVALUATOR & SEQUENCE DIFF ENGINE ---
+    function evaluateRecitation(targetAyahArabic, userSpokenArabic) {
+        const targetRawWords = targetAyahArabic.trim().split(/\s+/).filter(w => w.length > 0);
+        const targetNormWords = targetRawWords.map(w => normalizeArabic(w));
+        
+        const userRaw = (userSpokenArabic || '').trim();
+        const userNormWords = normalizeArabic(userRaw).split(/\s+/).filter(w => w.length > 0);
+
+        const wordResults = [];
+        const mistakes = [];
+
+        if (userNormWords.length === 0) {
+            targetRawWords.forEach((word, idx) => {
+                wordResults.push({
+                    word: word,
+                    norm: targetNormWords[idx],
+                    status: 'missing',
+                    similarity: 0,
+                    spokenWord: null,
+                    errorReason: 'No recitation audio detected'
+                });
+            });
+
+            return {
+                accuracy: 0,
+                qalqalah: 0,
+                ghunnah: 0,
+                wordResults: wordResults,
+                mistakes: [{
+                    type: 'empty',
+                    title: 'No Recitation Audio Detected',
+                    detail: 'Please speak into your microphone or run a diagnostic test below.',
+                    arabic: targetAyahArabic
+                }]
+            };
+        }
+
+        const matchedUserIndices = new Set();
+
+        targetRawWords.forEach((targetWord, tIdx) => {
+            const tNorm = targetNormWords[tIdx];
+            let bestSim = 0;
+            let bestUIdx = -1;
+
+            userNormWords.forEach((uNorm, uIdx) => {
+                if (matchedUserIndices.has(uIdx)) return;
+                const sim = wordSimilarity(tNorm, uNorm);
+                if (sim > bestSim) {
+                    bestSim = sim;
+                    bestUIdx = uIdx;
+                }
+            });
+
+            if (bestSim >= 0.82) {
+                matchedUserIndices.add(bestUIdx);
+                wordResults.push({
+                    word: targetWord,
+                    norm: tNorm,
+                    status: 'matched',
+                    similarity: bestSim,
+                    spokenWord: userNormWords[bestUIdx]
+                });
+            } else if (bestSim >= 0.35 && bestUIdx !== -1) {
+                matchedUserIndices.add(bestUIdx);
+                const spoken = userNormWords[bestUIdx];
+                wordResults.push({
+                    word: targetWord,
+                    norm: tNorm,
+                    status: 'mispronounced',
+                    similarity: bestSim,
+                    spokenWord: spoken,
+                    errorReason: `Expected "${tNorm}" but heard "${spoken}"`
+                });
+                mistakes.push({
+                    type: 'mispronounced',
+                    title: 'Mispronounced / Substituted Word',
+                    detail: `Expected "${targetWord}" but detected "${spoken}".`,
+                    arabic: targetWord,
+                    heard: spoken
+                });
+            } else {
+                wordResults.push({
+                    word: targetWord,
+                    norm: tNorm,
+                    status: 'missing',
+                    similarity: 0,
+                    spokenWord: null,
+                    errorReason: `Skipped or omitted word: ${targetWord}`
+                });
+                mistakes.push({
+                    type: 'missing',
+                    title: 'Omitted / Skipped Word',
+                    detail: `Word "${targetWord}" was omitted in recitation.`,
+                    arabic: targetWord
+                });
+            }
+        });
+
+        // Tajweed Rule Analysis on Target Ayah
+        let qalqalahScore = 100;
+        let ghunnahScore = 100;
+        
+        const hasQalqalahWord = targetRawWords.some(w => /[قطبجد]/.test(normalizeArabic(w)));
+        if (hasQalqalahWord) {
+            const missedQalqalah = wordResults.filter(w => /[قطبجد]/.test(w.norm) && w.status !== 'matched').length;
+            if (missedQalqalah > 0) {
+                qalqalahScore = Math.max(0, 100 - (missedQalqalah * 35));
+                mistakes.push({
+                    type: 'tajweed',
+                    title: 'Qalqalah Articulation Warning',
+                    detail: 'Remember to make a distinct bounce on Qalqalah letters (ق ط ب ج د) when stopping.',
+                    arabic: 'ق ط ب ج د'
+                });
+            }
+        }
+
+        const hasGhunnahWord = targetRawWords.some(w => /[نّ|مّ|ن|م]/.test(w));
+        if (hasGhunnahWord) {
+            const missedGhunnah = wordResults.filter(w => /[نم]/.test(w.norm) && w.status !== 'matched').length;
+            if (missedGhunnah > 0) {
+                ghunnahScore = Math.max(0, 100 - (missedGhunnah * 30));
+            }
+        }
+
+        const matchedCount = wordResults.filter(w => w.status === 'matched').length;
+        const mispronouncedCount = wordResults.filter(w => w.status === 'mispronounced').length;
+        const totalTarget = targetRawWords.length;
+        
+        const accuracy = Math.round(
+            Math.max(0, Math.min(100, ((matchedCount * 1.0 + mispronouncedCount * 0.45) / totalTarget) * 100))
+        );
+
+        return {
+            accuracy,
+            qalqalah: Math.round(qalqalahScore),
+            ghunnah: Math.round(ghunnahScore),
+            wordResults,
+            mistakes
+        };
+    }
+
+    // --- WORD CHIPS RENDERER ---
+    function renderAyahWordChips(surahName, evaluation = null) {
+        const deck = document.getElementById('target-ayah-words-deck');
+        if (!deck) return;
+        const data = surahData[surahName] || surahData['Al-Ikhlas'];
+        const words = data.arabic.trim().split(/\s+/).filter(w => w.length > 0);
+
+        deck.innerHTML = '';
+        words.forEach((word, idx) => {
+            const chip = document.createElement('div');
+            chip.className = 'ayah-word-chip';
+            chip.setAttribute('data-word-idx', idx);
+            
+            let statusTag = '';
+            if (evaluation && evaluation.wordResults && evaluation.wordResults[idx]) {
+                const res = evaluation.wordResults[idx];
+                if (res.status === 'matched') {
+                    chip.classList.add('word-matched');
+                    statusTag = '<span class="word-status-tag">✓ Correct</span>';
+                } else if (res.status === 'mispronounced') {
+                    chip.classList.add('word-mispronounced');
+                    statusTag = `<span class="word-status-tag">⚠ Heard: ${res.spokenWord}</span>`;
+                } else if (res.status === 'missing') {
+                    chip.classList.add('word-missing');
+                    statusTag = '<span class="word-status-tag">✗ Skipped</span>';
+                }
+            }
+
+            chip.innerHTML = `<span>${word}</span>${statusTag}`;
+            chip.addEventListener('click', () => {
+                showToast(`Word ${idx + 1}: ${word} (Surah ${surahName})`, 'info');
+            });
+            deck.appendChild(chip);
+        });
+    }
+
+    // --- MISTAKES LIST RENDERER ---
+    function renderMistakesList(evaluation) {
+        const listDeck = document.getElementById('mistakes-list-deck');
+        if (!listDeck) return;
+
+        if (!evaluation || evaluation.wordResults.length === 0) {
+            listDeck.innerHTML = '<span style="font-size:0.8rem; color:var(--text-secondary);">Recite above or run a test scenario to view word-by-word mistake diagnostics.</span>';
+            return;
+        }
+
+        if (evaluation.accuracy === 100 && evaluation.mistakes.length === 0) {
+            listDeck.innerHTML = `
+                <div class="mistake-item-row err-success">
+                    <div style="font-weight:600; color:#10b981; display:flex; align-items:center; gap:0.4rem;">
+                        <span>✓ Masha'Allah! Perfect Recitation</span>
+                    </div>
+                    <div style="color:var(--text-secondary); font-size:0.8rem;">All words matched with accurate pronunciation and tajweed rules.</div>
+                </div>
+            `;
+            return;
+        }
+
+        listDeck.innerHTML = evaluation.mistakes.map(m => {
+            let rowClass = 'err-mispronounced';
+            let icon = '⚠️';
+            if (m.type === 'missing' || m.type === 'empty') {
+                rowClass = 'err-missing';
+                icon = '❌';
+            }
+            return `
+                <div class="mistake-item-row ${rowClass}">
+                    <div style="font-weight:600; display:flex; align-items:center; justify-content:space-between;">
+                        <span>${icon} ${m.title}</span>
+                        <span class="mistake-arabic-highlight">${m.arabic || ''}</span>
+                    </div>
+                    <div style="color:var(--text-secondary); font-size:0.8rem;">${m.detail}</div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function applyRecitationEvaluation(spokenText) {
+        const data = surahData[appState.selectedSurah] || surahData['Al-Ikhlas'];
+        const evaluation = evaluateRecitation(data.arabic, spokenText);
+
+        renderAyahWordChips(appState.selectedSurah, evaluation);
+        renderMistakesList(evaluation);
+
+        const accEl = document.getElementById('metric-accuracy');
+        const qalEl = document.getElementById('metric-qalqalah');
+        const ghuEl = document.getElementById('metric-ghunnah');
+
+        if (accEl) {
+            accEl.textContent = `${evaluation.accuracy}%`;
+            accEl.className = `feedback-score ${evaluation.accuracy >= 80 ? 'score-perfect' : evaluation.accuracy >= 50 ? 'score-warn' : 'score-error'}`;
+        }
+        if (qalEl) qalEl.textContent = `${evaluation.qalqalah}%`;
+        if (ghuEl) ghuEl.textContent = `${evaluation.ghunnah}%`;
+
+        if (evaluation.accuracy >= 75) {
+            appState.hasanatXP += 50;
+            if (!appState.masteredSurahs.includes(appState.selectedSurah)) {
+                appState.masteredSurahs.push(appState.selectedSurah);
+            }
+            saveState();
+
+            const activeNode = document.querySelector(`.map-node[onclick*="${appState.selectedSurah}"]`);
+            if (activeNode) {
+                activeNode.classList.remove('active');
+                activeNode.classList.add('completed');
+            }
+
+            playSound('success');
+            showToast(`Masha'Allah! Scored ${evaluation.accuracy}% on Surah ${appState.selectedSurah} (+50 XP)`, 'success');
+        } else if (evaluation.accuracy > 0) {
+            playSound('alarm');
+            showToast(`Recitation evaluated (${evaluation.accuracy}%). Caught ${evaluation.mistakes.length} mistakes. Check the diagnostics panel.`, 'warn');
+        } else {
+            playSound('alarm');
+            showToast('No clear recitation heard. Speak into your microphone or try the test buttons!', 'error');
+        }
+    }
+
+    // --- RECITATION DIAGNOSTICS & TEST SCENARIOS ---
+    window.testRecitationScenario = function(type) {
+        const data = surahData[appState.selectedSurah] || surahData['Al-Ikhlas'];
+        const words = data.arabic.trim().split(/\s+/).filter(w => w.length > 0);
+        let testSpokenText = '';
+
+        if (type === 'perfect') {
+            testSpokenText = data.arabic;
+            showToast(`Testing: Perfect recitation of Surah ${appState.selectedSurah}`, 'success');
+        } else if (type === 'missing') {
+            testSpokenText = words.slice(0, Math.max(1, words.length - 1)).join(' ');
+            showToast(`Testing: Omitted last word ("${words[words.length - 1]}")`, 'warn');
+        } else if (type === 'substitute') {
+            const modified = [...words];
+            modified[modified.length - 1] = 'الناس';
+            testSpokenText = modified.join(' ');
+            showToast(`Testing: Substituted last word with "الناس"`, 'warn');
+        } else if (type === 'custom') {
+            const input = prompt(`Enter spoken Arabic recitation to test against Surah ${appState.selectedSurah}:`, data.arabic);
+            if (input === null) return;
+            testSpokenText = input;
+            showToast('Evaluating custom Arabic recitation input', 'info');
+        }
+
+        if (speechTranscript) {
+            speechTranscript.textContent = testSpokenText || '(Empty Input)';
+        }
+
+        applyRecitationEvaluation(testSpokenText);
+    };
+
+    window.resetWordEvaluation = function() {
+        renderAyahWordChips(appState.selectedSurah);
+        document.getElementById('metric-accuracy').textContent = '—';
+        document.getElementById('metric-qalqalah').textContent = '—';
+        document.getElementById('metric-ghunnah').textContent = '—';
+        if (speechTranscript) speechTranscript.textContent = '';
+        renderMistakesList(null);
+        showToast('Word evaluation reset', 'info');
+    };
+
     function updateReciterSurah(surahName) {
         if (!surahData[surahName]) surahName = 'Al-Ikhlas';
         appState.selectedSurah = surahName;
         const data = surahData[surahName];
 
-        document.getElementById('target-ayah-arabic').textContent = data.arabic;
+        renderAyahWordChips(surahName);
         document.getElementById('target-ayah-translation').textContent = data.translation;
         document.getElementById('coach-insight-body').textContent = data.insight;
         if (reciterSurahSelect) reciterSurahSelect.value = surahName;
 
-        // Stop Qari audio if playing
         if (isQariPlaying) {
             qariAudioPlayer.pause();
             isQariPlaying = false;
             playQariLabel.textContent = 'Listen to Qari (Sheikh Alafasy)';
         }
 
-        // Reset metrics
         document.getElementById('metric-accuracy').textContent = '—';
         document.getElementById('metric-qalqalah').textContent = '—';
         document.getElementById('metric-ghunnah').textContent = '—';
         if (speechTranscript) speechTranscript.textContent = '';
+        renderMistakesList(null);
         saveState();
     }
 
@@ -620,6 +971,9 @@ document.addEventListener('DOMContentLoaded', () => {
             showToast(`Switched to Surah ${surahKeys[idx]}`, 'info');
         });
     }
+
+    // Initial word chips render on page load
+    renderAyahWordChips(appState.selectedSurah);
 
     // Qari Audio Streaming
     if (playQariBtn) {
@@ -701,13 +1055,14 @@ document.addEventListener('DOMContentLoaded', () => {
             let interim = '';
             for (let i = event.resultIndex; i < event.results.length; ++i) {
                 if (event.results[i].isFinal) {
-                    recognizedText += event.results[i][0].transcript;
+                    recognizedText += ' ' + event.results[i][0].transcript;
                 } else {
-                    interim += event.results[i][0].transcript;
+                    interim += ' ' + event.results[i][0].transcript;
                 }
             }
+            const fullTranscript = (recognizedText + interim).trim();
             if (speechTranscript) {
-                speechTranscript.textContent = recognizedText || interim;
+                speechTranscript.textContent = fullTranscript || 'Listening...';
             }
         };
     }
@@ -725,12 +1080,11 @@ document.addEventListener('DOMContentLoaded', () => {
     async function startAudioRecording() {
         appState.isRecording = true;
         micBtn.classList.add('recording');
-        recStatus.textContent = 'Listening... Recite out loud in Arabic';
+        recStatus.textContent = 'Listening... Recite aloud in Arabic';
         recognizedText = '';
         if (speechTranscript) speechTranscript.textContent = 'Listening for your voice...';
         recordedAudioChunks = [];
 
-        // Pause Qari playback if running
         if (isQariPlaying) {
             qariAudioPlayer.pause();
             isQariPlaying = false;
@@ -744,7 +1098,6 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             recMediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
             
-            // MediaRecorder for playback
             try {
                 mediaRecorder = new MediaRecorder(recMediaStream);
                 mediaRecorder.ondataavailable = (e) => {
@@ -846,32 +1199,9 @@ document.addEventListener('DOMContentLoaded', () => {
             recStatus.textContent = 'Recitation Evaluated. Tap to Record Again';
             drawStaticWave();
             
-            // Calculate dynamic accuracy
-            const target = surahData[appState.selectedSurah].arabic;
-            let accuracy = 94 + Math.floor(Math.random() * 5);
-            let qalqalah = 88 + Math.floor(Math.random() * 10);
-            let ghunnah = 92 + Math.floor(Math.random() * 7);
-
-            document.getElementById('metric-accuracy').textContent = `${accuracy}%`;
-            document.getElementById('metric-qalqalah').textContent = `${qalqalah}%`;
-            document.getElementById('metric-ghunnah').textContent = `${ghunnah}%`;
-
-            // Award Hasanat XP
-            appState.hasanatXP += 50;
-            if (!appState.masteredSurahs.includes(appState.selectedSurah)) {
-                appState.masteredSurahs.push(appState.selectedSurah);
-            }
-            saveState();
-
-            // Mark Constellation Node Completed on Gamified Map
-            const activeNode = document.querySelector(`.map-node[onclick*="${appState.selectedSurah}"]`);
-            if (activeNode) {
-                activeNode.classList.remove('active');
-                activeNode.classList.add('completed');
-            }
-
-            showToast(`Masha'Allah! Scored ${accuracy}% on Surah ${appState.selectedSurah} (+50 XP)`, 'success');
-        }, 1200);
+            const spokenText = (recognizedText || '').trim();
+            applyRecitationEvaluation(spokenText);
+        }, 1000);
     }
 
     // ==========================================

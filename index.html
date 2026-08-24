@@ -222,8 +222,20 @@
                     </div>
 
                     <div class="ayah-box">
-                        <div class="ayah-text-arabic" id="target-ayah-arabic">قُلْ هُوَ اللَّهُ أَحَدٌ</div>
+                        <div class="ayah-words-deck" id="target-ayah-words-deck">
+                            <!-- Dynamic word chips populated by JS -->
+                        </div>
                         <div class="ayah-text-translation" id="target-ayah-translation">"Say, 'He is Allah, [who is] One'"</div>
+                    </div>
+
+                    <!-- Recitation Quick Diagnostic & Testing Bar -->
+                    <div class="reciter-test-bar">
+                        <span style="font-size:0.8rem; color:var(--text-secondary); font-weight:600;">Mistake Diagnostics:</span>
+                        <button class="test-pill-btn test-pill-success" onclick="testRecitationScenario('perfect')">✓ Test Perfect Recitation</button>
+                        <button class="test-pill-btn test-pill-danger" onclick="testRecitationScenario('missing')">✗ Test Omitted Word</button>
+                        <button class="test-pill-btn test-pill-warn" onclick="testRecitationScenario('substitute')">⚠ Test Mispronounced Word</button>
+                        <button class="test-pill-btn" onclick="testRecitationScenario('custom')">✏ Type Custom Recitation</button>
+                        <button class="test-pill-btn" onclick="resetWordEvaluation()">Reset</button>
                     </div>
 
                     <!-- Qari Audio Player & User Playback Bar -->
@@ -251,7 +263,7 @@
 
                 <div class="reciter-sidebar">
                     <div class="card" style="height:100%; display:flex; flex-direction:column; gap:1.25rem;">
-                        <h3 style="font-size:1.1rem; font-weight:600;">Tajweed Analysis</h3>
+                        <h3 style="font-size:1.1rem; font-weight:600;">Tajweed Analysis & Mistakes</h3>
                         <div class="feedback-badge-list" id="feedback-metrics-container">
                             <div class="feedback-item">
                                 <span>Pronunciation Accuracy</span>
@@ -266,6 +278,15 @@
                                 <span class="feedback-score score-perfect" id="metric-ghunnah">—</span>
                             </div>
                         </div>
+
+                        <!-- Detected Mistakes Breakdown -->
+                        <div class="mistakes-breakdown-card" id="mistakes-breakdown-container">
+                            <div style="font-weight:600; font-size:0.85rem; color:var(--text-primary);">Detailed Mistake Feed:</div>
+                            <div id="mistakes-list-deck" style="display:flex; flex-direction:column; gap:0.5rem;">
+                                <span style="font-size:0.8rem; color:var(--text-secondary);">Recite above or run a test scenario to view word-by-word mistake diagnostics.</span>
+                            </div>
+                        </div>
+
                         <div style="background:var(--bg-card-sub); border:1px solid var(--border-color); border-radius:12px; padding:1rem; font-size:0.85rem; color:var(--text-secondary); margin-top:auto;">
                             <strong style="color:var(--text-primary); display:block; margin-bottom:0.25rem;" id="coach-insight-title">AI Coach Insights:</strong>
                             <span id="coach-insight-body">Select an Ayah and tap record or listen to the Qari reference audio above.</span>
@@ -535,7 +556,7 @@
         <!-- GLOBAL FOOTER -->
         <footer class="app-footer">
             <span>&copy; 2026 HifzQuest. All rights reserved.</span>
-            <span id="footer-version-label">v1.0.5 (updated 2026-08-18 19:55)</span>
+            <span id="footer-version-label">v1.0.6 (updated 2026-08-24 20:25)</span>
         </footer>
     </main>
 

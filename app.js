@@ -247,8 +247,83 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     // ==========================================
-    // 3. PERSISTENT APP STATE
+    // 3. PERSISTENT APP STATE, SRS & RETENTION ENGINE
     // ==========================================
+    const defaultSurahProgress = {
+        'An-Nas': { lastScore: 98, lastPracticed: '2026-09-06', reviewCount: 4, box: 4, nextReview: '2026-09-20' },
+        'Al-Falaq': { lastScore: 96, lastPracticed: '2026-09-05', reviewCount: 3, box: 3, nextReview: '2026-09-12' },
+        'Al-Ikhlas': { lastScore: 95, lastPracticed: '2026-09-04', reviewCount: 3, box: 2, nextReview: '2026-09-06' }, // Due today!
+        'Al-Kafirun': { lastScore: 94, lastPracticed: '2026-09-02', reviewCount: 2, box: 2, nextReview: '2026-09-05' }, // Due today!
+        'Al-Kawthar': { lastScore: 0, lastPracticed: null, reviewCount: 0, box: 1, nextReview: null },
+        'Al-Maun': { lastScore: 0, lastPracticed: null, reviewCount: 0, box: 1, nextReview: null },
+        'Quraysh': { lastScore: 0, lastPracticed: null, reviewCount: 0, box: 1, nextReview: null },
+        'Al-Fil': { lastScore: 0, lastPracticed: null, reviewCount: 0, box: 1, nextReview: null },
+        'Al-Asr': { lastScore: 0, lastPracticed: null, reviewCount: 0, box: 1, nextReview: null },
+        'Al-Qadr': { lastScore: 0, lastPracticed: null, reviewCount: 0, box: 1, nextReview: null },
+        'Ash-Sharh': { lastScore: 0, lastPracticed: null, reviewCount: 0, box: 1, nextReview: null },
+        'Ad-Duha': { lastScore: 0, lastPracticed: null, reviewCount: 0, box: 1, nextReview: null },
+        'An-Naba': { lastScore: 0, lastPracticed: null, reviewCount: 0, box: 1, nextReview: null }
+    };
+
+    const defaultWeeklyActivity = [
+        { day: 'Wed', count: 4, precision: '92%', height: 40 },
+        { day: 'Thu', count: 6, precision: '95%', height: 60 },
+        { day: 'Fri', count: 10, precision: '98%', height: 110 },
+        { day: 'Sat', count: 2, precision: '88%', height: 20 },
+        { day: 'Sun', count: 8, precision: '94%', height: 90 },
+        { day: 'Mon', count: 12, precision: '96%', height: 130 },
+        { day: 'Today', count: 15, precision: '99%', height: 150 }
+    ];
+
+    const badgesCatalog = [
+        { id: 'first_recite', title: 'First Steps', desc: 'Complete your first verse recitation test', icon: '🌱' },
+        { id: 'streak_7', title: 'Steadfast Heart', desc: 'Maintain a 7+ day memorization streak', icon: '🔥' },
+        { id: 'writing_scholar', title: 'Calligrapher', desc: 'Verify handwriting scripture tests', icon: '✍️' },
+        { id: 'perfect_tajweed', title: 'Tajweed Perfection', desc: 'Score 100% on any verse recitation', icon: '🌟' },
+        { id: 'juz30_explorer', title: 'Juz 30 Seeker', desc: 'Master 6+ Juz 30 Surahs', icon: '📖' },
+        { id: 'focus_master', title: 'Khushu Shield', desc: 'Complete a focused Wird timer session', icon: '🛡️' }
+    ];
+
+    const srsIntervals = {
+        1: 1,  // Box 1: 1 day
+        2: 3,  // Box 2: 3 days
+        3: 7,  // Box 3: 7 days
+        4: 14, // Box 4: 14 days
+        5: 30  // Box 5: 30 days
+    };
+
+    function toArabicNumerals(num) {
+        const arabicDigits = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
+        return String(num).split('').map(d => arabicDigits[parseInt(d)] || d).join('');
+    }
+
+    function addDaysToDate(dateStr, days) {
+        const d = dateStr ? new Date(dateStr) : new Date();
+        d.setDate(d.getDate() + days);
+        return d.toISOString().split('T')[0];
+    }
+
+    function isDueForReview(surahName) {
+        const prog = appState.surahProgress ? appState.surahProgress[surahName] : null;
+        if (!prog || !prog.nextReview) return true;
+        const today = new Date().toISOString().split('T')[0];
+        return prog.nextReview <= today;
+    }
+
+    function getXPLevelInfo(xp) {
+        if (xp >= 5000) {
+            return { title: 'Sanad Guardian', current: xp, next: 10000, pct: Math.min(100, Math.round((xp - 5000) / 50)) };
+        } else if (xp >= 3000) {
+            return { title: 'Mutqin (Master)', current: xp, next: 5000, pct: Math.round(((xp - 3000) / 2000) * 100) };
+        } else if (xp >= 1500) {
+            return { title: 'Murattil (Reciter)', current: xp, next: 3000, pct: Math.round(((xp - 1500) / 1500) * 100) };
+        } else if (xp >= 500) {
+            return { title: 'Hafiz Apprentice', current: xp, next: 1500, pct: Math.round(((xp - 500) / 1000) * 100) };
+        } else {
+            return { title: 'Talib (Seeker)', current: xp, next: 500, pct: Math.round((xp / 500) * 100) };
+        }
+    }
+
     const defaultState = {
         userName: 'Muslim Ahmed',
         selectedSurah: 'Al-Ikhlas',
@@ -259,6 +334,14 @@ document.addEventListener('DOMContentLoaded', () => {
         qiraat: "Hafs 'an 'Asim",
         hasanatXP: 1450,
         masteredSurahs: ['An-Nas', 'Al-Falaq', 'Al-Ikhlas', 'Al-Kafirun'],
+        surahProgress: { ...defaultSurahProgress },
+        unlockedBadges: ['first_recite', 'streak_7'],
+        weeklyActivity: [...defaultWeeklyActivity],
+        lastPracticeDate: '2026-09-06',
+        writingTestsCompleted: 2,
+        focusSessionsCompleted: 1,
+        isQuizMode: false,
+        pendingDetoxChallenge: false,
         bookings: [
             { id: 1, teacherName: 'Sheikh Hamza Yousef', date: 'Tomorrow', time: '06:00 PM', focus: 'Tajweed Correction', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=100' }
         ],
@@ -272,9 +355,18 @@ document.addEventListener('DOMContentLoaded', () => {
     function loadState() {
         try {
             const saved = localStorage.getItem('hifzquest_state_v1');
-            return saved ? { ...defaultState, ...JSON.parse(saved) } : defaultState;
+            const state = saved ? { ...defaultState, ...JSON.parse(saved) } : { ...defaultState };
+            
+            // Ensure nested structures are preserved
+            if (!state.surahProgress) state.surahProgress = { ...defaultSurahProgress };
+            if (!state.unlockedBadges) state.unlockedBadges = ['first_recite', 'streak_7'];
+            if (!state.weeklyActivity) state.weeklyActivity = [...defaultWeeklyActivity];
+            if (state.writingTestsCompleted === undefined) state.writingTestsCompleted = 2;
+            if (state.focusSessionsCompleted === undefined) state.focusSessionsCompleted = 1;
+            
+            return state;
         } catch (e) {
-            return defaultState;
+            return { ...defaultState };
         }
     }
 
@@ -286,13 +378,290 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (e) {}
     }
 
-    // Refresh UI from State
-    function refreshHeaderAndStreakUI() {
+    // Advance Spaced Repetition Box
+    function advanceSRS(surahName, score) {
+        if (!appState.surahProgress[surahName]) {
+            appState.surahProgress[surahName] = {
+                lastScore: score,
+                lastPracticed: null,
+                reviewCount: 0,
+                box: 1,
+                nextReview: null
+            };
+        }
+        const prog = appState.surahProgress[surahName];
+        prog.lastScore = score;
+        prog.lastPracticed = new Date().toISOString().split('T')[0];
+        prog.reviewCount = (prog.reviewCount || 0) + 1;
+
+        const oldBox = prog.box || 1;
+        if (score >= 80) {
+            prog.box = Math.min(5, oldBox + 1);
+        } else if (score >= 60) {
+            prog.box = oldBox;
+        } else {
+            prog.box = 1; // Demote on failure to reinforce retention!
+        }
+
+        const interval = srsIntervals[prog.box] || 1;
+        prog.nextReview = addDaysToDate(prog.lastPracticed, interval);
+        saveState();
+        refreshAllDashboardAndRetentionUI();
+        return { oldBox, newBox: prog.box, nextReview: prog.nextReview };
+    }
+
+    // Record Practice Streak & Activity
+    function recordPracticeActivity() {
+        const today = new Date().toISOString().split('T')[0];
+        if (appState.lastPracticeDate) {
+            const lastDate = new Date(appState.lastPracticeDate);
+            const currDate = new Date(today);
+            const diffDays = Math.round((currDate - lastDate) / (1000 * 60 * 60 * 24));
+            if (diffDays === 1) {
+                appState.streakCount += 1;
+                showToast(`🔥 Streak continued! ${appState.streakCount} Day Streak!`, 'success');
+            } else if (diffDays > 1) {
+                appState.streakCount = 1;
+                showToast('Streak reset to 1. Daily consistency locks memorization!', 'warn');
+            }
+        } else {
+            appState.streakCount = 1;
+        }
+        appState.lastPracticeDate = today;
+
+        if (appState.weeklyActivity && appState.weeklyActivity.length > 0) {
+            const todayItem = appState.weeklyActivity[appState.weeklyActivity.length - 1];
+            todayItem.count = (todayItem.count || 0) + 1;
+            todayItem.height = Math.min(160, Math.max(35, todayItem.count * 12));
+        }
+
+        saveState();
+        refreshAllDashboardAndRetentionUI();
+    }
+
+    // Check & Unlock Achievement Badges
+    function checkBadges() {
+        if (!appState.unlockedBadges) appState.unlockedBadges = [];
+        let newlyUnlocked = false;
+
+        badgesCatalog.forEach(b => {
+            if (appState.unlockedBadges.includes(b.id)) return;
+            let conditionMet = false;
+
+            if (b.id === 'first_recite') {
+                conditionMet = Object.values(appState.surahProgress).some(p => p.reviewCount >= 1);
+            } else if (b.id === 'streak_7') {
+                conditionMet = (appState.streakCount >= 7);
+            } else if (b.id === 'writing_scholar') {
+                conditionMet = (appState.writingTestsCompleted >= 3);
+            } else if (b.id === 'perfect_tajweed') {
+                conditionMet = Object.values(appState.surahProgress).some(p => p.lastScore === 100);
+            } else if (b.id === 'juz30_explorer') {
+                conditionMet = (appState.masteredSurahs.length >= 6);
+            } else if (b.id === 'focus_master') {
+                conditionMet = (appState.focusSessionsCompleted >= 1);
+            }
+
+            if (conditionMet) {
+                appState.unlockedBadges.push(b.id);
+                appState.hasanatXP += 100;
+                newlyUnlocked = true;
+                playSound('success');
+                showToast(`🏆 Milestone Unlocked: "${b.title}" (+100 XP)!`, 'success');
+            }
+        });
+
+        if (newlyUnlocked) {
+            saveState();
+            refreshAllDashboardAndRetentionUI();
+        }
+    }
+
+    // Render Spaced Repetition (SRS) Cards
+    function renderRevisionDeck() {
+        const deck = document.getElementById('revision-cards-deck');
+        const countBadge = document.getElementById('review-due-counter-badge');
+        if (!deck) return;
+
+        const surahs = Object.keys(surahData);
+        let dueCount = 0;
+
+        const cardsHtml = surahs.map(sName => {
+            const data = surahData[sName];
+            const prog = appState.surahProgress[sName] || { box: 1, lastScore: 0, nextReview: null, reviewCount: 0 };
+            const isDue = isDueForReview(sName);
+            const isMastered = appState.masteredSurahs.includes(sName);
+
+            if (isDue && isMastered) dueCount++;
+
+            const interval = srsIntervals[prog.box] || 1;
+            const dueTag = (isDue && isMastered)
+                ? `<span class="revision-tag-due">⚡ Due for Review Today</span>` 
+                : isMastered
+                    ? `<span class="revision-tag-ok">✓ Due in ${interval}d (${prog.nextReview || 'Scheduled'})</span>`
+                    : `<span style="font-size:0.75rem; color:var(--text-muted);">Not yet memorized</span>`;
+
+            return `
+                <div class="revision-card ${(isDue && isMastered) ? 'due' : ''}" onclick="startPracticeForSurah('${sName}')">
+                    <div class="revision-card-header">
+                        <div style="font-weight:600; font-size:0.95rem;">${data.number}. ${sName}</div>
+                        <span class="srs-box-badge">Box ${prog.box} (${interval}d)</span>
+                    </div>
+                    <div style="font-family:var(--font-arabic); font-size:1.1rem; color:var(--primary-solid); text-align:right;">${data.arabic.split('•')[0].slice(0, 32)}...</div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; color:var(--text-secondary); border-top:1px solid var(--border-color); padding-top:0.5rem;">
+                        <span>Score: <strong style="color:${prog.lastScore >= 80 ? '#10b981' : prog.lastScore >= 50 ? '#f59e0b' : 'var(--text-secondary)'}">${prog.lastScore}%</strong></span>
+                        ${dueTag}
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        deck.innerHTML = cardsHtml;
+        if (countBadge) {
+            countBadge.textContent = `${dueCount} Due`;
+            countBadge.style.display = dueCount > 0 ? 'inline-block' : 'none';
+        }
+    }
+
+    window.startPracticeForSurah = function(sName) {
+        appState.selectedSurah = sName;
+        openPracticeModal(sName);
+    };
+
+    // Active Recall Daily Muraja'ah Quiz
+    window.startDailyRevisionQuiz = function() {
+        const dueSurahs = Object.keys(surahData).filter(s => isDueForReview(s) && appState.masteredSurahs.includes(s));
+        const chosen = dueSurahs.length > 0 
+            ? dueSurahs[Math.floor(Math.random() * dueSurahs.length)] 
+            : (appState.masteredSurahs[Math.floor(Math.random() * appState.masteredSurahs.length)] || 'Al-Ikhlas');
+
+        appState.selectedSurah = chosen;
+        appState.isQuizMode = true;
+        saveState();
+
+        switchTab('reciter');
+        updateReciterSurah(chosen);
+
+        const banner = document.getElementById('reciter-quiz-banner');
+        if (banner) {
+            banner.style.display = 'flex';
+            const sub = document.getElementById('quiz-banner-subtitle');
+            if (sub) sub.textContent = `Testing Surah ${chosen}. Recite purely from memory without audio aids to advance its Spaced Repetition box!`;
+        }
+
+        if (playQariBtn) playQariBtn.style.display = 'none';
+
+        playSound('chime');
+        showToast(`⚡ Active Recall Quiz initiated for Surah ${chosen}!`, 'info');
+
+        setTimeout(() => {
+            const deck = document.getElementById('target-ayah-words-deck');
+            if (deck) deck.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 150);
+    };
+
+    window.exitQuizMode = function() {
+        appState.isQuizMode = false;
+        const banner = document.getElementById('reciter-quiz-banner');
+        if (banner) banner.style.display = 'none';
+        if (playQariBtn) playQariBtn.style.display = 'flex';
+        showToast('Exited Quiz Mode', 'info');
+    };
+
+    // Render Achievement Badges
+    function renderBadges() {
+        const container = document.getElementById('badges-container');
+        const summary = document.getElementById('badges-unlocked-summary');
+        if (!container) return;
+
+        const unlocked = appState.unlockedBadges || [];
+        if (summary) summary.textContent = `${unlocked.length} / ${badgesCatalog.length} Unlocked`;
+
+        container.innerHTML = badgesCatalog.map(b => {
+            const isUnlocked = unlocked.includes(b.id);
+            return `
+                <div class="badge-item ${isUnlocked ? 'unlocked' : 'locked'}" title="${isUnlocked ? 'Unlocked!' : 'Locked: ' + b.desc}">
+                    <div class="badge-icon">${b.icon}</div>
+                    <div class="badge-title">${b.title}</div>
+                    <div class="badge-desc">${b.desc}</div>
+                    <span style="font-size:0.7rem; font-weight:700; color:${isUnlocked ? 'var(--accent-gold)' : 'var(--text-muted)'}; margin-top:auto;">
+                        ${isUnlocked ? '✓ UNLOCKED' : '🔒 LOCKED'}
+                    </span>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // Render Weekly Activity Bars
+    function renderWeeklyBars() {
+        const container = document.getElementById('weekly-bars-container');
+        if (!container) return;
+
+        const activity = appState.weeklyActivity || defaultWeeklyActivity;
+        container.innerHTML = activity.map(item => {
+            const isToday = item.day === 'Today';
+            return `
+                <div class="day-bar-item" onclick="openDayDetailsModal('${item.day}', ${item.count}, '${item.precision}')" style="flex-grow:1; display:flex; flex-direction:column; align-items:center; gap:0.5rem; cursor:pointer;" title="Click for ${item.day} breakdown (${item.count} sessions, ${item.precision})">
+                    <div style="width:100%; height:${item.height}px; background:var(--primary-grad); border-radius:6px; ${isToday ? 'box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);' : 'opacity:0.7;'}"></div>
+                    <span style="font-size:0.75rem; color:${isToday ? 'var(--text-primary)' : 'var(--text-secondary)'}; font-weight:${isToday ? '700' : '500'};">${item.day}</span>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // Render All 13 Juz 30 Surahs on Gamified Map
+    function renderGamifiedMap() {
+        const container = document.getElementById('map-nodes-container');
+        if (!container) return;
+
+        const surahs = Object.keys(surahData);
+        container.innerHTML = '';
+
+        const lateralOffsets = [0, -80, -120, -70, 0, 70, 120, 80, 0, -80, -110, -50, 0];
+
+        surahs.forEach((sName, idx) => {
+            const data = surahData[sName];
+            const isMastered = appState.masteredSurahs.includes(sName);
+            const isDue = isDueForReview(sName);
+            const isActive = (appState.selectedSurah === sName);
+
+            let nodeClass = 'map-node';
+            if (isMastered && isDue) {
+                nodeClass += ' review-due';
+            } else if (isMastered) {
+                nodeClass += ' completed';
+            } else if (isActive) {
+                nodeClass += ' active';
+            }
+
+            const leftOffset = lateralOffsets[idx % lateralOffsets.length];
+
+            const nodeEl = document.createElement('div');
+            nodeEl.className = nodeClass;
+            nodeEl.style.left = `${leftOffset}px`;
+            nodeEl.title = `${data.number}. ${sName} (${isDue && isMastered ? '⚡ Muraja\'ah Due!' : isMastered ? 'Mastered' : 'Tap to Practice'})`;
+            nodeEl.onclick = () => openPracticeModal(sName);
+            nodeEl.innerHTML = `
+                <span class="node-arabic">${toArabicNumerals(data.number)}</span>
+                <div class="map-node-label">${data.number}. ${sName}</div>
+            `;
+            container.appendChild(nodeEl);
+        });
+    }
+
+    // Comprehensive UI & Dashboard Synchronizer
+    function refreshAllDashboardAndRetentionUI() {
         const streakEl = document.getElementById('streak-count');
         const userDisplay = document.getElementById('user-display-name');
         const dashTitle = document.querySelector('.section-title');
         const wirdVal = document.getElementById('dash-wird');
+        const wirdSub = document.getElementById('dash-wird-subtitle');
+        const memorizedCount = document.getElementById('dash-memorized-count');
+        const memorizedSub = document.getElementById('dash-memorized-sub');
         const bookingsCount = document.getElementById('my-bookings-count-label');
+        const sidebarLevel = document.getElementById('sidebar-level-title');
+        const sidebarXpVal = document.getElementById('sidebar-xp-value');
+        const sidebarXpFill = document.getElementById('sidebar-xp-bar-fill');
 
         if (streakEl) streakEl.textContent = `${appState.streakCount} Day Streak`;
         if (userDisplay) userDisplay.textContent = appState.userName;
@@ -300,10 +669,27 @@ document.addEventListener('DOMContentLoaded', () => {
             dashTitle.textContent = `Salaam, ${appState.userName.split(' ')[0]}`;
         }
         if (wirdVal) wirdVal.textContent = appState.wirdTarget;
+        if (wirdSub) wirdSub.textContent = `Surah ${appState.selectedSurah} (Selected Wird)`;
+        
+        const totalSurahs = Object.keys(surahData).length;
+        if (memorizedCount) memorizedCount.textContent = `${appState.masteredSurahs.length} / ${totalSurahs} Surahs`;
+        if (memorizedSub) memorizedSub.textContent = `${Math.round((appState.masteredSurahs.length / totalSurahs) * 100)}% of Juz' 30 complete`;
+
         if (bookingsCount) bookingsCount.textContent = `My Bookings (${appState.bookings.length})`;
+
+        // Level & XP Bar
+        const lvl = getXPLevelInfo(appState.hasanatXP);
+        if (sidebarLevel) sidebarLevel.textContent = lvl.title;
+        if (sidebarXpVal) sidebarXpVal.textContent = `${appState.hasanatXP.toLocaleString()} XP`;
+        if (sidebarXpFill) sidebarXpFill.style.width = `${lvl.pct}%`;
+
+        renderRevisionDeck();
+        renderBadges();
+        renderWeeklyBars();
+        renderGamifiedMap();
     }
 
-    refreshHeaderAndStreakUI();
+    refreshAllDashboardAndRetentionUI();
 
     // ==========================================
     // 4. TOAST NOTIFICATION SYSTEM
@@ -473,25 +859,42 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         saveState();
-        refreshHeaderAndStreakUI();
+        refreshAllDashboardAndRetentionUI();
         closeModal('profile-modal');
         showToast('Profile & daily learning targets saved!', 'success');
     };
 
-    // Stats Modal
+    // Stats Modal with Dynamic Scores & Leitner Boxes
     window.openStatsModal = function() {
         const list = document.getElementById('stats-surahs-list');
         const count = document.getElementById('stats-mastered-count');
-        if (count) count.textContent = `${appState.masteredSurahs.length} / 114`;
+        const avgScoreEl = document.getElementById('stats-avg-score');
+        const totalSurahs = Object.keys(surahData).length;
+
+        if (count) count.textContent = `${appState.masteredSurahs.length} / ${totalSurahs}`;
+
+        // Compute actual average score
+        const practicedScores = Object.values(appState.surahProgress)
+            .filter(p => p.lastScore > 0)
+            .map(p => p.lastScore);
+        const avg = practicedScores.length > 0 
+            ? Math.round(practicedScores.reduce((a, b) => a + b, 0) / practicedScores.length)
+            : 95;
+        if (avgScoreEl) avgScoreEl.textContent = `${avg}%`;
 
         if (list) {
             list.innerHTML = Object.keys(surahData).map(s => {
                 const isDone = appState.masteredSurahs.includes(s);
+                const prog = appState.surahProgress[s] || { lastScore: 0, box: 1 };
+                const isDue = isDueForReview(s);
                 return `
-                    <div style="display:flex; justify-content:space-between; font-size:0.85rem; padding:0.5rem 0.75rem; background:var(--bg-card-sub); border-radius:8px;">
-                        <span>Surah ${s}</span>
-                        <span style="color:${isDone ? '#10b981' : 'var(--text-secondary)'}; font-weight:600;">
-                            ${isDone ? '✓ Mastered (96%)' : 'In Progress'}
+                    <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.85rem; padding:0.5rem 0.75rem; background:var(--bg-card-sub); border-radius:8px; border:1px solid var(--border-color);">
+                        <div>
+                            <strong style="color:var(--text-primary);">Surah ${s}</strong>
+                            <span style="font-size:0.75rem; color:var(--text-secondary); margin-left:0.5rem;">Box ${prog.box}</span>
+                        </div>
+                        <span style="color:${isDone ? (isDue ? '#f59e0b' : '#10b981') : 'var(--text-secondary)'}; font-weight:600;">
+                            ${isDone ? (isDue ? '⚡ Due for Review' : `✓ Mastered (${prog.lastScore}%)`) : 'In Progress'}
                         </span>
                     </div>
                 `;
@@ -533,11 +936,24 @@ document.addEventListener('DOMContentLoaded', () => {
         if (type === 'recite') {
             updateReciterSurah(appState.selectedSurah);
             switchTab('reciter');
+            setTimeout(() => {
+                const reciterTarget = document.getElementById('target-ayah-words-deck');
+                if (reciterTarget) {
+                    reciterTarget.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 150);
         } else if (type === 'write') {
             const guideSelect = document.getElementById('canvas-guide-select');
-            if (guideSelect) guideSelect.value = data.guide;
-            document.getElementById('canvas-guide-text').textContent = data.guide;
+            if (guideSelect && data.guide) guideSelect.value = data.guide;
+            const guideText = document.getElementById('canvas-guide-text');
+            if (guideText && data.guide) guideText.textContent = data.guide;
             switchTab('canvas');
+            setTimeout(() => {
+                const canvasTarget = document.getElementById('writing-board');
+                if (canvasTarget) {
+                    canvasTarget.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 150);
         }
     };
 
@@ -858,28 +1274,46 @@ document.addEventListener('DOMContentLoaded', () => {
         if (qalEl) qalEl.textContent = `${evaluation.qalqalah}%`;
         if (ghuEl) ghuEl.textContent = `${evaluation.ghunnah}%`;
 
+        // Update Spaced Repetition (SRS) box & next review date
+        const srsResult = advanceSRS(appState.selectedSurah, evaluation.accuracy);
+        recordPracticeActivity();
+
         if (evaluation.accuracy >= 75) {
             appState.hasanatXP += 50;
             if (!appState.masteredSurahs.includes(appState.selectedSurah)) {
                 appState.masteredSurahs.push(appState.selectedSurah);
             }
-            saveState();
-
-            const activeNode = document.querySelector(`.map-node[onclick*="${appState.selectedSurah}"]`);
-            if (activeNode) {
-                activeNode.classList.remove('active');
-                activeNode.classList.add('completed');
-            }
 
             playSound('success');
-            showToast(`Masha'Allah! Scored ${evaluation.accuracy}% on Surah ${appState.selectedSurah} (+50 XP)`, 'success');
+
+            if (appState.isQuizMode) {
+                appState.hasanatXP += 25; // Bonus for active recall quiz!
+                showToast(`🎉 Muraja'ah Quiz Passed! Surah ${appState.selectedSurah} promoted to Box ${srsResult.newBox}! (+75 XP)`, 'success');
+            } else {
+                showToast(`Masha'Allah! Scored ${evaluation.accuracy}% on Surah ${appState.selectedSurah} (+50 XP)`, 'success');
+            }
+
+            // Check if user solved a pending Detox Challenge
+            if (appState.pendingDetoxChallenge) {
+                unlockDetoxScreen();
+                appState.pendingDetoxChallenge = false;
+                showToast('Focus challenge passed! Phone lockout dismissed.', 'success');
+            }
         } else if (evaluation.accuracy > 0) {
             playSound('alarm');
-            showToast(`Recitation evaluated (${evaluation.accuracy}%). Caught ${evaluation.mistakes.length} mistakes. Check the diagnostics panel.`, 'warn');
+            if (appState.isQuizMode) {
+                showToast(`Quiz score: ${evaluation.accuracy}%. Review needed before advancing Box ${srsResult.newBox}.`, 'warn');
+            } else {
+                showToast(`Recitation evaluated (${evaluation.accuracy}%). Caught ${evaluation.mistakes.length} mistakes. Check diagnostics.`, 'warn');
+            }
         } else {
             playSound('alarm');
             showToast('No clear recitation heard. Speak into your microphone or try the test buttons!', 'error');
         }
+
+        checkBadges();
+        saveState();
+        refreshAllDashboardAndRetentionUI();
     }
 
     // --- RECITATION DIAGNOSTICS & TEST SCENARIOS ---
@@ -933,6 +1367,20 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('coach-insight-body').textContent = data.insight;
         if (reciterSurahSelect) reciterSurahSelect.value = surahName;
 
+        // Synchronize Writing Canvas guide word with selected Surah
+        const canvasGuideSelect = document.getElementById('canvas-guide-select');
+        const canvasGuideText = document.getElementById('canvas-guide-text');
+        if (canvasGuideSelect && data.guide) {
+            canvasGuideSelect.value = data.guide;
+        }
+        if (canvasGuideText && data.guide) {
+            canvasGuideText.textContent = data.guide;
+        }
+
+        // Update Wird subtitle on dashboard
+        const wirdSub = document.getElementById('dash-wird-subtitle');
+        if (wirdSub) wirdSub.textContent = `Surah ${surahName} (Selected Wird)`;
+
         if (isQariPlaying) {
             qariAudioPlayer.pause();
             isQariPlaying = false;
@@ -945,6 +1393,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (speechTranscript) speechTranscript.textContent = '';
         renderMistakesList(null);
         saveState();
+        refreshAllDashboardAndRetentionUI();
     }
 
     if (reciterSurahSelect) {
@@ -1406,8 +1855,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (analysis.score >= 70) {
                 appState.hasanatXP += 40;
+                appState.writingTestsCompleted = (appState.writingTestsCompleted || 0) + 1;
+                recordPracticeActivity();
+                checkBadges();
+
+                if (appState.pendingDetoxChallenge) {
+                    unlockDetoxScreen();
+                    appState.pendingDetoxChallenge = false;
+                    showToast('Focus writing challenge passed! Phone lockout dismissed.', 'success');
+                } else {
+                    showToast(`Verified script! ${analysis.score}% accuracy (+40 XP)`, 'success');
+                }
                 saveState();
-                showToast(`Verified script! ${analysis.score}% accuracy (+40 XP)`, 'success');
+                refreshAllDashboardAndRetentionUI();
             } else {
                 showToast('Script verified. Practice the stroke flow to improve accuracy.', 'warn');
             }
@@ -1819,9 +2279,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (focusBtn) focusBtn.textContent = 'Start Focus Mode';
                 if (focusStatusLabel) focusStatusLabel.textContent = 'Session Finished 🎉';
                 appState.hasanatXP += 100;
+                appState.focusSessionsCompleted = (appState.focusSessionsCompleted || 0) + 1;
+                recordPracticeActivity();
+                checkBadges();
                 saveState();
                 playSound('success');
-                showToast('Masha\'Allah! 25-minute focus Wird complete (+100 XP)', 'success');
+                showToast(`Masha'Allah! ${appState.focusDurationMins}-minute focus Wird complete (+100 XP)`, 'success');
+                refreshAllDashboardAndRetentionUI();
             }
         }, 1000);
     }
@@ -1905,15 +2369,16 @@ document.addEventListener('DOMContentLoaded', () => {
     window.solveLockChallenge = function(type) {
         clearInterval(appState.detoxLockTimer);
         detoxPanel.classList.remove('active');
+        appState.pendingDetoxChallenge = true;
         
         if (type === 'write') {
             appState.selectedSurah = 'Al-Ikhlas';
             startPracticeMode('write');
-            showToast('Detox challenge bypassed! Complete the writing test.', 'success');
+            showToast('Detox challenge: Score ≥70% on canvas to verify presence and unlock.', 'info');
         } else {
             appState.selectedSurah = 'Al-Ikhlas';
             startPracticeMode('recite');
-            showToast('Detox challenge bypassed! Recite the verse to unlock.', 'success');
+            showToast('Detox challenge: Recite Al-Ikhlas with ≥75% accuracy to unlock.', 'info');
         }
     };
 

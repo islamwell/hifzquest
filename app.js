@@ -596,7 +596,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!container) return;
 
         const activity = appState.weeklyActivity || defaultWeeklyActivity;
-        container.innerHTML = activity.map(item => {
+
+        // Dynamically normalize heights from real session counts so the chart
+        // always reflects actual data — max bar = 120px, min active bar = 18px
+        const maxCount = Math.max(1, ...activity.map(a => a.count || 0));
+        const normalized = activity.map(item => ({
+            ...item,
+            height: item.count > 0 ? Math.max(18, Math.round((item.count / maxCount) * 120)) : 4
+        }));
+
+        container.innerHTML = normalized.map(item => {
             const isToday = item.day === 'Today';
             return `
                 <div class="day-bar-item" onclick="openDayDetailsModal('${item.day}', ${item.count}, '${item.precision}')" style="flex-grow:1; display:flex; flex-direction:column; align-items:center; gap:0.5rem; cursor:pointer;" title="Click for ${item.day} breakdown (${item.count} sessions, ${item.precision})">

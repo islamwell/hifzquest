@@ -325,26 +325,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const defaultState = {
-        userName: 'Muslim Ahmed',
+        userName: '',
         selectedSurah: 'Al-Ikhlas',
         currentTab: 'dashboard',
         isRecording: false,
-        streakCount: 12,
+        streakCount: 0,
         wirdTarget: '5 Ayahs',
         qiraat: "Hafs 'an 'Asim",
-        hasanatXP: 1450,
-        masteredSurahs: ['An-Nas', 'Al-Falaq', 'Al-Ikhlas', 'Al-Kafirun'],
+        hasanatXP: 0,
+        masteredSurahs: [],
         surahProgress: { ...defaultSurahProgress },
-        unlockedBadges: ['first_recite', 'streak_7'],
+        unlockedBadges: [],
         weeklyActivity: [...defaultWeeklyActivity],
-        lastPracticeDate: '2026-09-06',
-        writingTestsCompleted: 2,
-        focusSessionsCompleted: 1,
+        lastPracticeDate: null,
+        writingTestsCompleted: 0,
+        focusSessionsCompleted: 0,
         isQuizMode: false,
         pendingDetoxChallenge: false,
-        bookings: [
-            { id: 1, teacherName: 'Sheikh Hamza Yousef', date: 'Tomorrow', time: '06:00 PM', focus: 'Tajweed Correction', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=100' }
-        ],
+        bookings: [],
         selectedWizardOptions: { gender: 'same', lang: 'ar', skill: 'int' },
         detoxCountdownSeconds: 120,
         focusDurationMins: 25,
@@ -359,10 +357,10 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Ensure nested structures are preserved
             if (!state.surahProgress) state.surahProgress = { ...defaultSurahProgress };
-            if (!state.unlockedBadges) state.unlockedBadges = ['first_recite', 'streak_7'];
+            if (!state.unlockedBadges) state.unlockedBadges = [];
             if (!state.weeklyActivity) state.weeklyActivity = [...defaultWeeklyActivity];
-            if (state.writingTestsCompleted === undefined) state.writingTestsCompleted = 2;
-            if (state.focusSessionsCompleted === undefined) state.focusSessionsCompleted = 1;
+            if (state.writingTestsCompleted === undefined) state.writingTestsCompleted = 0;
+            if (state.focusSessionsCompleted === undefined) state.focusSessionsCompleted = 0;
             
             return state;
         } catch (e) {
@@ -2071,7 +2069,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         appState.bookings.unshift(newBooking);
         saveState();
-        refreshHeaderAndStreakUI();
+        refreshAllDashboardAndRetentionUI();
         closeModal('booking-modal');
         showToast(`Confirmed booking with ${teacherName} for ${date} at ${time}!`, 'success');
     };
@@ -2111,7 +2109,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.cancelBooking = function(id) {
         appState.bookings = appState.bookings.filter(b => b.id !== id);
         saveState();
-        refreshHeaderAndStreakUI();
+        refreshAllDashboardAndRetentionUI();
         openBookingsListModal();
         showToast('Booking cancelled.', 'info');
     };

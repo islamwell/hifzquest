@@ -249,37 +249,32 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================
     // 3. PERSISTENT APP STATE, SRS & RETENTION ENGINE
     // ==========================================
-    const defaultSurahProgress = {
-        'An-Nas': { lastScore: 98, lastPracticed: '2026-09-06', reviewCount: 4, box: 4, nextReview: '2026-09-20' },
-        'Al-Falaq': { lastScore: 96, lastPracticed: '2026-09-05', reviewCount: 3, box: 3, nextReview: '2026-09-12' },
-        'Al-Ikhlas': { lastScore: 95, lastPracticed: '2026-09-04', reviewCount: 3, box: 2, nextReview: '2026-09-06' }, // Due today!
-        'Al-Kafirun': { lastScore: 94, lastPracticed: '2026-09-02', reviewCount: 2, box: 2, nextReview: '2026-09-05' }, // Due today!
-        'Al-Kawthar': { lastScore: 0, lastPracticed: null, reviewCount: 0, box: 1, nextReview: null },
-        'Al-Maun': { lastScore: 0, lastPracticed: null, reviewCount: 0, box: 1, nextReview: null },
-        'Quraysh': { lastScore: 0, lastPracticed: null, reviewCount: 0, box: 1, nextReview: null },
-        'Al-Fil': { lastScore: 0, lastPracticed: null, reviewCount: 0, box: 1, nextReview: null },
-        'Al-Asr': { lastScore: 0, lastPracticed: null, reviewCount: 0, box: 1, nextReview: null },
-        'Al-Qadr': { lastScore: 0, lastPracticed: null, reviewCount: 0, box: 1, nextReview: null },
-        'Ash-Sharh': { lastScore: 0, lastPracticed: null, reviewCount: 0, box: 1, nextReview: null },
-        'Ad-Duha': { lastScore: 0, lastPracticed: null, reviewCount: 0, box: 1, nextReview: null },
-        'An-Naba': { lastScore: 0, lastPracticed: null, reviewCount: 0, box: 1, nextReview: null }
-    };
+    // Fresh sample progress; legacy saved progress remains intact.
+    const defaultSurahProgress = Object.fromEntries(Object.keys(surahData).map(name => [name, {
+        lastScore: 0, lastPracticed: null, reviewCount: 0, box: 1, nextReview: null
+    }]));
 
-    const defaultWeeklyActivity = [
-        { day: 'Wed', count: 4, precision: '92%', height: 40 },
-        { day: 'Thu', count: 6, precision: '95%', height: 60 },
-        { day: 'Fri', count: 10, precision: '98%', height: 110 },
-        { day: 'Sat', count: 2, precision: '88%', height: 20 },
-        { day: 'Sun', count: 8, precision: '94%', height: 90 },
-        { day: 'Mon', count: 12, precision: '96%', height: 130 },
-        { day: 'Today', count: 15, precision: '99%', height: 150 }
-    ];
+    function localDateKey(date = new Date()) {
+        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+    }
+
+    function rollingWeek(existing = []) {
+        return Array.from({ length: 7 }, (_, index) => {
+            const date = new Date();
+            date.setDate(date.getDate() - (6 - index));
+            const key = localDateKey(date);
+            const saved = existing.find(item => item.date === key);
+            return { date: key, day: index === 6 ? 'Today' : date.toLocaleDateString('en', { weekday: 'short' }),
+                count: Math.max(0, Number(saved?.count) || 0) };
+        });
+    }
+    const defaultWeeklyActivity = rollingWeek();
 
     const badgesCatalog = [
         { id: 'first_recite', title: 'First Steps', desc: 'Complete your first verse recitation test', icon: '🌱' },
         { id: 'streak_7', title: 'Steadfast Heart', desc: 'Maintain a 7+ day memorization streak', icon: '🔥' },
         { id: 'writing_scholar', title: 'Calligrapher', desc: 'Verify handwriting scripture tests', icon: '✍️' },
-        { id: 'perfect_tajweed', title: 'Tajweed Perfection', desc: 'Score 100% on any verse recitation', icon: '🌟' },
+        { id: 'perfect_tajweed', title: 'Word Match', desc: 'Match the recognized words in one sample ayah', icon: '🌟' },
         { id: 'juz30_explorer', title: 'Juz 30 Seeker', desc: 'Master 6+ Juz 30 Surahs', icon: '📖' },
         { id: 'focus_master', title: 'Khushu Shield', desc: 'Complete a focused Wird timer session', icon: '🛡️' }
     ];
@@ -298,15 +293,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function addDaysToDate(dateStr, days) {
-        const d = dateStr ? new Date(dateStr) : new Date();
+        const d = dateStr ? new Date(`${dateStr}T12:00:00`) : new Date();
         d.setDate(d.getDate() + days);
-        return d.toISOString().split('T')[0];
+        return localDateKey(d);
     }
 
     function isDueForReview(surahName) {
         const prog = appState.surahProgress ? appState.surahProgress[surahName] : null;
         if (!prog || !prog.nextReview) return true;
-        const today = new Date().toISOString().split('T')[0];
+        const today = localDateKey();
         return prog.nextReview <= today;
     }
 
@@ -353,7 +348,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function loadState() {
         try {
             const saved = localStorage.getItem('hifzquest_state_v1');
-            const state = saved ? { ...defaultState, ...JSON.parse(saved) } : { ...defaultState };
+            const state = { ...structuredClone(defaultState), ...(saved ? JSON.parse(saved) : {}) };
             
             // Ensure nested structures are preserved
             if (!state.surahProgress) state.surahProgress = { ...defaultSurahProgress };
@@ -362,9 +357,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (state.writingTestsCompleted === undefined) state.writingTestsCompleted = 0;
             if (state.focusSessionsCompleted === undefined) state.focusSessionsCompleted = 0;
             
+            state.weeklyActivity = rollingWeek(state.weeklyActivity);
+            state.isRecording = false;
+            state.isQuizMode = false;
             return state;
         } catch (e) {
-            return { ...defaultState };
+            return structuredClone(defaultState);
         }
     }
 
@@ -389,7 +387,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         const prog = appState.surahProgress[surahName];
         prog.lastScore = score;
-        prog.lastPracticed = new Date().toISOString().split('T')[0];
+        prog.lastPracticed = localDateKey();
         prog.reviewCount = (prog.reviewCount || 0) + 1;
 
         const oldBox = prog.box || 1;
@@ -410,7 +408,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Record Practice Streak & Activity
     function recordPracticeActivity() {
-        const today = new Date().toISOString().split('T')[0];
+        const today = localDateKey();
         if (appState.lastPracticeDate) {
             const lastDate = new Date(appState.lastPracticeDate);
             const currDate = new Date(today);
@@ -427,11 +425,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         appState.lastPracticeDate = today;
 
-        if (appState.weeklyActivity && appState.weeklyActivity.length > 0) {
-            const todayItem = appState.weeklyActivity[appState.weeklyActivity.length - 1];
-            todayItem.count = (todayItem.count || 0) + 1;
-            todayItem.height = Math.min(160, Math.max(35, todayItem.count * 12));
-        }
+        appState.weeklyActivity = rollingWeek(appState.weeklyActivity);
+        appState.weeklyActivity[6].count += 1;
 
         saveState();
         refreshAllDashboardAndRetentionUI();
@@ -490,17 +485,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const isDue = isDueForReview(sName);
             const isMastered = appState.masteredSurahs.includes(sName);
 
-            if (isDue && isMastered) dueCount++;
+            if (isDue && prog.reviewCount > 0) dueCount++;
 
             const interval = srsIntervals[prog.box] || 1;
-            const dueTag = (isDue && isMastered)
-                ? `<span class="revision-tag-due">⚡ Due for Review Today</span>` 
-                : isMastered
-                    ? `<span class="revision-tag-ok">✓ Due in ${interval}d (${prog.nextReview || 'Scheduled'})</span>`
-                    : `<span style="font-size:0.75rem; color:var(--text-muted);">Not yet memorized</span>`;
+            const dueTag = (isDue && prog.reviewCount > 0)
+                ? `<span class="revision-tag-due">Due for practice</span>`
+                : prog.reviewCount > 0
+                    ? `<span class="revision-tag-ok">Next: ${prog.nextReview || 'Unscheduled'}</span>`
+                    : `<span style="font-size:0.75rem; color:var(--text-muted);">Not practised yet</span>`;
 
             return `
-                <div class="revision-card ${(isDue && isMastered) ? 'due' : ''}" onclick="startPracticeForSurah('${sName}')">
+                <button type="button" class="revision-card ${(isDue && prog.reviewCount > 0) ? 'due' : ''}" onclick="startPracticeForSurah('${sName}')">
                     <div class="revision-card-header">
                         <div style="font-weight:600; font-size:0.95rem;">${data.number}. ${sName}</div>
                         <span class="srs-box-badge">Box ${prog.box} (${interval}d)</span>
@@ -510,7 +505,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <span>Score: <strong style="color:${prog.lastScore >= 80 ? '#10b981' : prog.lastScore >= 50 ? '#f59e0b' : 'var(--text-secondary)'}">${prog.lastScore}%</strong></span>
                         ${dueTag}
                     </div>
-                </div>
+                </button>
             `;
         }).join('');
 
@@ -528,13 +523,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Active Recall Daily Muraja'ah Quiz
     window.startDailyRevisionQuiz = function() {
-        const dueSurahs = Object.keys(surahData).filter(s => isDueForReview(s) && appState.masteredSurahs.includes(s));
+        const dueSurahs = Object.keys(surahData).filter(s => isDueForReview(s) && appState.surahProgress[s]?.reviewCount > 0);
         const chosen = dueSurahs.length > 0 
             ? dueSurahs[Math.floor(Math.random() * dueSurahs.length)] 
             : (appState.masteredSurahs[Math.floor(Math.random() * appState.masteredSurahs.length)] || 'Al-Ikhlas');
 
         appState.selectedSurah = chosen;
         appState.isQuizMode = true;
+        document.body.classList.add('recall-active');
         saveState();
 
         switchTab('reciter');
@@ -560,6 +556,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.exitQuizMode = function() {
         appState.isQuizMode = false;
+        document.body.classList.remove('recall-active');
+        saveState();
         const banner = document.getElementById('reciter-quiz-banner');
         if (banner) banner.style.display = 'none';
         if (playQariBtn) playQariBtn.style.display = 'flex';
@@ -594,26 +592,14 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderWeeklyBars() {
         const container = document.getElementById('weekly-bars-container');
         if (!container) return;
-
-        const activity = appState.weeklyActivity || defaultWeeklyActivity;
-
-        // Dynamically normalize heights from real session counts so the chart
-        // always reflects actual data — max bar = 120px, min active bar = 18px
-        const maxCount = Math.max(1, ...activity.map(a => a.count || 0));
-        const normalized = activity.map(item => ({
-            ...item,
-            height: item.count > 0 ? Math.max(18, Math.round((item.count / maxCount) * 120)) : 4
-        }));
-
-        container.innerHTML = normalized.map(item => {
-            const isToday = item.day === 'Today';
-            return `
-                <div class="day-bar-item" onclick="openDayDetailsModal('${item.day}', ${item.count}, '${item.precision}')" style="flex-grow:1; display:flex; flex-direction:column; align-items:center; gap:0.5rem; cursor:pointer;" title="Click for ${item.day} breakdown (${item.count} sessions, ${item.precision})">
-                    <div style="width:100%; height:${item.height}px; background:var(--primary-grad); border-radius:6px; ${isToday ? 'box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);' : 'opacity:0.7;'}"></div>
-                    <span style="font-size:0.75rem; color:${isToday ? 'var(--text-primary)' : 'var(--text-secondary)'}; font-weight:${isToday ? '700' : '500'};">${item.day}</span>
-                </div>
-            `;
-        }).join('');
+        const activity = rollingWeek(appState.weeklyActivity);
+        const max = Math.max(1, ...activity.map(item => item.count));
+        container.innerHTML = activity.map(item => `
+            <div class="day-bar-item" aria-label="${item.date}: ${item.count} practice sessions">
+                <span class="activity-count">${item.count}</span>
+                <div class="activity-track"><div class="activity-fill" style="height:${item.count / max * 100}%"></div></div>
+                <span>${item.day}</span>
+            </div>`).join('');
     }
 
     // Render All 13 Juz 30 Surahs on Gamified Map
@@ -671,7 +657,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const sidebarXpFill = document.getElementById('sidebar-xp-bar-fill');
 
         if (streakEl) streakEl.textContent = `${appState.streakCount} Day Streak`;
-        if (userDisplay) userDisplay.textContent = appState.userName;
+        if (userDisplay) userDisplay.textContent = appState.userName || 'Your profile';
         if (dashTitle && dashTitle.textContent.startsWith('Salaam')) {
             dashTitle.textContent = `Salaam, ${appState.userName.split(' ')[0]}`;
         }
@@ -680,7 +666,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const totalSurahs = Object.keys(surahData).length;
         if (memorizedCount) memorizedCount.textContent = `${appState.masteredSurahs.length} / ${totalSurahs} Surahs`;
-        if (memorizedSub) memorizedSub.textContent = `${Math.round((appState.masteredSurahs.length / totalSurahs) * 100)}% of Juz' 30 complete`;
+        if (memorizedSub) memorizedSub.textContent = 'Sample practice only; full surah assessment is not available';
 
         if (bookingsCount) bookingsCount.textContent = `My Bookings (${appState.bookings.length})`;
 
@@ -694,6 +680,10 @@ document.addEventListener('DOMContentLoaded', () => {
         renderBadges();
         renderWeeklyBars();
         renderGamifiedMap();
+        document.dispatchEvent(new CustomEvent('hifzquest:progress', { detail: {
+            userName: appState.userName, selectedSurah: appState.selectedSurah, surahNumber: surahData[appState.selectedSurah]?.number,
+            due: Object.keys(surahData).filter(name => appState.surahProgress[name]?.reviewCount > 0 && isDueForReview(name)).length
+        } }));
     }
 
     refreshAllDashboardAndRetentionUI();
@@ -722,7 +712,10 @@ document.addEventListener('DOMContentLoaded', () => {
             iconSvg = '<svg style="width:18px;height:18px;fill:#0d9488;flex-shrink:0;" viewBox="0 0 24 24"><path d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 12,22M11,17H13V11H11V17Z"/></svg>';
         }
 
-        toast.innerHTML = `${iconSvg}<span>${text}</span>`;
+        toast.innerHTML = iconSvg;
+        const message = document.createElement('span');
+        message.textContent = text;
+        toast.appendChild(message);
         container.appendChild(toast);
 
         setTimeout(() => {
@@ -753,6 +746,7 @@ document.addEventListener('DOMContentLoaded', () => {
     bindNavEvents(mobileNavItems);
 
     window.switchTab = function(tabId) {
+        if (!document.getElementById(tabId)?.classList.contains('app-section')) return;
         navItems.forEach(nav => nav.classList.remove('active'));
         mobileNavItems.forEach(nav => nav.classList.remove('active'));
         sections.forEach(sec => sec.classList.remove('active'));
@@ -776,12 +770,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    if (window.location.hash) {
-        const hash = window.location.hash.substring(1);
-        if (['dashboard', 'map', 'reciter', 'canvas', 'matching', 'detox'].includes(hash)) {
-            switchTab(hash);
-        }
-    }
 
     // ==========================================
     // 6. THEME SWITCH ENGINE
@@ -886,7 +874,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .map(p => p.lastScore);
         const avg = practicedScores.length > 0 
             ? Math.round(practicedScores.reduce((a, b) => a + b, 0) / practicedScores.length)
-            : 95;
+            : 0;
         if (avgScoreEl) avgScoreEl.textContent = `${avg}%`;
 
         if (list) {
@@ -1238,7 +1226,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div style="font-weight:600; color:#10b981; display:flex; align-items:center; gap:0.4rem;">
                         <span>✓ Masha'Allah! Perfect Recitation</span>
                     </div>
-                    <div style="color:var(--text-secondary); font-size:0.8rem;">All words matched with accurate pronunciation and tajweed rules.</div>
+                    <div style="color:var(--text-secondary); font-size:0.8rem;">Recognized words match this sample. A teacher can assess pronunciation and Tajweed.</div>
                 </div>
             `;
             return;
@@ -1264,6 +1252,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function applyRecitationEvaluation(spokenText) {
+        if (!spokenText?.trim()) {
+            showToast('No recognized words to compare. Listen back to your recording or try again; no score was saved.', 'info');
+            return;
+        }
         const data = surahData[appState.selectedSurah] || surahData['Al-Ikhlas'];
         const evaluation = evaluateRecitation(data.arabic, spokenText);
 
@@ -1577,8 +1569,12 @@ document.addEventListener('DOMContentLoaded', () => {
             recDataArray = new Uint8Array(bufferLength);
             drawLiveWave();
         } catch (err) {
-            console.warn('Microphone permission fallback mode:', err);
-            drawSimulatedWave();
+            appState.isRecording = false;
+            micBtn.classList.remove('recording');
+            if (recognition) { try { recognition.abort(); } catch {} }
+            recStatus.textContent = 'Microphone unavailable. Allow microphone access or listen to the Qari.';
+            if (speechTranscript) speechTranscript.textContent = '';
+            drawStaticWave();
         }
     }
 
@@ -1631,7 +1627,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function stopAudioRecording() {
         appState.isRecording = false;
         micBtn.classList.remove('recording');
-        recStatus.textContent = 'Analyzing Tajweed & Phonetic Articulation...';
+        recStatus.textContent = 'Comparing recognized words...';
         
         if (waveAnimationId) {
             cancelAnimationFrame(waveAnimationId);
@@ -1656,6 +1652,10 @@ document.addEventListener('DOMContentLoaded', () => {
             drawStaticWave();
             
             const spokenText = (recognizedText || '').trim();
+            if (!recognition) {
+                recStatus.textContent = 'Automatic comparison is unavailable in this browser. Listen back to your recording for self-review.';
+                return;
+            }
             applyRecitationEvaluation(spokenText);
         }, 1000);
     }
@@ -2400,4 +2400,7 @@ document.addEventListener('DOMContentLoaded', () => {
         detoxPanel.classList.remove('active');
         showToast('Timeout complete. Access restored!', 'success');
     }
+    if (window.location.hash) switchTab(window.location.hash.substring(1));
+    document.addEventListener('hifzquest:refresh-request', refreshAllDashboardAndRetentionUI);
+
 });

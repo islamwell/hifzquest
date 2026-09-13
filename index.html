@@ -1,864 +1,2402 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HifzQuest - Gamified Quran Memorization & Digital Detox</title>
-    <link rel="stylesheet" href="index.css">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HifzQuest · Recite, revise, grow together</title>
+    <link rel="stylesheet" href="index.css" />
+    <link rel="stylesheet" href="community.css" />
+  </head>
+  <body class="light-theme">
+    <a href="#main-content" class="skip-link">Skip to content</a>
 
-    <!-- SIDEBAR NAVIGATION -->
-    <aside class="sidebar">
-        <div class="brand">
-            <div class="brand-icon">
-                <svg viewBox="0 0 24 24">
-                    <!-- Custom Book/Quran Icon -->
-                    <path d="M12,3L1,9L12,15L21,10V17H23V9L12,3M12,5.18L18.82,9L12,12.82L5.18,9L12,5.18M3,11.1V13.97L12,19L21,13.97V11.1L12,16.1L3,11.1Z"/>
-                </svg>
-            </div>
-            <span class="brand-name">HifzQuest</span>
-        </div>
-
-        <div class="theme-toggle-wrapper" style="margin-bottom: 1.5rem;">
-            <button class="btn btn-secondary" id="theme-toggle-btn" style="width:100%; display:flex; align-items:center; justify-content:center; gap:0.5rem; padding:0.6rem;">
-                <svg viewBox="0 0 24 24" id="theme-toggle-icon" style="width:18px; height:18px; fill:currentColor;"><path d="M12,18C11.11,18 10.26,17.8 9.5,17.45C11.56,16.5 13,14.42 13,12C13,9.58 11.56,7.5 9.5,6.55C10.26,6.2 11.11,6 12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18M20,8.69V4H15.31L12,0.69L8.69,4H4V8.69L0.69,12L4,15.31V20H8.69L12,23.31L15.31,20H20V15.31L23.31,12L20,8.69Z"/></svg>
-                <span id="theme-toggle-text">Light Mode</span>
-            </button>
-        </div>
-
+    <aside class="sidebar" aria-label="Main navigation">
+      <a class="brand" href="#dashboard"
+        ><span class="brand-icon"
+          ><svg
+            class="hq-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path
+              d="M12 5v16M12 5C8 2 4 3 2 4v15c4-1 7 0 10 2 3-2 6-3 10-2V4c-4-1-7-1-10 1Z"
+            /></svg></span
+        ><span>HifzQuest<small>A little, every day.</small></span></a
+      >
+      <span class="nav-eyebrow">YOUR SPACE</span>
+      <nav aria-label="Primary">
         <ul class="nav-menu">
-            <li class="nav-item active" data-tab="dashboard">
-                <a href="#dashboard">
-                    <svg viewBox="0 0 24 24"><path d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z"/></svg>
-                    <span>Dashboard</span>
-                </a>
-            </li>
-            <li class="nav-item" data-tab="map">
-                <a href="#map">
-                    <svg viewBox="0 0 24 24"><path d="M15,3H21V9H19V5.41L12.41,12L19,18.59V15H21V21H15V19H18.59L12,12.41L5.41,19H9V21H3V15H5V18.59L11.59,12L5,5.41V9H3V3H9V5H5.41L12,11.59L18.59,5H15V3Z"/></svg>
-                    <span>Gamified Map</span>
-                </a>
-            </li>
-            <li class="nav-item" data-tab="reciter">
-                <a href="#reciter">
-                    <svg viewBox="0 0 24 24"><path d="M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M19,11C19,14.53 16.39,17.44 13,17.93V21H11V17.93C7.61,17.44 5,14.53 5,11H7A5,5 0 0,0 12,16A5,5 0 0,0 17,11H19Z"/></svg>
-                    <span>AI Reciter</span>
-                </a>
-            </li>
-            <li class="nav-item" data-tab="canvas">
-                <a href="#canvas">
-                    <svg viewBox="0 0 24 24"><path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.07,6.19L3,17.25Z"/></svg>
-                    <span>Writing Canvas</span>
-                </a>
-            </li>
-            <li class="nav-item" data-tab="matching">
-                <a href="#matching">
-                    <svg viewBox="0 0 24 24"><path d="M16,13C15.71,13 15.38,13 15.03,13.05C16.19,13.89 17,15 17,16.5V19H23V16.5C23,14.17 18.33,13 16,13M8,13C5.67,13 1,14.17 1,16.5V19H15V16.5C15,14.17 10.33,13 8,13M8,11A3,3 0 0,0 11,8A3,3 0 0,0 8,5A3,3 0 0,0 5,8A3,3 0 0,0 8,11M16,11A3,3 0 0,0 19,8A3,3 0 0,0 16,5A3,3 0 0,0 13,8A3,3 0 0,0 16,11Z"/></svg>
-                    <span>Match Teacher</span>
-                </a>
-            </li>
-            <li class="nav-item" data-tab="detox">
-                <a href="#detox">
-                    <svg viewBox="0 0 24 24"><path d="M12,17A2,2 0 0,0 14,15C14,13.89 13.1,13 12,13A2,2 0 0,0 10,15A2,2 0 0,0 12,17M18,8A2,2 0 0,1 20,10V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V10C4,8.89 4.9,8 6,8H7V6A5,5 0 0,1 12,1A5,5 0 0,1 17,6V8H18M12,3A3,3 0 0,0 9,6V8H15V6A3,3 0 0,0 12,3Z"/></svg>
-                    <span>Digital Detox</span>
-                </a>
-            </li>
+          <li class="nav-item active" data-tab="dashboard">
+            <a href="#dashboard"
+              ><svg
+                class="hq-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="m3 10 9-7 9 7v10H3Z" />
+                <path d="M9 20v-7h6v7" /></svg
+              ><span>Home</span></a
+            >
+          </li>
+          <li class="nav-item" data-tab="together">
+            <a href="#together"
+              ><svg
+                class="hq-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <rect x="9" y="2" width="6" height="12" rx="3" />
+                <path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3m-4 0h8" /></svg
+              ><span>Recite together</span></a
+            >
+          </li>
+          <li class="nav-item" data-tab="revision">
+            <a href="#revision"
+              ><svg
+                class="hq-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path
+                  d="M12 5v16M12 5C8 2 4 3 2 4v15c4-1 7 0 10 2 3-2 6-3 10-2V4c-4-1-7-1-10 1Z"
+                /></svg
+              ><span>My revision</span></a
+            >
+          </li>
+          <li class="nav-item" data-tab="matching">
+            <a href="#matching"
+              ><svg
+                class="hq-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <circle cx="9" cy="8" r="3" />
+                <path
+                  d="M3 21v-3a6 6 0 0 1 12 0v3M16 5a3 3 0 0 1 0 6m2 4a5 5 0 0 1 3 5"
+                /></svg
+              ><span>Teachers</span></a
+            >
+          </li>
+          <li class="nav-item" data-tab="more">
+            <a href="#more"
+              ><svg
+                class="hq-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <rect x="3" y="3" width="6" height="6" rx="1" />
+                <rect x="15" y="3" width="6" height="6" rx="1" />
+                <rect x="3" y="15" width="6" height="6" rx="1" />
+                <rect x="15" y="15" width="6" height="6" rx="1" /></svg
+              ><span>More</span></a
+            >
+          </li>
         </ul>
-
-        <!-- USER PROFILE / STREAK STATUS -->
-        <div class="user-status-card" onclick="openProfileModal()" title="Click to view & edit profile">
-            <div class="user-status-header">
-                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100" alt="User Avatar" class="avatar" id="sidebar-avatar">
-                <div>
-                    <h4 style="font-weight:600;font-size:0.95rem;" id="user-display-name">Muslim Ahmed</h4>
-                    <span style="font-size:0.75rem;color:var(--accent-gold); font-weight:600;" id="sidebar-level-title">Hafiz Apprentice</span>
-                </div>
-            </div>
-            <div class="user-streak">
-                <svg class="streak-icon" viewBox="0 0 24 24">
-                    <path d="M17.66,11.2C17.43,10.9 17.15,10.64 16.89,10.38C16.22,9.7 15.46,9.03 15.46,7.73C15.46,6.47 16.32,5.34 15.93,3.75C15.54,2.15 14,1.25 12.56,1.25C12.06,1.25 11.5,1.5 11,1.86C9.17,3.22 8.75,5.54 9.77,7.73C9.83,7.87 9.87,8 9.9,8.1C9.07,8.8 8.44,9.76 8.19,10.84C7.84,12.35 8.29,13.9 9.38,15C9.4,15.03 9.43,15.05 9.45,15.08C9.25,15.32 9.07,15.57 8.92,15.84C7.8,17.76 8,20.27 9.5,21.75C10.2,22.44 11.1,22.75 12,22.75C12.9,22.75 13.8,22.44 14.5,21.75C16.87,19.38 17.2,15.8 15.3,13.25C15.1,13 14.88,12.72 14.65,12.47C15.3,12.47 15.93,12.28 16.5,11.9C17.06,11.5 17.43,11.13 17.66,11.2M12,20.25C11,20.25 10.15,19.9 9.5,19.25C8.6,18.35 8.5,16.84 9.17,15.69C9.25,15.55 9.33,15.4 9.42,15.27C9.9,15.9 10.6,16.38 11.38,16.5C11.6,16.53 11.8,16.55 12,16.55C12.8,16.55 13.6,16.24 14.2,15.65C14.73,15.1 15,14.37 15,13.62C15,12.5 14.15,11.6 13,11.6C12.4,11.6 11.8,11.3 11.4,10.8C10.9,10.15 10.85,9.3 11.2,8.62C11.3,8.43 11.4,8.24 11.5,8.05C11,8.34 10.5,8.73 10.2,9.22C9.9,9.72 9.75,10.3 9.75,10.9C9.75,12.35 10.9,13.5 12.35,13.5C13.8,13.5 14.95,12.35 14.95,10.9C14.95,10 14.47,9.15 13.82,8.62C13.73,8.54 13.65,8.46 13.57,8.38C13.8,9.25 13.5,10.15 12.8,10.75C12.6,10.9 12.3,11 12,11A1,1 0 0,1 11,10V9C11,8.1 11.45,7.25 12.2,6.75C12.8,6.38 13.5,6.25 14.1,6.43C13.6,7.5 13.75,8.72 14.47,9.65C14.8,10.05 15.2,10.4 15.6,10.7C16.38,12.44 16.09,14.54 14.75,15.9C14,16.65 13,17.05 12,17.05V20.25Z"/>
-                </svg>
-                <span id="streak-count">12 Day Streak</span>
-            </div>
-            <!-- XP Progress Bar -->
-            <div class="user-xp-wrapper" style="margin-top:0.6rem; border-top:1px solid rgba(255,255,255,0.06); padding-top:0.6rem;">
-                <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.75rem; margin-bottom:0.3rem;">
-                    <span style="color:var(--text-secondary);">Hasanat XP</span>
-                    <span style="font-weight:700; color:var(--accent-gold);" id="sidebar-xp-value">1,450 XP</span>
-                </div>
-                <div class="xp-bar-container">
-                    <div class="xp-bar-fill" id="sidebar-xp-bar-fill" style="width: 45%;"></div>
-                </div>
-            </div>
-        </div>
+      </nav>
+      <div class="sidebar-mission">
+        <span class="mission-mark"
+          ><svg
+            class="hq-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <circle cx="9" cy="8" r="3" />
+            <path
+              d="M3 21v-3a6 6 0 0 1 12 0v3M16 5a3 3 0 0 1 0 6m2 4a5 5 0 0 1 3 5"
+            /></svg
+        ></span>
+        <h3>Better, together.</h3>
+        <p>A place to recite, listen, and keep growing with the Quran.</p>
+        <span class="tag">Free at heart</span>
+      </div>
+      <button class="profile-shortcut" onclick="openProfileModal()">
+        <svg
+          class="hq-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.6"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <circle cx="12" cy="8" r="4" />
+          <path d="M4 22v-2a8 8 0 0 1 16 0v2" /></svg
+        ><span
+          ><strong id="user-display-name">Your profile</strong
+          ><small>Set your learning goal</small></span
+        ><span aria-hidden="true">↗</span>
+      </button>
+      <button class="theme-shortcut" id="theme-toggle-btn">
+        <svg
+          class="hq-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.6"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M20 15A9 9 0 0 1 9 3a9 9 0 1 0 11 12Z" /></svg
+        ><span id="theme-toggle-text">Dark Mode</span
+        ><svg id="theme-toggle-icon" hidden></svg>
+      </button>
     </aside>
-
     <!-- MAIN CONTENT AREA -->
-    <main class="main-content">
-        
-        <!-- DASHBOARD TAB -->
-        <section id="dashboard" class="app-section active">
-            <div class="section-header">
-                <h1 class="section-title">Salaam, Muslim</h1>
-                <p class="section-subtitle">Here is your Quran progress and focus score for today.</p>
-            </div>
+    <main class="main-content" id="main-content" tabindex="-1">
+      <header class="topbar">
+        <span class="mobile-brand"
+          ><svg
+            class="hq-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path
+              d="M12 5v16M12 5C8 2 4 3 2 4v15c4-1 7 0 10 2 3-2 6-3 10-2V4c-4-1-7-1-10 1Z"
+            />
+          </svg>
+          HifzQuest</span
+        ><span class="topbar-location">Your Quran companion</span>
+        <div class="topbar-actions">
+          <span class="preview-label">Community preview</span
+          ><button
+            class="icon-button"
+            aria-label="Open your profile"
+            onclick="openProfileModal()"
+          >
+            <svg
+              class="hq-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="8" r="4" />
+              <path d="M4 22v-2a8 8 0 0 1 16 0v2" />
+            </svg>
+          </button>
+        </div>
+      </header>
 
-            <div class="dashboard-grid">
-                <div class="card" onclick="openPracticeModal(appState.selectedSurah)" style="cursor:pointer;" title="Click to practice today's target">
-                    <h3 class="card-title">Daily Wird Target</h3>
-                    <div class="card-value" id="dash-wird">5 Ayahs</div>
-                    <p style="color:var(--text-secondary);font-size:0.85rem;" id="dash-wird-subtitle">Surah Al-Ikhlas (Selected Wird)</p>
+      <section id="dashboard" class="app-section active">
+        <div class="page-intro">
+          <div>
+            <p class="eyebrow">MAKE ROOM FOR THE QURAN</p>
+            <h1 class="section-title">
+              Assalamu alaikum<span class="greeting-name"></span>.
+            </h1>
+            <p class="section-subtitle">
+              A few ayahs. A listening ear. A little closer, every day.
+            </p>
+          </div>
+          <button class="text-button" onclick="openProfileModal()">
+            Set my goal ↗
+          </button>
+        </div>
+        <div class="home-columns">
+          <div class="home-primary">
+            <article class="recite-hero">
+              <div class="hero-copy">
+                <span class="hero-kicker">RECITE · LISTEN · CONNECT</span>
+                <h2>Your journey.<br />A shared companion.</h2>
+                <p>
+                  Practise with a fellow student, or get guidance from a Tajweed
+                  or Hifz teacher.
+                </p>
+                <button class="btn hero-button" onclick="switchTab('together')">
+                  Recite together
+                  <svg
+                    class="hq-icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M4 12h16m-6-6 6 6-6 6" />
+                  </svg></button
+                ><span class="hero-caption"
+                  >Free peer practice · Teacher lessons coming soon</span
+                >
+              </div>
+              <div class="arch-art" aria-hidden="true">
+                <div class="arch-inner">
+                  <span>قُرْآن</span>
+                  <div class="art-book">
+                    <svg
+                      class="hq-icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M12 5v16M12 5C8 2 4 3 2 4v15c4-1 7 0 10 2 3-2 6-3 10-2V4c-4-1-7-1-10 1Z"
+                      />
+                    </svg>
+                  </div>
+                  <small>ONE AYAH AT A TIME</small>
                 </div>
-                <div class="card" onclick="openStatsModal()" style="cursor:pointer;" title="Click to view total memorization stats">
-                    <h3 class="card-title">Total Memorized</h3>
-                    <div class="card-value" style="color:var(--primary-solid)" id="dash-memorized-count">4 / 13 Surahs</div>
-                    <p style="color:var(--text-secondary);font-size:0.85rem;" id="dash-memorized-sub">31% of Juz' 30 complete</p>
-                </div>
-                <div class="card" onclick="switchTab('detox')" style="cursor:pointer;" title="Click to manage Digital Detox">
-                    <h3 class="card-title">Focus & Detox Score</h3>
-                    <div class="card-value" style="color:var(--accent-gold)" id="dash-focus-score">100%</div>
-                    <p style="color:var(--text-secondary);font-size:0.85rem;" id="dash-focus-sub">3 Shielded apps active</p>
-                </div>
+              </div>
+            </article>
+            <div class="section-row">
+              <h2>How would you like to practise?</h2>
+              <span>Make it your own</span>
             </div>
-
-            <!-- SPCE REPETITION & MURAJA'AH REVISION DECK -->
-            <div class="card" style="margin-bottom: 2rem;">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; flex-wrap:wrap; gap:0.75rem;">
-                    <div>
-                        <h3 style="font-size:1.1rem;font-weight:600; display:flex; align-items:center; gap:0.5rem;">
-                            <span>📖 Daily Muraja'ah (Retention & Revision)</span>
-                            <span class="badge-pill" id="review-due-counter-badge">0 Due</span>
-                        </h3>
-                        <p style="font-size:0.8rem; color:var(--text-secondary);">Spaced repetition intervals (Leitner system) to lock memorized surahs in permanent long-term memory.</p>
-                    </div>
-                    <div style="display:flex; gap:0.5rem;">
-                        <button class="btn btn-primary" id="start-revision-quiz-btn" onclick="startDailyRevisionQuiz()" style="padding:0.45rem 0.9rem; font-size:0.8rem;">
-                            ⚡ Quick Muraja'ah Quiz
-                        </button>
-                    </div>
-                </div>
-                <div class="revision-cards-grid" id="revision-cards-deck">
-                    <!-- Dynamic review cards populated by JS -->
-                </div>
-            </div>
-
-            <!-- ACHIEVEMENT BADGES & MILESTONES -->
-            <div class="card" style="margin-bottom: 2rem;">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-                    <h3 style="font-size:1.1rem;font-weight:600;">Hasanat Milestones & Badges</h3>
-                    <span style="font-size:0.8rem; color:var(--accent-gold); font-weight:600;" id="badges-unlocked-summary">3 / 6 Unlocked</span>
-                </div>
-                <div class="badges-grid" id="badges-container">
-                    <!-- Dynamic badges populated by JS -->
-                </div>
-            </div>
-
-            <!-- WEEKLY JOURNEY VISUALIZER -->
-            <div class="card" style="margin-bottom: 2rem;">
-                <h3 style="font-size:1.1rem;font-weight:600;margin-bottom:1rem;">Your Weekly Memorization Journey</h3>
-                <!-- Dynamic visualizer grid -->
-                <div id="weekly-bars-container" style="display:flex; justify-content:space-between; align-items:flex-end; height:180px; padding:1rem 0; gap:0.5rem;">
-                    <!-- Populated dynamically via JS -->
-                </div>
-            </div>
-        </section>
-
-        <!-- GAMIFIED MAP TAB -->
-        <section id="map" class="app-section">
-            <div class="section-header">
-                <h1 class="section-title">The Path of Light</h1>
-                <p class="section-subtitle">Navigate through all 13 Juz 30 Surahs. Nodes indicate completed, review-due, and active surahs.</p>
-            </div>
-
-            <div class="map-container">
-                <!-- SVG path representing the celestial trail -->
-                <svg class="map-svg-background" viewBox="0 0 800 1200" style="height:100%; min-height:800px;">
-                    <path d="M 400 1150 Q 200 950 400 800 T 400 500 T 400 200 T 400 50" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="4" stroke-dasharray="10 6" />
+            <div class="path-grid">
+              <button class="path-card" onclick="switchTab('revision')">
+                <span class="tile-icon mint"
+                  ><svg
+                    class="hq-icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M12 5v16M12 5C8 2 4 3 2 4v15c4-1 7 0 10 2 3-2 6-3 10-2V4c-4-1-7-1-10 1Z"
+                    /></svg></span
+                ><span
+                  ><strong>Revise my ayahs</strong
+                  ><small>Return to what you’ve learned</small></span
+                ><svg
+                  class="hq-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M4 12h16m-6-6 6 6-6 6" />
+                </svg></button
+              ><button class="path-card" onclick="switchTab('matching')">
+                <span class="tile-icon sand"
+                  ><svg
+                    class="hq-icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <circle cx="9" cy="8" r="3" />
+                    <path
+                      d="M3 21v-3a6 6 0 0 1 12 0v3M16 5a3 3 0 0 1 0 6m2 4a5 5 0 0 1 3 5"
+                    /></svg></span
+                ><span
+                  ><strong>Learn with a teacher</strong
+                  ><small>Free sessions & paid lessons</small></span
+                ><svg
+                  class="hq-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M4 12h16m-6-6 6 6-6 6" />
                 </svg>
-
-                <div class="map-nodes-layer" id="map-nodes-container">
-                    <!-- Dynamically populated by JS for all 13 Juz 30 Surahs -->
-                </div>
+              </button>
             </div>
-        </section>
-
-        <!-- AI RECITER TAB -->
-        <section id="reciter" class="app-section">
-            <div class="section-header">
-                <h1 class="section-title">AI Recitation Assistant</h1>
-                <p class="section-subtitle">Recite into the mic to analyze your Tajweed rules and accuracy.</p>
-            </div>
-
-            <div class="reciter-layout">
-                <div class="reciter-main">
-                    <div style="display:flex; justify-content:space-between; align-items:center; gap:1rem; margin-bottom:1rem; flex-wrap:wrap;">
-                        <select class="form-select" id="reciter-surah-select" style="max-width:240px;">
-                            <!-- Populated dynamically via JS with all Juz 30 Surahs -->
-                            <option value="Al-Ikhlas" selected>112. Al-Ikhlas (الإخلاص)</option>
-                            <option value="Al-Falaq">113. Al-Falaq (الفلق)</option>
-                            <option value="An-Nas">114. An-Nas (الناس)</option>
-                            <option value="Al-Kafirun">109. Al-Kafirun (الكافرون)</option>
-                            <option value="Al-Kawthar">108. Al-Kawthar (الكوثر)</option>
-                            <option value="Al-Maun">107. Al-Ma'un (الماعون)</option>
-                            <option value="Quraysh">106. Quraysh (قريش)</option>
-                            <option value="Al-Fil">105. Al-Fil (الفيل)</option>
-                            <option value="Al-Asr">103. Al-Asr (العصر)</option>
-                            <option value="Al-Qadr">97. Al-Qadr (القدر)</option>
-                            <option value="Ash-Sharh">94. Ash-Sharh (الشرح)</option>
-                            <option value="Ad-Duha">93. Ad-Duha (الضحى)</option>
-                            <option value="An-Naba">78. An-Naba (النبأ)</option>
-                        </select>
-                        <div style="display:flex; gap:0.5rem;">
-                            <button class="btn btn-secondary" id="reciter-prev-btn" style="padding:0.5rem 0.9rem;">&larr; Prev</button>
-                            <button class="btn btn-secondary" id="reciter-next-btn" style="padding:0.5rem 0.9rem;">Next &rarr;</button>
-                        </div>
-                    <!-- Active Muraja'ah Quiz Mode Banner -->
-                    <div id="reciter-quiz-banner" class="quiz-mode-banner" style="display:none;">
-                        <div style="display:flex; align-items:center; gap:0.5rem;">
-                            <span style="font-size:1.1rem;">⚡</span>
-                            <div>
-                                <strong style="color:#f59e0b; font-size:0.9rem;">Daily Muraja'ah Quiz Active</strong>
-                                <p style="font-size:0.75rem; color:var(--text-secondary); margin:0;" id="quiz-banner-subtitle">Recite from memory without audio aids to advance this Surah's Spaced Repetition box.</p>
-                            </div>
-                        </div>
-                        <button class="btn btn-secondary" onclick="exitQuizMode()" style="padding:0.3rem 0.6rem; font-size:0.75rem;">Exit Quiz</button>
-                    </div>
-
-                    <div class="ayah-box">
-                        <div class="ayah-words-deck" id="target-ayah-words-deck">
-                            <!-- Dynamic word chips populated by JS -->
-                        </div>
-                        <div class="ayah-text-translation" id="target-ayah-translation">"Say, 'He is Allah, [who is] One'"</div>
-                    </div>
-
-                    <!-- Recitation Quick Diagnostic & Testing Bar -->
-                    <div class="reciter-test-bar">
-                        <span style="font-size:0.8rem; color:var(--text-secondary); font-weight:600;">Mistake Diagnostics:</span>
-                        <button class="test-pill-btn test-pill-success" onclick="testRecitationScenario('perfect')">✓ Test Perfect Recitation</button>
-                        <button class="test-pill-btn test-pill-danger" onclick="testRecitationScenario('missing')">✗ Test Omitted Word</button>
-                        <button class="test-pill-btn test-pill-warn" onclick="testRecitationScenario('substitute')">⚠ Test Mispronounced Word</button>
-                        <button class="test-pill-btn" onclick="testRecitationScenario('custom')">✏ Type Custom Recitation</button>
-                        <button class="test-pill-btn" onclick="resetWordEvaluation()">Reset</button>
-                    </div>
-
-                    <!-- Qari Audio Player & User Playback Bar -->
-                    <div class="audio-player-bar">
-                        <button class="audio-ctrl-btn" id="play-qari-audio-btn">
-                            <svg viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
-                            <span id="qari-audio-btn-label">Listen to Qari (Sheikh Alafasy)</span>
-                        </button>
-                        <button class="audio-ctrl-btn" id="play-user-recording-btn" style="display:none; background:rgba(245,158,11,0.15); color:#f59e0b; border-color:rgba(245,158,11,0.3);">
-                            <svg viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
-                            <span>Play My Recording</span>
-                        </button>
-                    </div>
-
-                    <div class="recording-controls-panel" style="margin-top:1rem;">
-                        <canvas class="waveform-canvas" id="audio-wave"></canvas>
-                        <button class="rec-btn-circle" id="mic-trigger-btn" title="Tap to record recitation">
-                            <!-- SVG microphone -->
-                            <svg viewBox="0 0 24 24"><path d="M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M19,11C19,14.53 16.39,17.44 13,17.93V21H11V17.93C7.61,17.44 5,14.53 5,11H7A5,5 0 0,0 12,16A5,5 0 0,0 17,11H19Z"/></svg>
-                        </button>
-                        <span id="recording-status" style="font-weight:500; font-size:0.95rem; color:var(--text-secondary);">Tap to start reciting</span>
-                        <div id="speech-live-transcript" style="font-size:0.9rem; color:var(--primary-solid); min-height:22px; font-family:var(--font-arabic); direction:rtl; text-align:center;"></div>
-                    </div>
-                </div>
-
-                <div class="reciter-sidebar">
-                    <div class="card" style="height:100%; display:flex; flex-direction:column; gap:1.25rem;">
-                        <h3 style="font-size:1.1rem; font-weight:600;">Tajweed Analysis & Mistakes</h3>
-                        <div class="feedback-badge-list" id="feedback-metrics-container">
-                            <div class="feedback-item">
-                                <span>Pronunciation Accuracy</span>
-                                <span class="feedback-score score-perfect" id="metric-accuracy">—</span>
-                            </div>
-                            <div class="feedback-item">
-                                <span>Qalqalah Rule</span>
-                                <span class="feedback-score score-warn" id="metric-qalqalah">—</span>
-                            </div>
-                            <div class="feedback-item">
-                                <span>Ghunnah Timing</span>
-                                <span class="feedback-score score-perfect" id="metric-ghunnah">—</span>
-                            </div>
-                        </div>
-
-                        <!-- Detected Mistakes Breakdown -->
-                        <div class="mistakes-breakdown-card" id="mistakes-breakdown-container">
-                            <div style="font-weight:600; font-size:0.85rem; color:var(--text-primary);">Detailed Mistake Feed:</div>
-                            <div id="mistakes-list-deck" style="display:flex; flex-direction:column; gap:0.5rem;">
-                                <span style="font-size:0.8rem; color:var(--text-secondary);">Recite above or run a test scenario to view word-by-word mistake diagnostics.</span>
-                            </div>
-                        </div>
-
-                        <div style="background:var(--bg-card-sub); border:1px solid var(--border-color); border-radius:12px; padding:1rem; font-size:0.85rem; color:var(--text-secondary); margin-top:auto;">
-                            <strong style="color:var(--text-primary); display:block; margin-bottom:0.25rem;" id="coach-insight-title">AI Coach Insights:</strong>
-                            <span id="coach-insight-body">Select an Ayah and tap record or listen to the Qari reference audio above.</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- WRITING CANVAS TAB -->
-        <section id="canvas" class="app-section">
-            <div class="section-header">
-                <h1 class="section-title">Finger & Stylus Writing Canvas</h1>
-                <p class="section-subtitle">Write out the Arabic verse from memory to test spelling and memorization accuracy.</p>
-            </div>
-
-            <div class="card canvas-card">
-                <div class="canvas-controls" style="flex-wrap:wrap; gap:1rem; justify-content:space-between; align-items:center;">
-                    <div style="display:flex; gap:0.75rem; align-items:center; flex-wrap:wrap;">
-                        <button class="btn btn-secondary" id="canvas-undo-btn">Undo</button>
-                        <button class="btn btn-secondary" id="canvas-clear-btn">Clear</button>
-                        
-                        <!-- Color Palette -->
-                        <div class="canvas-tools-bar" style="margin-left:0.5rem;">
-                            <div class="color-dot active" data-color="#ffffff" style="background:#ffffff;" title="Default Pen"></div>
-                            <div class="color-dot" data-color="#fbbf24" style="background:#fbbf24;" title="Gold Pen"></div>
-                            <div class="color-dot" data-color="#10b981" style="background:#10b981;" title="Emerald Pen"></div>
-                            <div class="color-dot" data-color="#38bdf8" style="background:#38bdf8;" title="Sky Blue Pen"></div>
-                        </div>
-
-                        <!-- Stroke width -->
-                        <select class="form-select" id="canvas-brush-size" style="width:auto; padding:0.4rem 0.6rem; font-size:0.85rem;">
-                            <option value="2">Fine Pen (2px)</option>
-                            <option value="4" selected>Medium (4px)</option>
-                            <option value="8">Calligraphy Brush (8px)</option>
-                        </select>
-                    </div>
-
-                    <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap;">
-                        <label for="canvas-guide-select" style="font-size:0.85rem; color:var(--text-secondary); white-space:nowrap;">Word Target:</label>
-                        <select class="form-select" id="canvas-guide-select" style="padding:0.4rem 0.8rem; font-size:0.9rem; max-width:180px;">
-                            <option value="الله" selected>الله (Allah)</option>
-                            <option value="الناس">الناس (An-Nas)</option>
-                            <option value="الفلق">الفلق (Al-Falaq)</option>
-                            <option value="الكافرون">الكافرون (Al-Kafirun)</option>
-                            <option value="الكوثر">الكوثر (Al-Kawthar)</option>
-                            <option value="الماعون">الماعون (Al-Ma'un)</option>
-                            <option value="قريش">قريش (Quraysh)</option>
-                            <option value="الفيل">الفيل (Al-Fil)</option>
-                            <option value="العصر">العصر (Al-Asr)</option>
-                            <option value="القدر">القدر (Al-Qadr)</option>
-                        </select>
-                        <input type="checkbox" id="canvas-guide-toggle">
-                        <label for="canvas-guide-toggle" style="font-size:0.85rem; color:var(--text-secondary); cursor:pointer; white-space:nowrap;">Show Trace</label>
-                        <button class="btn btn-secondary" id="canvas-download-btn" title="Download Canvas as Image">
-                            <svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:currentColor;"><path d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z"/></svg>
-                            <span>Save Image</span>
-                        </button>
-                        <button class="btn btn-primary" id="canvas-test-btn">Verify Script</button>
-                    </div>
-                </div>
-
-                <div class="canvas-board-wrapper">
-                    <canvas class="canvas-board" id="writing-board"></canvas>
-                    <div class="canvas-overlay-guide" id="canvas-guide-text">الله</div>
-                </div>
-
-                <div id="canvas-result-panel" style="display:none; padding:1.25rem; border-radius:12px; border:1px solid var(--border-color); background:rgba(255,255,255,0.02);">
-                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.5rem;">
-                        <h4 id="canvas-result-title" style="font-weight:600;">OCR Analysis</h4>
-                        <span id="canvas-result-badge" class="feedback-score score-perfect">98% Match</span>
-                    </div>
-                    <p style="font-size:0.9rem; color:var(--text-secondary);" id="canvas-result-text">OCR matched "الله" perfectly. Excellent script consistency!</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- MATCHING ENGINE TAB -->
-        <section id="matching" class="app-section">
-            <div class="section-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+            <article class="panel next-practice">
+              <div class="section-row">
+                <h2>Your next small step</h2>
+                <span class="tag">Solo practice · Free</span>
+              </div>
+              <div class="practice-row">
+                <span class="surah-number" id="home-surah-number">112</span>
                 <div>
-                    <h1 class="section-title">Connect with Certified Teachers</h1>
-                    <p class="section-subtitle">Enter your profile preferences to match with compatible peers or certified scholars.</p>
+                  <h3 id="home-surah">Al-Ikhlas</h3>
+                  <p>Practise a sample ayah at your own pace.</p>
                 </div>
-                <div style="display:flex; gap:0.75rem;">
-                    <button class="btn btn-secondary" id="view-my-bookings-btn" onclick="openBookingsListModal()">
-                        <svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:currentColor;"><path d="M19,19H5V8H19M16,1V3H8V1H6V3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3H18V1M17,12H12V17H17V12Z"/></svg>
-                        <span id="my-bookings-count-label">My Bookings (0)</span>
-                    </button>
+                <button class="btn btn-primary" onclick="switchTab('reciter')">
+                  Start practice
+                  <svg
+                    class="hq-icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M4 12h16m-6-6 6 6-6 6" />
+                  </svg>
+                </button>
+              </div>
+              <p class="quiet-note">
+                This version includes 13 sample ayahs. Progress reflects sample
+                practice.
+              </p>
+            </article>
+            <article class="community-note">
+              <svg
+                class="hq-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="m5 12 4 4L19 6" />
+              </svg>
+              <div>
+                <h3>Learning should feel welcoming.</h3>
+                <p>
+                  Peer revision and volunteer teaching are at the heart of
+                  HifzQuest. Paid lessons will be an optional path to dedicated
+                  support.
+                </p>
+              </div>
+            </article>
+          </div>
+          <aside class="home-secondary" aria-label="Your learning summary">
+            <article class="panel revision-summary">
+              <span class="eyebrow">YOUR REVISION</span>
+              <div class="summary-count">
+                <strong id="home-due">0</strong
+                ><span>samples due<br />for a revisit</span>
+              </div>
+              <p id="home-revision-note">
+                Start with one ayah. Your revision plan will grow with you.
+              </p>
+              <button class="btn btn-secondary" onclick="switchTab('revision')">
+                Open my revision
+                <svg
+                  class="hq-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M4 12h16m-6-6 6 6-6 6" />
+                </svg>
+              </button>
+            </article>
+            <article class="panel weekly-panel">
+              <div class="section-row">
+                <h2>A little, consistently</h2>
+                <svg
+                  class="hq-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M12 6v6l4 2" />
+                </svg>
+              </div>
+              <div class="streak-line">
+                <strong id="streak-count">0 Day Streak</strong
+                ><span>Keep showing up</span>
+              </div>
+              <div id="weekly-bars-container" class="weekly-bars"></div>
+              <p class="quiet-note">Practice sessions · Last 7 days</p>
+            </article>
+            <article class="free-note">
+              <span class="eyebrow">OUR INTENTION</span>
+              <h3>Open doors.<br />More recitation.</h3>
+              <p>Come to learn. Stay to help someone else grow.</p>
+            </article>
+          </aside>
+        </div>
+      </section>
+      <section id="revision" class="app-section">
+        <div class="page-intro">
+          <div>
+            <p class="eyebrow">BUILD A STEADY HABIT</p>
+            <h1 class="section-title">My revision</h1>
+            <p class="section-subtitle">
+              Keep your ayahs close, one revisit at a time.
+            </p>
+          </div>
+          <button class="btn btn-primary" onclick="startDailyRevisionQuiz()">
+            Practise from memory
+            <svg
+              class="hq-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M4 12h16m-6-6 6 6-6 6" />
+            </svg>
+          </button>
+        </div>
+        <div class="notice">
+          Sample practice: each entry currently contains one ayah. These results
+          do not certify full surah memorization or Tajweed.
+        </div>
+        <div class="section-row">
+          <h2>Your practice library</h2>
+          <span class="tag" id="review-due-counter-badge">0 Due</span>
+        </div>
+        <div class="revision-cards-grid" id="revision-cards-deck"></div>
+      </section>
+      <section id="together" class="app-section">
+        <div class="page-intro">
+          <div>
+            <p class="eyebrow">A LISTENING EAR MAKES A DIFFERENCE</p>
+            <h1 class="section-title">Recite together</h1>
+            <p class="section-subtitle">
+              Take turns reciting and listening. Grow at your own pace.
+            </p>
+          </div>
+          <span class="tag">Community sessions · Free</span>
+        </div>
+        <div class="session-layout">
+          <form class="panel session-form" id="session-preferences">
+            <div class="section-row">
+              <h2>Find your practice companion</h2>
+              <svg
+                class="hq-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <circle cx="9" cy="8" r="3" />
+                <path
+                  d="M3 21v-3a6 6 0 0 1 12 0v3M16 5a3 3 0 0 1 0 6m2 4a5 5 0 0 1 3 5"
+                />
+              </svg>
+            </div>
+            <p>Choose what feels right for you.</p>
+            <fieldset>
+              <legend>I’d like to practise with</legend>
+              <div class="radio-options">
+                <label
+                  ><input
+                    type="radio"
+                    name="partner"
+                    value="peer"
+                    checked
+                  /><span
+                    ><strong>A fellow student</strong
+                    ><small>Take turns · Free</small></span
+                  ></label
+                ><label
+                  ><input type="radio" name="partner" value="teacher" /><span
+                    ><strong>A volunteer teacher</strong
+                    ><small>Guided practice · Free</small></span
+                  ></label
+                >
+              </div>
+            </fieldset>
+            <div class="form-grid">
+              <label
+                >Practice focus<select name="focus">
+                  <option>Hifz revision</option>
+                  <option>Tajweed practice</option>
+                </select></label
+              ><label
+                >Language<select name="language">
+                  <option>English</option>
+                  <option>Arabic</option>
+                  <option>Urdu</option>
+                  <option>French</option>
+                </select></label
+              ><label
+                >Session length<select name="duration">
+                  <option>15 minutes</option>
+                  <option>30 minutes</option>
+                </select></label
+              ><label
+                >Companion preference<select name="gender">
+                  <option>No preference</option>
+                  <option>Women only</option>
+                  <option>Men only</option>
+                </select></label
+              >
+            </div>
+            <div class="notice">
+              Live matching is coming soon. You can save these preferences on
+              this device now.
+            </div>
+            <button class="btn btn-primary" type="submit">
+              Save my preferences
+              <svg
+                class="hq-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="m5 12 4 4L19 6" />
+              </svg>
+            </button>
+            <p class="form-status" id="session-status" role="status"></p>
+          </form>
+          <div>
+            <article class="panel">
+              <span class="tile-icon mint"
+                ><svg
+                  class="hq-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <rect x="9" y="2" width="6" height="12" rx="3" />
+                  <path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3m-4 0h8" /></svg
+              ></span>
+              <h2>A calm space to recite</h2>
+              <ol class="session-steps">
+                <li>
+                  <strong>Choose a companion</strong
+                  ><span>Match by language and learning needs.</span>
+                </li>
+                <li>
+                  <strong>Take turns</strong
+                  ><span>Recite, listen, and offer kind feedback.</span>
+                </li>
+                <li>
+                  <strong>Leave with a next step</strong
+                  ><span>Keep teacher feedback and plan your revision.</span>
+                </li>
+              </ol>
+              <p class="quiet-note">
+                Planned: audio first, optional video, and easy leave, block, and
+                report controls.
+              </p>
+            </article>
+            <article class="fallback-card">
+              <h3>You can practise right now</h3>
+              <p>
+                While community sessions are being built, keep going with a solo
+                ayah.
+              </p>
+              <button class="text-button" onclick="switchTab('reciter')">
+                Start solo practice →
+              </button>
+            </article>
+          </div>
+        </div>
+      </section>
+      <section id="matching" class="app-section">
+        <div class="page-intro">
+          <div>
+            <p class="eyebrow">GUIDANCE FOR YOUR NEXT STEP</p>
+            <h1 class="section-title">Learn with a teacher</h1>
+            <p class="section-subtitle">
+              Tajweed, memorization, and revision — with a human by your side.
+            </p>
+          </div>
+        </div>
+        <div class="teacher-offers">
+          <article class="panel">
+            <span class="tag">Free · Planned</span>
+            <h2>Community teaching</h2>
+            <p>
+              Volunteer teacher sessions and small recitation circles. A
+              welcoming place to ask, practise, and improve.
+            </p>
+          </article>
+          <article class="panel">
+            <span class="tag neutral">Paid · Planned</span>
+            <h2>Dedicated lessons</h2>
+            <p>
+              Book focused one-to-one time with a teacher. See the full price
+              and cancellation terms before you book.
+            </p>
+          </article>
+        </div>
+        <form class="teacher-filters" id="teacher-filters">
+          <label
+            >Lesson type<select name="cost">
+              <option>Free lessons</option>
+              <option>Paid lessons</option>
+              <option>All lessons</option>
+            </select></label
+          ><label
+            >Focus<select name="specialty">
+              <option>All specialities</option>
+              <option>Tajweed</option>
+              <option>Hifz</option>
+              <option>Revision</option>
+            </select></label
+          ><label
+            >Language<select name="language">
+              <option>All languages</option>
+              <option>English</option>
+              <option>Arabic</option>
+              <option>Urdu</option>
+              <option>French</option>
+            </select></label
+          >
+        </form>
+        <div class="empty-teachers panel" role="status">
+          <span class="tile-icon sand"
+            ><svg
+              class="hq-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="9" cy="8" r="3" />
+              <path
+                d="M3 21v-3a6 6 0 0 1 12 0v3M16 5a3 3 0 0 1 0 6m2 4a5 5 0 0 1 3 5"
+              /></svg
+          ></span>
+          <h2>We’re making room for great teachers.</h2>
+          <p id="teacher-empty-message">
+            The teacher directory is not live yet. Verified profiles and free
+            lesson availability will appear here when the community opens.
+          </p>
+          <button class="btn btn-primary" onclick="switchTab('reciter')">
+            Practise an ayah while you wait
+            <svg
+              class="hq-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M4 12h16m-6-6 6 6-6 6" />
+            </svg>
+          </button>
+        </div>
+      </section>
+      <section id="more" class="app-section">
+        <div class="page-intro">
+          <div>
+            <p class="eyebrow">MAKE SPACE TO GROW</p>
+            <h1 class="section-title">Your learning tools</h1>
+            <p class="section-subtitle">
+              A few more ways to make your practice your own.
+            </p>
+          </div>
+        </div>
+        <div class="tools-grid">
+          <button class="panel tool-card" onclick="switchTab('reciter')">
+            <svg
+              class="hq-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <rect x="9" y="2" width="6" height="12" rx="3" />
+              <path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3m-4 0h8" /></svg
+            ><strong>Solo recitation</strong
+            ><span>Listen to and practise a sample ayah.</span>→</button
+          ><button class="panel tool-card" onclick="switchTab('map')">
+            <svg
+              class="hq-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path
+                d="M12 5v16M12 5C8 2 4 3 2 4v15c4-1 7 0 10 2 3-2 6-3 10-2V4c-4-1-7-1-10 1Z"
+              /></svg
+            ><strong>Practice map</strong
+            ><span>Explore the 13 sample ayahs.</span>→</button
+          ><button class="panel tool-card" onclick="switchTab('canvas')">
+            <svg
+              class="hq-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <rect x="3" y="3" width="6" height="6" rx="1" />
+              <rect x="15" y="3" width="6" height="6" rx="1" />
+              <rect x="3" y="15" width="6" height="6" rx="1" />
+              <rect x="15" y="15" width="6" height="6" rx="1" /></svg
+            ><strong>Writing practice</strong
+            ><span>Trace and practise Arabic letter shapes.</span>→</button
+          ><button class="panel tool-card" onclick="switchTab('detox')">
+            <svg
+              class="hq-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="9" />
+              <path d="M12 6v6l4 2" /></svg
+            ><strong>Focus timer</strong
+            ><span>Set aside quiet time for your Quran.</span>→
+          </button>
+        </div>
+        <div class="notice">
+          Your profile and progress are saved in this browser. Account sync is
+          planned.
+        </div>
+      </section>
+      <!-- GAMIFIED MAP TAB -->
+      <section id="map" class="app-section">
+        <div class="section-header">
+          <h1 class="section-title">The Path of Light</h1>
+          <p class="section-subtitle">
+            Explore sample ayahs from 13 surahs. Full surah practice is planned.
+          </p>
+        </div>
+
+        <div class="map-container">
+          <!-- SVG path representing the celestial trail -->
+          <svg
+            class="map-svg-background"
+            viewBox="0 0 800 1200"
+            style="height: 100%; min-height: 800px"
+          >
+            <path
+              d="M 400 1150 Q 200 950 400 800 T 400 500 T 400 200 T 400 50"
+              fill="none"
+              stroke="rgba(255,255,255,0.06)"
+              stroke-width="4"
+              stroke-dasharray="10 6"
+            />
+          </svg>
+
+          <div class="map-nodes-layer" id="map-nodes-container">
+            <!-- Dynamically populated by JS for all 13 Juz 30 Surahs -->
+          </div>
+        </div>
+      </section>
+
+      <!-- AI RECITER TAB -->
+      <section id="reciter" class="app-section">
+        <div class="section-header">
+          <h1 class="section-title">Solo recitation</h1>
+          <p class="section-subtitle">
+            Listen, recite, and compare recognized words. Ask a teacher for
+            Tajweed feedback.
+          </p>
+        </div>
+
+        <div class="notice">
+          One sample ayah per surah. Speech recognition may send audio to your
+          browser’s recognition service. Word matching does not measure Tajweed
+          or certify memorization.
+        </div>
+        <div class="reciter-layout">
+          <div class="reciter-main">
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 1rem;
+                margin-bottom: 1rem;
+                flex-wrap: wrap;
+              "
+            >
+              <select
+                class="form-select"
+                id="reciter-surah-select"
+                style="max-width: 240px"
+              >
+                <!-- Populated dynamically via JS with all Juz 30 Surahs -->
+                <option value="Al-Ikhlas" selected>
+                  112. Al-Ikhlas (الإخلاص)
+                </option>
+                <option value="Al-Falaq">113. Al-Falaq (الفلق)</option>
+                <option value="An-Nas">114. An-Nas (الناس)</option>
+                <option value="Al-Kafirun">109. Al-Kafirun (الكافرون)</option>
+                <option value="Al-Kawthar">108. Al-Kawthar (الكوثر)</option>
+                <option value="Al-Maun">107. Al-Ma'un (الماعون)</option>
+                <option value="Quraysh">106. Quraysh (قريش)</option>
+                <option value="Al-Fil">105. Al-Fil (الفيل)</option>
+                <option value="Al-Asr">103. Al-Asr (العصر)</option>
+                <option value="Al-Qadr">97. Al-Qadr (القدر)</option>
+                <option value="Ash-Sharh">94. Ash-Sharh (الشرح)</option>
+                <option value="Ad-Duha">93. Ad-Duha (الضحى)</option>
+                <option value="An-Naba">78. An-Naba (النبأ)</option>
+              </select>
+              <div style="display: flex; gap: 0.5rem">
+                <button
+                  class="btn btn-secondary"
+                  id="reciter-prev-btn"
+                  style="padding: 0.5rem 0.9rem"
+                >
+                  &larr; Prev
+                </button>
+                <button
+                  class="btn btn-secondary"
+                  id="reciter-next-btn"
+                  style="padding: 0.5rem 0.9rem"
+                >
+                  Next &rarr;
+                </button>
+              </div>
+            </div>
+            <!-- Active Muraja'ah Quiz Mode Banner -->
+            <div
+              id="reciter-quiz-banner"
+              class="quiz-mode-banner"
+              style="display: none"
+            >
+              <div style="display: flex; align-items: center; gap: 0.5rem">
+                <span style="font-size: 1.1rem">⚡</span>
+                <div>
+                  <strong style="color: #f59e0b; font-size: 0.9rem"
+                    >Daily Muraja'ah Quiz Active</strong
+                  >
+                  <p
+                    style="
+                      font-size: 0.75rem;
+                      color: var(--text-secondary);
+                      margin: 0;
+                    "
+                    id="quiz-banner-subtitle"
+                  >
+                    Recite from memory without audio aids to advance this
+                    Surah's Spaced Repetition box.
+                  </p>
                 </div>
+              </div>
+              <button
+                class="btn btn-secondary"
+                onclick="exitQuizMode()"
+                style="padding: 0.3rem 0.6rem; font-size: 0.75rem"
+              >
+                Exit Quiz
+              </button>
             </div>
 
-            <div class="card wizard-container">
-                <!-- STEP 1 -->
-                <div class="wizard-step active" id="step-1">
-                    <h3 style="font-size:1.2rem; font-weight:600; text-align:center;">Select Teacher Gender Preference</h3>
-                    <div class="options-grid">
-                        <div class="option-card selected" onclick="selectOption('gender', 'same')">
-                            <h4 style="margin-bottom:0.5rem;">Same Gender Only</h4>
-                            <p style="font-size:0.8rem; color:var(--text-secondary);">Match strictly with your own gender</p>
-                        </div>
-                        <div class="option-card" onclick="selectOption('gender', 'any')">
-                            <h4 style="margin-bottom:0.5rem;">No Preference</h4>
-                            <p style="font-size:0.8rem; color:var(--text-secondary);">Match with any available expert</p>
-                        </div>
-                    </div>
-                    <div style="text-align:right;">
-                        <button class="btn btn-primary" onclick="nextWizardStep(2)">Next Step</button>
-                    </div>
-                </div>
-
-                <!-- STEP 2 -->
-                <div class="wizard-step" id="step-2">
-                    <h3 style="font-size:1.2rem; font-weight:600; text-align:center;">Select Learning Native Tongue</h3>
-                    <div class="options-grid">
-                        <div class="option-card selected" onclick="selectOption('lang', 'ar')">Arabic</div>
-                        <div class="option-card" onclick="selectOption('lang', 'en')">English</div>
-                        <div class="option-card" onclick="selectOption('lang', 'ur')">Urdu</div>
-                        <div class="option-card" onclick="selectOption('lang', 'fr')">French</div>
-                    </div>
-                    <div style="display:flex; justify-content:space-between;">
-                        <button class="btn btn-secondary" onclick="prevWizardStep(1)">Back</button>
-                        <button class="btn btn-primary" onclick="nextWizardStep(3)">Next Step</button>
-                    </div>
-                </div>
-
-                <!-- STEP 3 -->
-                <div class="wizard-step" id="step-3">
-                    <h3 style="font-size:1.2rem; font-weight:600; text-align:center;">Your Current Hifz Skill Level</h3>
-                    <div class="options-grid">
-                        <div class="option-card" onclick="selectOption('skill', 'beg')">
-                            <h4>Beginner</h4>
-                            <p style="font-size:0.75rem; color:var(--text-secondary); margin-top:0.25rem;">Focuses on basic Tajweed & Makharij</p>
-                        </div>
-                        <div class="option-card selected" onclick="selectOption('skill', 'int')">
-                            <h4>Intermediate</h4>
-                            <p style="font-size:0.75rem; color:var(--text-secondary); margin-top:0.25rem;">Memorizing 1-5 Juz'</p>
-                        </div>
-                        <div class="option-card" onclick="selectOption('skill', 'adv')">
-                            <h4>Advanced</h4>
-                            <p style="font-size:0.75rem; color:var(--text-secondary); margin-top:0.25rem;">Memorized 5+ Juz' & revising</p>
-                        </div>
-                    </div>
-                    <div style="display:flex; justify-content:space-between;">
-                        <button class="btn btn-secondary" onclick="prevWizardStep(2)">Back</button>
-                        <button class="btn btn-primary" onclick="findMatches()">Match with Teachers</button>
-                    </div>
-                </div>
-
-                <!-- STEP 4 (RESULTS) -->
-                <div class="wizard-step" id="step-4">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem;">
-                        <h3 style="font-size:1.2rem; font-weight:600;">Top Compatible Matches</h3>
-                        <input type="text" class="form-input" id="teacher-search-input" placeholder="Search teacher by name..." style="max-width:240px; padding:0.5rem 0.8rem; font-size:0.85rem;" oninput="filterTeacherResults()">
-                    </div>
-                    
-                    <div class="teachers-results" id="teacher-results-deck">
-                        <!-- Dynamic content populated by JS -->
-                    </div>
-
-                    <div style="margin-top:2rem; text-align:center;">
-                        <button class="btn btn-secondary" onclick="resetWizard()">Search Again</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- DIGITAL DETOX TAB -->
-        <section id="detox" class="app-section">
-            <div class="section-header">
-                <h1 class="section-title">Digital Detox & Focus Studio</h1>
-                <p class="section-subtitle">Prevent social media distractions, lock distracting apps, and start timed Quran focus sessions.</p>
+            <p class="recall-placeholder" role="status">
+              The ayah is hidden for recall. Choose “Exit Quiz” to reveal it
+              again.
+            </p>
+            <div class="ayah-box">
+              <div
+                class="ayah-words-deck"
+                id="target-ayah-words-deck"
+                lang="ar"
+                dir="rtl"
+              >
+                <!-- Dynamic word chips populated by JS -->
+              </div>
+              <div class="ayah-text-translation" id="target-ayah-translation">
+                "Say, 'He is Allah, [who is] One'"
+              </div>
             </div>
 
-            <div class="detox-layout">
-                <div class="detox-left-panel">
-                    <div class="card">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
-                            <h3 style="font-size:1.1rem; font-weight:600;">App Shield Management</h3>
-                            <button class="btn btn-secondary" style="padding:0.35rem 0.75rem; font-size:0.75rem;" onclick="promptAddCustomApp()">+ Add App</button>
-                        </div>
-                        <p style="font-size:0.85rem; color:var(--text-secondary);">Toggle which applications to shield when you are practicing Hifz.</p>
-                        
-                        <div class="blocked-apps-list" id="blocked-apps-container">
-                            <div class="app-toggle-item">
-                                <div class="app-info-left">
-                                    <div class="app-icon-placeholder" style="background:#ff0000; display:flex; align-items:center; justify-content:center; font-size:0.7rem; font-weight:700;">YT</div>
-                                    <div>
-                                        <h4 style="font-size:0.9rem; font-weight:600;">YouTube</h4>
-                                        <span style="font-size:0.75rem; color:var(--text-secondary);">Shield category: Entertainment</span>
-                                    </div>
-                                </div>
-                                <label class="switch">
-                                    <input type="checkbox" checked id="toggle-youtube">
-                                    <span class="slider"></span>
-                                </label>
-                            </div>
-
-                            <div class="app-toggle-item">
-                                <div class="app-info-left">
-                                    <div class="app-icon-placeholder" style="background:#e1306c; display:flex; align-items:center; justify-content:center; font-size:0.7rem; font-weight:700;">IG</div>
-                                    <div>
-                                        <h4 style="font-size:0.9rem; font-weight:600;">Instagram</h4>
-                                        <span style="font-size:0.75rem; color:var(--text-secondary);">Shield category: Social</span>
-                                    </div>
-                                </div>
-                                <label class="switch">
-                                    <input type="checkbox" checked id="toggle-instagram">
-                                    <span class="slider"></span>
-                                </label>
-                            </div>
-
-                            <div class="app-toggle-item">
-                                <div class="app-info-left">
-                                    <div class="app-icon-placeholder" style="background:#000000; display:flex; align-items:center; justify-content:center; font-size:0.7rem; font-weight:700;">TT</div>
-                                    <div>
-                                        <h4 style="font-size:0.9rem; font-weight:600;">TikTok</h4>
-                                        <span style="font-size:0.75rem; color:var(--text-secondary);">Shield category: Entertainment</span>
-                                    </div>
-                                </div>
-                                <label class="switch">
-                                    <input type="checkbox" checked id="toggle-tiktok">
-                                    <span class="slider"></span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="detox-right-panel">
-                    <div class="card" style="display:flex; flex-direction:column; gap:1.25rem;">
-                        <h3 style="font-size:1.1rem; font-weight:600;">Focus Session & Timer</h3>
-                        
-                        <!-- Focus Pomodoro Dial -->
-                        <div class="focus-timer-dial">
-                            <span style="font-size:0.8rem; color:var(--text-secondary); text-transform:uppercase; letter-spacing:1px;">Focus Session</span>
-                            <div class="focus-time-display" id="focus-session-timer-display">25:00</div>
-                            <span style="font-size:0.75rem; color:var(--primary-solid); font-weight:600;" id="focus-session-status-label">Ready</span>
-                        </div>
-
-                        <div style="display:flex; justify-content:center; gap:0.75rem;">
-                            <button class="btn btn-primary" id="start-focus-session-btn" onclick="toggleFocusSession()">Start Focus Mode</button>
-                            <button class="btn btn-secondary" onclick="resetFocusSession(25)">25m</button>
-                            <button class="btn btn-secondary" onclick="resetFocusSession(15)">15m</button>
-                            <button class="btn btn-secondary" onclick="resetFocusSession(45)">45m</button>
-                        </div>
-
-                        <div style="border-top:1px solid var(--border-color); padding-top:1.25rem; display:flex; justify-content:space-between; align-items:center;">
-                            <div>
-                                <h4 style="font-size:0.9rem; font-weight:600;">Ambient Rain / Waves</h4>
-                                <span style="font-size:0.75rem; color:var(--text-secondary);">Relaxing white noise synthesizer</span>
-                            </div>
-                            <label class="switch">
-                                <input type="checkbox" id="toggle-ambient-sound" onchange="toggleAmbientNoise()">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-
-                        <div style="border-top:1px solid var(--border-color); padding-top:1.25rem; text-align:center;">
-                            <button class="btn btn-danger" style="width:100%;" id="trigger-detox-sim-btn">Simulate Block Lockout</button>
-                        </div>
-                    </div>
-                </div>
+            <!-- Recitation Quick Diagnostic & Testing Bar -->
+            <div class="reciter-test-bar">
+              <span
+                style="
+                  font-size: 0.8rem;
+                  color: var(--text-secondary);
+                  font-weight: 600;
+                "
+                >Mistake Diagnostics:</span
+              >
+              <button
+                class="test-pill-btn test-pill-success"
+                onclick="testRecitationScenario('perfect')"
+              >
+                ✓ Test Perfect Recitation
+              </button>
+              <button
+                class="test-pill-btn test-pill-danger"
+                onclick="testRecitationScenario('missing')"
+              >
+                ✗ Test Omitted Word
+              </button>
+              <button
+                class="test-pill-btn test-pill-warn"
+                onclick="testRecitationScenario('substitute')"
+              >
+                ⚠ Test Mispronounced Word
+              </button>
+              <button
+                class="test-pill-btn"
+                onclick="testRecitationScenario('custom')"
+              >
+                ✏ Type Custom Recitation
+              </button>
+              <button class="test-pill-btn" onclick="resetWordEvaluation()">
+                Reset
+              </button>
             </div>
-        </section>
 
-        <!-- GLOBAL FOOTER -->
-        <footer class="app-footer">
-            <span>&copy; 2026 HifzQuest. All rights reserved.</span>
-            <span id="footer-version-label">v1.0.9 (updated 2026-09-13 08:46)</span>
-        </footer>
+            <!-- Qari Audio Player & User Playback Bar -->
+            <div class="audio-player-bar">
+              <button class="audio-ctrl-btn" id="play-qari-audio-btn">
+                <svg viewBox="0 0 24 24">
+                  <path d="M8,5.14V19.14L19,12.14L8,5.14Z" />
+                </svg>
+                <span id="qari-audio-btn-label"
+                  >Listen to Qari (Sheikh Alafasy)</span
+                >
+              </button>
+              <button
+                class="audio-ctrl-btn"
+                id="play-user-recording-btn"
+                style="
+                  display: none;
+                  background: rgba(245, 158, 11, 0.15);
+                  color: #f59e0b;
+                  border-color: rgba(245, 158, 11, 0.3);
+                "
+              >
+                <svg viewBox="0 0 24 24">
+                  <path d="M8,5.14V19.14L19,12.14L8,5.14Z" />
+                </svg>
+                <span>Play My Recording</span>
+              </button>
+            </div>
+
+            <div class="recording-controls-panel" style="margin-top: 1rem">
+              <canvas class="waveform-canvas" id="audio-wave"></canvas>
+              <button
+                class="rec-btn-circle"
+                aria-label="Start or stop recitation recording"
+                id="mic-trigger-btn"
+                title="Tap to record recitation"
+              >
+                <!-- SVG microphone -->
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M19,11C19,14.53 16.39,17.44 13,17.93V21H11V17.93C7.61,17.44 5,14.53 5,11H7A5,5 0 0,0 12,16A5,5 0 0,0 17,11H19Z"
+                  />
+                </svg>
+              </button>
+              <span
+                id="recording-status"
+                style="
+                  font-weight: 500;
+                  font-size: 0.95rem;
+                  color: var(--text-secondary);
+                "
+                >Tap to start reciting</span
+              >
+              <div
+                id="speech-live-transcript"
+                style="
+                  font-size: 0.9rem;
+                  color: var(--primary-solid);
+                  min-height: 22px;
+                  font-family: var(--font-arabic);
+                  direction: rtl;
+                  text-align: center;
+                "
+              ></div>
+            </div>
+          </div>
+
+          <div class="reciter-sidebar">
+            <div
+              class="card"
+              style="
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                gap: 1.25rem;
+              "
+            >
+              <h3 style="font-size: 1.1rem; font-weight: 600">
+                Word comparison & guidance
+              </h3>
+              <div class="feedback-badge-list" id="feedback-metrics-container">
+                <div class="feedback-item">
+                  <span>Recognized word match</span>
+                  <span
+                    class="feedback-score score-perfect"
+                    id="metric-accuracy"
+                    >—</span
+                  >
+                </div>
+                <div class="feedback-item">
+                  <span>Qalqalah reminder</span>
+                  <span class="feedback-score score-warn" id="metric-qalqalah"
+                    >—</span
+                  >
+                </div>
+                <div class="feedback-item">
+                  <span>Ghunnah reminder</span>
+                  <span class="feedback-score score-perfect" id="metric-ghunnah"
+                    >—</span
+                  >
+                </div>
+              </div>
+
+              <!-- Detected Mistakes Breakdown -->
+              <div
+                class="mistakes-breakdown-card"
+                id="mistakes-breakdown-container"
+              >
+                <div
+                  style="
+                    font-weight: 600;
+                    font-size: 0.85rem;
+                    color: var(--text-primary);
+                  "
+                >
+                  Detailed Mistake Feed:
+                </div>
+                <div
+                  id="mistakes-list-deck"
+                  style="display: flex; flex-direction: column; gap: 0.5rem"
+                >
+                  <span style="font-size: 0.8rem; color: var(--text-secondary)"
+                    >Recite above or run a test scenario to view word-by-word
+                    mistake diagnostics.</span
+                  >
+                </div>
+              </div>
+
+              <div
+                style="
+                  background: var(--bg-card-sub);
+                  border: 1px solid var(--border-color);
+                  border-radius: 12px;
+                  padding: 1rem;
+                  font-size: 0.85rem;
+                  color: var(--text-secondary);
+                  margin-top: auto;
+                "
+              >
+                <strong
+                  style="
+                    color: var(--text-primary);
+                    display: block;
+                    margin-bottom: 0.25rem;
+                  "
+                  id="coach-insight-title"
+                  >AI Coach Insights:</strong
+                >
+                <span id="coach-insight-body"
+                  >Select an Ayah and tap record or listen to the Qari reference
+                  audio above.</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- WRITING CANVAS TAB -->
+      <section id="canvas" class="app-section">
+        <div class="section-header">
+          <h1 class="section-title">Finger & Stylus Writing Canvas</h1>
+          <p class="section-subtitle">
+            Write out the Arabic verse from memory to test spelling and
+            memorization accuracy.
+          </p>
+        </div>
+
+        <div class="card canvas-card">
+          <div
+            class="canvas-controls"
+            style="
+              flex-wrap: wrap;
+              gap: 1rem;
+              justify-content: space-between;
+              align-items: center;
+            "
+          >
+            <div
+              style="
+                display: flex;
+                gap: 0.75rem;
+                align-items: center;
+                flex-wrap: wrap;
+              "
+            >
+              <button class="btn btn-secondary" id="canvas-undo-btn">
+                Undo
+              </button>
+              <button class="btn btn-secondary" id="canvas-clear-btn">
+                Clear
+              </button>
+
+              <!-- Color Palette -->
+              <div class="canvas-tools-bar" style="margin-left: 0.5rem">
+                <div
+                  class="color-dot active"
+                  data-color="#ffffff"
+                  style="background: #ffffff"
+                  title="Default Pen"
+                ></div>
+                <div
+                  class="color-dot"
+                  data-color="#fbbf24"
+                  style="background: #fbbf24"
+                  title="Gold Pen"
+                ></div>
+                <div
+                  class="color-dot"
+                  data-color="#10b981"
+                  style="background: #10b981"
+                  title="Emerald Pen"
+                ></div>
+                <div
+                  class="color-dot"
+                  data-color="#38bdf8"
+                  style="background: #38bdf8"
+                  title="Sky Blue Pen"
+                ></div>
+              </div>
+
+              <!-- Stroke width -->
+              <select
+                class="form-select"
+                id="canvas-brush-size"
+                style="width: auto; padding: 0.4rem 0.6rem; font-size: 0.85rem"
+              >
+                <option value="2">Fine Pen (2px)</option>
+                <option value="4" selected>Medium (4px)</option>
+                <option value="8">Calligraphy Brush (8px)</option>
+              </select>
+            </div>
+
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                flex-wrap: wrap;
+              "
+            >
+              <label
+                for="canvas-guide-select"
+                style="
+                  font-size: 0.85rem;
+                  color: var(--text-secondary);
+                  white-space: nowrap;
+                "
+                >Word Target:</label
+              >
+              <select
+                class="form-select"
+                id="canvas-guide-select"
+                style="
+                  padding: 0.4rem 0.8rem;
+                  font-size: 0.9rem;
+                  max-width: 180px;
+                "
+              >
+                <option value="الله" selected>الله (Allah)</option>
+                <option value="الناس">الناس (An-Nas)</option>
+                <option value="الفلق">الفلق (Al-Falaq)</option>
+                <option value="الكافرون">الكافرون (Al-Kafirun)</option>
+                <option value="الكوثر">الكوثر (Al-Kawthar)</option>
+                <option value="الماعون">الماعون (Al-Ma'un)</option>
+                <option value="قريش">قريش (Quraysh)</option>
+                <option value="الفيل">الفيل (Al-Fil)</option>
+                <option value="العصر">العصر (Al-Asr)</option>
+                <option value="القدر">القدر (Al-Qadr)</option>
+              </select>
+              <input type="checkbox" id="canvas-guide-toggle" />
+              <label
+                for="canvas-guide-toggle"
+                style="
+                  font-size: 0.85rem;
+                  color: var(--text-secondary);
+                  cursor: pointer;
+                  white-space: nowrap;
+                "
+                >Show Trace</label
+              >
+              <button
+                class="btn btn-secondary"
+                id="canvas-download-btn"
+                title="Download Canvas as Image"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  style="width: 16px; height: 16px; fill: currentColor"
+                >
+                  <path d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z" />
+                </svg>
+                <span>Save Image</span>
+              </button>
+              <button class="btn btn-primary" id="canvas-test-btn">
+                Verify Script
+              </button>
+            </div>
+          </div>
+
+          <div class="canvas-board-wrapper">
+            <canvas
+              class="canvas-board"
+              id="writing-board"
+              aria-label="Arabic handwriting practice area"
+            ></canvas>
+            <div class="canvas-overlay-guide" id="canvas-guide-text">الله</div>
+          </div>
+
+          <div
+            id="canvas-result-panel"
+            style="
+              display: none;
+              padding: 1.25rem;
+              border-radius: 12px;
+              border: 1px solid var(--border-color);
+              background: rgba(255, 255, 255, 0.02);
+            "
+          >
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 0.5rem;
+              "
+            >
+              <h4 id="canvas-result-title" style="font-weight: 600">
+                OCR Analysis
+              </h4>
+              <span
+                id="canvas-result-badge"
+                class="feedback-score score-perfect"
+                >98% Match</span
+              >
+            </div>
+            <p
+              style="font-size: 0.9rem; color: var(--text-secondary)"
+              id="canvas-result-text"
+            >
+              OCR matched "الله" perfectly. Excellent script consistency!
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- MATCHING ENGINE TAB -->
+      <!-- DIGITAL DETOX TAB -->
+      <section id="detox" class="app-section">
+        <div class="section-header">
+          <h1 class="section-title">Digital Detox & Focus Studio</h1>
+          <p class="section-subtitle">
+            Set aside focused Quran time. App blocking below is a demonstration
+            and cannot block other apps.
+          </p>
+        </div>
+
+        <div class="detox-layout">
+          <div class="detox-left-panel">
+            <div class="card">
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  margin-bottom: 0.5rem;
+                "
+              >
+                <h3 style="font-size: 1.1rem; font-weight: 600">
+                  App Shield Management
+                </h3>
+                <button
+                  class="btn btn-secondary"
+                  style="padding: 0.35rem 0.75rem; font-size: 0.75rem"
+                  onclick="promptAddCustomApp()"
+                >
+                  + Add App
+                </button>
+              </div>
+              <p style="font-size: 0.85rem; color: var(--text-secondary)">
+                Toggle which applications to shield when you are practicing
+                Hifz.
+              </p>
+
+              <div class="blocked-apps-list" id="blocked-apps-container">
+                <div class="app-toggle-item">
+                  <div class="app-info-left">
+                    <div
+                      class="app-icon-placeholder"
+                      style="
+                        background: #ff0000;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 0.7rem;
+                        font-weight: 700;
+                      "
+                    >
+                      YT
+                    </div>
+                    <div>
+                      <h4 style="font-size: 0.9rem; font-weight: 600">
+                        YouTube
+                      </h4>
+                      <span
+                        style="font-size: 0.75rem; color: var(--text-secondary)"
+                        >Shield category: Entertainment</span
+                      >
+                    </div>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" checked id="toggle-youtube" />
+                    <span class="slider"></span>
+                  </label>
+                </div>
+
+                <div class="app-toggle-item">
+                  <div class="app-info-left">
+                    <div
+                      class="app-icon-placeholder"
+                      style="
+                        background: #e1306c;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 0.7rem;
+                        font-weight: 700;
+                      "
+                    >
+                      IG
+                    </div>
+                    <div>
+                      <h4 style="font-size: 0.9rem; font-weight: 600">
+                        Instagram
+                      </h4>
+                      <span
+                        style="font-size: 0.75rem; color: var(--text-secondary)"
+                        >Shield category: Social</span
+                      >
+                    </div>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" checked id="toggle-instagram" />
+                    <span class="slider"></span>
+                  </label>
+                </div>
+
+                <div class="app-toggle-item">
+                  <div class="app-info-left">
+                    <div
+                      class="app-icon-placeholder"
+                      style="
+                        background: #000000;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 0.7rem;
+                        font-weight: 700;
+                      "
+                    >
+                      TT
+                    </div>
+                    <div>
+                      <h4 style="font-size: 0.9rem; font-weight: 600">
+                        TikTok
+                      </h4>
+                      <span
+                        style="font-size: 0.75rem; color: var(--text-secondary)"
+                        >Shield category: Entertainment</span
+                      >
+                    </div>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" checked id="toggle-tiktok" />
+                    <span class="slider"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="detox-right-panel">
+            <div
+              class="card"
+              style="display: flex; flex-direction: column; gap: 1.25rem"
+            >
+              <h3 style="font-size: 1.1rem; font-weight: 600">
+                Focus Session & Timer
+              </h3>
+
+              <!-- Focus Pomodoro Dial -->
+              <div class="focus-timer-dial">
+                <span
+                  style="
+                    font-size: 0.8rem;
+                    color: var(--text-secondary);
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                  "
+                  >Focus Session</span
+                >
+                <div
+                  class="focus-time-display"
+                  id="focus-session-timer-display"
+                >
+                  25:00
+                </div>
+                <span
+                  style="
+                    font-size: 0.75rem;
+                    color: var(--primary-solid);
+                    font-weight: 600;
+                  "
+                  id="focus-session-status-label"
+                  >Ready</span
+                >
+              </div>
+
+              <div style="display: flex; justify-content: center; gap: 0.75rem">
+                <button
+                  class="btn btn-primary"
+                  id="start-focus-session-btn"
+                  onclick="toggleFocusSession()"
+                >
+                  Start Focus Mode
+                </button>
+                <button
+                  class="btn btn-secondary"
+                  onclick="resetFocusSession(25)"
+                >
+                  25m
+                </button>
+                <button
+                  class="btn btn-secondary"
+                  onclick="resetFocusSession(15)"
+                >
+                  15m
+                </button>
+                <button
+                  class="btn btn-secondary"
+                  onclick="resetFocusSession(45)"
+                >
+                  45m
+                </button>
+              </div>
+
+              <div
+                style="
+                  border-top: 1px solid var(--border-color);
+                  padding-top: 1.25rem;
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                "
+              >
+                <div>
+                  <h4 style="font-size: 0.9rem; font-weight: 600">
+                    Ambient Rain / Waves
+                  </h4>
+                  <span style="font-size: 0.75rem; color: var(--text-secondary)"
+                    >Relaxing white noise synthesizer</span
+                  >
+                </div>
+                <label class="switch">
+                  <input
+                    type="checkbox"
+                    id="toggle-ambient-sound"
+                    onchange="toggleAmbientNoise()"
+                  />
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div
+                style="
+                  border-top: 1px solid var(--border-color);
+                  padding-top: 1.25rem;
+                  text-align: center;
+                "
+              >
+                <button
+                  class="btn btn-danger"
+                  style="width: 100%"
+                  id="trigger-detox-sim-btn"
+                >
+                  Simulate Block Lockout
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- GLOBAL FOOTER -->
+      <footer class="app-footer">
+        <span>&copy; 2026 HifzQuest. All rights reserved.</span>
+        <span id="footer-version-label">v1.1.0 · Community UI preview</span>
+      </footer>
     </main>
 
     <!-- FULL SCREEN PHONE LOCKOVERLAY SIMULATOR -->
     <div class="detox-lock-overlay" id="detox-lock-panel">
-        <div class="lock-modal-box">
-            <h2 class="lock-title">FOCUS SHIELD ACTIVE</h2>
-            <p class="lock-subtitle">Islamic Timeout initiated. You have spent too much time on shielded apps without completing your Quranic Wird.</p>
-            
-            <div class="challenge-box">
-                <h4 style="font-weight:600; font-size:1rem; margin-bottom:0.5rem;">Solve Challenge to Unlock Early</h4>
-                <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:1rem;" id="detox-challenge-prompt">Write the word "الله" on the Writing Canvas to verify your presence.</p>
-                <div style="display:flex; justify-content:center; gap:1rem; flex-wrap:wrap;">
-                    <button class="btn btn-primary" onclick="solveLockChallenge('write')">Solve Writing Test</button>
-                    <button class="btn btn-secondary" onclick="solveLockChallenge('recite')">Solve Recitation Test</button>
-                    <button class="btn btn-secondary" onclick="dismissDetoxLock()" style="border-color:rgba(239,68,68,0.4); color:#f87171;">Dismiss (Demo Mode)</button>
-                </div>
-            </div>
+      <div class="lock-modal-box">
+        <h2 class="lock-title">FOCUS SHIELD ACTIVE</h2>
+        <p class="lock-subtitle">
+          Islamic Timeout initiated. You have spent too much time on shielded
+          apps without completing your Quranic Wird.
+        </p>
 
-            <div style="font-size:0.85rem; color:var(--text-secondary);">
-                Remaining Lock Timer:
-                <div class="lock-timer" id="detox-countdown-timer">02:00</div>
-            </div>
+        <div class="challenge-box">
+          <h4 style="font-weight: 600; font-size: 1rem; margin-bottom: 0.5rem">
+            Solve Challenge to Unlock Early
+          </h4>
+          <p
+            style="
+              font-size: 0.85rem;
+              color: var(--text-secondary);
+              margin-bottom: 1rem;
+            "
+            id="detox-challenge-prompt"
+          >
+            Write the word "الله" on the Writing Canvas to verify your presence.
+          </p>
+          <div
+            style="
+              display: flex;
+              justify-content: center;
+              gap: 1rem;
+              flex-wrap: wrap;
+            "
+          >
+            <button
+              class="btn btn-primary"
+              onclick="solveLockChallenge('write')"
+            >
+              Solve Writing Test
+            </button>
+            <button
+              class="btn btn-secondary"
+              onclick="solveLockChallenge('recite')"
+            >
+              Solve Recitation Test
+            </button>
+            <button
+              class="btn btn-secondary"
+              onclick="dismissDetoxLock()"
+              style="border-color: rgba(239, 68, 68, 0.4); color: #f87171"
+            >
+              Dismiss (Demo Mode)
+            </button>
+          </div>
         </div>
+
+        <div style="font-size: 0.85rem; color: var(--text-secondary)">
+          Remaining Lock Timer:
+          <div class="lock-timer" id="detox-countdown-timer">02:00</div>
+        </div>
+      </div>
     </div>
 
     <!-- PRACTICE SELECTION MODAL BACKDROP -->
     <div class="modal-backdrop" id="practice-modal">
-        <div class="modal-card">
-            <div class="modal-header">
-                <h3 style="font-weight:700; font-size:1.25rem;" id="practice-modal-title">Practice Surah</h3>
-                <button class="modal-close" onclick="closePracticeModal()">&times;</button>
-            </div>
-            <p style="color:var(--text-secondary); font-size:0.9rem; margin-bottom:1.5rem;" id="practice-modal-subtitle">Choose how you want to memorize or test this constellation node.</p>
-            <div style="display:flex; flex-direction:column; gap:0.75rem;">
-                <button class="btn btn-primary" style="justify-content:flex-start;" onclick="startPracticeMode('recite')">
-                    <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:currentColor;"><path d="M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M19,11C19,14.53 16.39,17.44 13,17.93V21H11V17.93C7.61,17.44 5,14.53 5,11H7A5,5 0 0,0 12,16A5,5 0 0,0 17,11H19Z"/></svg>
-                    <span>Tajweed Practice & Recitation</span>
-                </button>
-                <button class="btn btn-secondary" style="justify-content:flex-start;" onclick="startPracticeMode('write')">
-                    <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:currentColor;"><path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.07,6.19L3,17.25Z"/></svg>
-                    <span>Writing Test (Active Recall)</span>
-                </button>
-            </div>
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3
+            style="font-weight: 700; font-size: 1.25rem"
+            id="practice-modal-title"
+          >
+            Practice Surah
+          </h3>
+          <button class="modal-close" onclick="closePracticeModal()">
+            &times;
+          </button>
         </div>
+        <p
+          style="
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+          "
+          id="practice-modal-subtitle"
+        >
+          Choose how you want to memorize or test this constellation node.
+        </p>
+        <div style="display: flex; flex-direction: column; gap: 0.75rem">
+          <button
+            class="btn btn-primary"
+            style="justify-content: flex-start"
+            onclick="startPracticeMode('recite')"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              style="width: 18px; height: 18px; fill: currentColor"
+            >
+              <path
+                d="M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M19,11C19,14.53 16.39,17.44 13,17.93V21H11V17.93C7.61,17.44 5,14.53 5,11H7A5,5 0 0,0 12,16A5,5 0 0,0 17,11H19Z"
+              />
+            </svg>
+            <span>Tajweed Practice & Recitation</span>
+          </button>
+          <button
+            class="btn btn-secondary"
+            style="justify-content: flex-start"
+            onclick="startPracticeMode('write')"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              style="width: 18px; height: 18px; fill: currentColor"
+            >
+              <path
+                d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.07,6.19L3,17.25Z"
+              />
+            </svg>
+            <span>Writing Test (Active Recall)</span>
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- BOOKING MODAL -->
     <div class="modal-backdrop" id="booking-modal">
-        <div class="modal-card">
-            <div class="modal-header">
-                <h3 style="font-weight:700; font-size:1.2rem;" id="booking-modal-title">Book Mentorship Session</h3>
-                <button class="modal-close" onclick="closeModal('booking-modal')">&times;</button>
-            </div>
-            <div style="display:flex; align-items:center; gap:1rem; margin-bottom:1.5rem; background:var(--bg-card-sub); padding:1rem; border-radius:14px; border:1px solid var(--border-color);">
-                <img id="booking-teacher-avatar" src="" alt="Teacher Avatar" class="avatar" style="width:52px; height:52px;">
-                <div>
-                    <h4 id="booking-teacher-name" style="font-weight:600; font-size:1rem;">Teacher Name</h4>
-                    <p id="booking-teacher-meta" style="font-size:0.8rem; color:var(--primary-solid); font-weight:600;">Hafs Qira'at Specialist • $25/hr</p>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="form-label" for="booking-date-select">Preferred Date</label>
-                <select class="form-select" id="booking-date-select">
-                    <option value="Today">Today (Same Day)</option>
-                    <option value="Tomorrow" selected>Tomorrow</option>
-                    <option value="Saturday">Saturday</option>
-                    <option value="Sunday">Sunday</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label class="form-label" for="booking-time-select">Preferred Time Slot</label>
-                <select class="form-select" id="booking-time-select">
-                    <option value="10:00 AM">10:00 AM - 11:00 AM</option>
-                    <option value="02:00 PM">02:00 PM - 03:00 PM</option>
-                    <option value="06:00 PM" selected>06:00 PM - 07:00 PM</option>
-                    <option value="08:30 PM">08:30 PM - 09:30 PM</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label class="form-label" for="booking-session-type">Session Focus</label>
-                <select class="form-select" id="booking-session-type">
-                    <option value="Tajweed Correction" selected>Tajweed & Makharij Correction</option>
-                    <option value="New Memorization">New Hifz Recitation</option>
-                    <option value="Murajah Revision">Murajah (Revision & Testing)</option>
-                </select>
-            </div>
-            <div style="display:flex; justify-content:flex-end; gap:0.75rem; margin-top:1.5rem;">
-                <button class="btn btn-secondary" onclick="closeModal('booking-modal')">Cancel</button>
-                <button class="btn btn-primary" onclick="confirmTeacherBooking()">Confirm Booking</button>
-            </div>
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3
+            style="font-weight: 700; font-size: 1.2rem"
+            id="booking-modal-title"
+          >
+            Book Mentorship Session
+          </h3>
+          <button class="modal-close" onclick="closeModal('booking-modal')">
+            &times;
+          </button>
         </div>
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            background: var(--bg-card-sub);
+            padding: 1rem;
+            border-radius: 14px;
+            border: 1px solid var(--border-color);
+          "
+        >
+          <img
+            id="booking-teacher-avatar"
+            src=""
+            alt="Teacher Avatar"
+            class="avatar"
+            style="width: 52px; height: 52px"
+          />
+          <div>
+            <h4
+              id="booking-teacher-name"
+              style="font-weight: 600; font-size: 1rem"
+            >
+              Teacher Name
+            </h4>
+            <p
+              id="booking-teacher-meta"
+              style="
+                font-size: 0.8rem;
+                color: var(--primary-solid);
+                font-weight: 600;
+              "
+            >
+              Hafs Qira'at Specialist • $25/hr
+            </p>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="booking-date-select"
+            >Preferred Date</label
+          >
+          <select class="form-select" id="booking-date-select">
+            <option value="Today">Today (Same Day)</option>
+            <option value="Tomorrow" selected>Tomorrow</option>
+            <option value="Saturday">Saturday</option>
+            <option value="Sunday">Sunday</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="booking-time-select"
+            >Preferred Time Slot</label
+          >
+          <select class="form-select" id="booking-time-select">
+            <option value="10:00 AM">10:00 AM - 11:00 AM</option>
+            <option value="02:00 PM">02:00 PM - 03:00 PM</option>
+            <option value="06:00 PM" selected>06:00 PM - 07:00 PM</option>
+            <option value="08:30 PM">08:30 PM - 09:30 PM</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="booking-session-type"
+            >Session Focus</label
+          >
+          <select class="form-select" id="booking-session-type">
+            <option value="Tajweed Correction" selected>
+              Tajweed & Makharij Correction
+            </option>
+            <option value="New Memorization">New Hifz Recitation</option>
+            <option value="Murajah Revision">
+              Murajah (Revision & Testing)
+            </option>
+          </select>
+        </div>
+        <div
+          style="
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+          "
+        >
+          <button
+            class="btn btn-secondary"
+            onclick="closeModal('booking-modal')"
+          >
+            Cancel
+          </button>
+          <button class="btn btn-primary" onclick="confirmTeacherBooking()">
+            Confirm Booking
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- MY BOOKINGS MODAL -->
     <div class="modal-backdrop" id="my-bookings-modal">
-        <div class="modal-card" style="max-width:600px;">
-            <div class="modal-header">
-                <h3 style="font-weight:700; font-size:1.2rem;">My Scheduled Sessions</h3>
-                <button class="modal-close" onclick="closeModal('my-bookings-modal')">&times;</button>
-            </div>
-            <div id="my-bookings-list" class="bookings-deck">
-                <!-- Populated dynamically via JS -->
-            </div>
+      <div class="modal-card" style="max-width: 600px">
+        <div class="modal-header">
+          <h3 style="font-weight: 700; font-size: 1.2rem">
+            My Scheduled Sessions
+          </h3>
+          <button class="modal-close" onclick="closeModal('my-bookings-modal')">
+            &times;
+          </button>
         </div>
+        <div id="my-bookings-list" class="bookings-deck">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
     </div>
 
     <!-- VIRTUAL CLASSROOM MODAL -->
     <div class="modal-backdrop" id="classroom-modal">
-        <div class="modal-card" style="max-width:750px;">
-            <div class="modal-header">
-                <div>
-                    <h3 style="font-weight:700; font-size:1.2rem;" id="classroom-title">Live 1-on-1 Quran Classroom</h3>
-                    <span style="font-size:0.8rem; color:#10b981; font-weight:600;">● Live Audio & Video Connected</span>
-                </div>
-                <button class="modal-close" onclick="endClassroomSession()">&times;</button>
-            </div>
-
-            <div class="classroom-video-grid">
-                <div class="video-container">
-                    <video id="user-camera-feed" class="video-element" autoplay playsinline muted></video>
-                    <div class="video-badge">You (Student)</div>
-                </div>
-                <div class="video-container">
-                    <img id="classroom-teacher-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=300" style="width:100%; height:100%; object-fit:cover;" alt="Teacher">
-                    <div class="video-badge" id="classroom-teacher-badge">Sheikh Hamza (Mentor)</div>
-                </div>
-            </div>
-
-            <div style="background:var(--bg-card-sub); border:1px solid var(--border-color); border-radius:14px; padding:1rem; margin-bottom:1rem;">
-                <h4 style="font-size:0.85rem; font-weight:600; margin-bottom:0.5rem; color:var(--text-secondary);">Classroom Whiteboard / Ayah:</h4>
-                <div style="font-family:var(--font-arabic); font-size:1.6rem; direction:rtl; text-align:center; color:var(--text-primary);" id="classroom-ayah-text">
-                    بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
-                </div>
-            </div>
-
-            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
-                <div style="display:flex; gap:0.5rem;">
-                    <button class="btn btn-secondary" id="classroom-mute-btn" onclick="toggleClassroomAudio()">Mute Mic</button>
-                    <button class="btn btn-secondary" id="classroom-video-btn" onclick="toggleClassroomVideo()">Stop Video</button>
-                </div>
-                <button class="btn btn-danger" onclick="endClassroomSession()">Leave Class</button>
-            </div>
+      <div class="modal-card" style="max-width: 750px">
+        <div class="modal-header">
+          <div>
+            <h3
+              style="font-weight: 700; font-size: 1.2rem"
+              id="classroom-title"
+            >
+              Live 1-on-1 Quran Classroom
+            </h3>
+            <span style="font-size: 0.8rem; color: #10b981; font-weight: 600"
+              >● Live Audio & Video Connected</span
+            >
+          </div>
+          <button class="modal-close" onclick="endClassroomSession()">
+            &times;
+          </button>
         </div>
+
+        <div class="classroom-video-grid">
+          <div class="video-container">
+            <video
+              id="user-camera-feed"
+              class="video-element"
+              autoplay
+              playsinline
+              muted
+            ></video>
+            <div class="video-badge">You (Student)</div>
+          </div>
+          <div class="video-container">
+            <img
+              id="classroom-teacher-avatar"
+              src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=300"
+              style="width: 100%; height: 100%; object-fit: cover"
+              alt="Teacher"
+            />
+            <div class="video-badge" id="classroom-teacher-badge">
+              Sheikh Hamza (Mentor)
+            </div>
+          </div>
+        </div>
+
+        <div
+          style="
+            background: var(--bg-card-sub);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+          "
+        >
+          <h4
+            style="
+              font-size: 0.85rem;
+              font-weight: 600;
+              margin-bottom: 0.5rem;
+              color: var(--text-secondary);
+            "
+          >
+            Classroom Whiteboard / Ayah:
+          </h4>
+          <div
+            style="
+              font-family: var(--font-arabic);
+              font-size: 1.6rem;
+              direction: rtl;
+              text-align: center;
+              color: var(--text-primary);
+            "
+            id="classroom-ayah-text"
+          >
+            بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+          </div>
+        </div>
+
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+          "
+        >
+          <div style="display: flex; gap: 0.5rem">
+            <button
+              class="btn btn-secondary"
+              id="classroom-mute-btn"
+              onclick="toggleClassroomAudio()"
+            >
+              Mute Mic
+            </button>
+            <button
+              class="btn btn-secondary"
+              id="classroom-video-btn"
+              onclick="toggleClassroomVideo()"
+            >
+              Stop Video
+            </button>
+          </div>
+          <button class="btn btn-danger" onclick="endClassroomSession()">
+            Leave Class
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- MENTOR CHAT MODAL -->
     <div class="modal-backdrop" id="chat-modal">
-        <div class="modal-card" style="max-width:550px;">
-            <div class="modal-header">
-                <div style="display:flex; align-items:center; gap:0.75rem;">
-                    <img id="chat-teacher-avatar" src="" alt="Avatar" class="avatar" style="width:40px; height:40px;">
-                    <div>
-                        <h3 style="font-weight:700; font-size:1.05rem;" id="chat-teacher-name">Mentor Chat</h3>
-                        <span style="font-size:0.75rem; color:#10b981;">Online</span>
-                    </div>
-                </div>
-                <button class="modal-close" onclick="closeModal('chat-modal')">&times;</button>
+      <div class="modal-card" style="max-width: 550px">
+        <div class="modal-header">
+          <div style="display: flex; align-items: center; gap: 0.75rem">
+            <img
+              id="chat-teacher-avatar"
+              src=""
+              alt="Avatar"
+              class="avatar"
+              style="width: 40px; height: 40px"
+            />
+            <div>
+              <h3
+                style="font-weight: 700; font-size: 1.05rem"
+                id="chat-teacher-name"
+              >
+                Mentor Chat
+              </h3>
+              <span style="font-size: 0.75rem; color: #10b981">Online</span>
             </div>
-
-            <div class="chat-messages-container" id="chat-messages-deck">
-                <!-- Dynamic messages -->
-            </div>
-
-            <form id="chat-form" onsubmit="handleSendChatMessage(event)" style="display:flex; gap:0.5rem;">
-                <input type="text" class="form-input" id="chat-input-text" placeholder="Type message to mentor..." autocomplete="off">
-                <button type="submit" class="btn btn-primary" style="padding:0.75rem 1.25rem;">Send</button>
-            </form>
+          </div>
+          <button class="modal-close" onclick="closeModal('chat-modal')">
+            &times;
+          </button>
         </div>
+
+        <div class="chat-messages-container" id="chat-messages-deck">
+          <!-- Dynamic messages -->
+        </div>
+
+        <form
+          id="chat-form"
+          onsubmit="handleSendChatMessage(event)"
+          style="display: flex; gap: 0.5rem"
+        >
+          <input
+            type="text"
+            class="form-input"
+            id="chat-input-text"
+            placeholder="Type message to mentor..."
+            autocomplete="off"
+          />
+          <button
+            type="submit"
+            class="btn btn-primary"
+            style="padding: 0.75rem 1.25rem"
+          >
+            Send
+          </button>
+        </form>
+      </div>
     </div>
 
     <!-- PROFILE MODAL -->
     <div class="modal-backdrop" id="profile-modal">
-        <div class="modal-card">
-            <div class="modal-header">
-                <h3 style="font-weight:700; font-size:1.2rem;">Student Profile & Goals</h3>
-                <button class="modal-close" onclick="closeModal('profile-modal')">&times;</button>
-            </div>
-            <div class="form-group">
-                <label class="form-label" for="profile-name-input">Full Name</label>
-                <input type="text" class="form-input" id="profile-name-input" value="Muslim Ahmed">
-            </div>
-            <div class="form-group">
-                <label class="form-label" for="profile-target-select">Daily Wird Target</label>
-                <select class="form-select" id="profile-target-select">
-                    <option value="3 Ayahs">3 Ayahs per day</option>
-                    <option value="5 Ayahs" selected>5 Ayahs per day (Standard)</option>
-                    <option value="10 Ayahs">10 Ayahs per day (Intensive)</option>
-                    <option value="1 Page">1 Page per day (Hafiz Track)</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label class="form-label" for="profile-qiraat-select">Preferred Qira'at</label>
-                <select class="form-select" id="profile-qiraat-select">
-                    <option value="Hafs 'an 'Asim" selected>Hafs 'an 'Asim (Standard)</option>
-                    <option value="Warsh 'an Nafi'">Warsh 'an Nafi'</option>
-                    <option value="Qalun 'an Nafi'">Qalun 'an Nafi'</option>
-                </select>
-            </div>
-            <div style="display:flex; justify-content:flex-end; gap:0.75rem; margin-top:1.5rem;">
-                <button class="btn btn-secondary" onclick="closeModal('profile-modal')">Cancel</button>
-                <button class="btn btn-primary" onclick="saveUserProfile()">Save Profile</button>
-            </div>
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 style="font-weight: 700; font-size: 1.2rem">
+            Student Profile & Goals
+          </h3>
+          <button class="modal-close" onclick="closeModal('profile-modal')">
+            &times;
+          </button>
         </div>
+        <div class="form-group">
+          <label class="form-label" for="profile-name-input">Full Name</label>
+          <input
+            type="text"
+            class="form-input"
+            id="profile-name-input"
+            value="Muslim Ahmed"
+          />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="profile-target-select"
+            >Daily Wird Target</label
+          >
+          <select class="form-select" id="profile-target-select">
+            <option value="3 Ayahs">3 Ayahs per day</option>
+            <option value="5 Ayahs" selected>5 Ayahs per day (Standard)</option>
+            <option value="10 Ayahs">10 Ayahs per day (Intensive)</option>
+            <option value="1 Page">1 Page per day (Hafiz Track)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="profile-qiraat-select"
+            >Preferred Qira'at</label
+          >
+          <select class="form-select" id="profile-qiraat-select">
+            <option value="Hafs 'an 'Asim" selected>
+              Hafs 'an 'Asim (Standard)
+            </option>
+            <option value="Warsh 'an Nafi'">Warsh 'an Nafi'</option>
+            <option value="Qalun 'an Nafi'">Qalun 'an Nafi'</option>
+          </select>
+        </div>
+        <div
+          style="
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+          "
+        >
+          <button
+            class="btn btn-secondary"
+            onclick="closeModal('profile-modal')"
+          >
+            Cancel
+          </button>
+          <button class="btn btn-primary" onclick="saveUserProfile()">
+            Save Profile
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- STATS MODAL -->
     <div class="modal-backdrop" id="stats-modal">
-        <div class="modal-card">
-            <div class="modal-header">
-                <h3 style="font-weight:700; font-size:1.2rem;">Memorization Progress Breakdown</h3>
-                <button class="modal-close" onclick="closeModal('stats-modal')">&times;</button>
-            </div>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1.5rem;">
-                <div style="background:var(--bg-card-sub); padding:1rem; border-radius:14px; border:1px solid var(--border-color); text-align:center;">
-                    <span style="font-size:0.75rem; color:var(--text-secondary); text-transform:uppercase;">Surahs Mastered</span>
-                    <div style="font-size:1.6rem; font-weight:700; color:var(--primary-solid);" id="stats-mastered-count">36 / 114</div>
-                </div>
-                <div style="background:var(--bg-card-sub); padding:1rem; border-radius:14px; border:1px solid var(--border-color); text-align:center;">
-                    <span style="font-size:0.75rem; color:var(--text-secondary); text-transform:uppercase;">Avg Tajweed Score</span>
-                    <div style="font-size:1.6rem; font-weight:700; color:var(--accent-gold);" id="stats-avg-score">94%</div>
-                </div>
-            </div>
-            <h4 style="font-size:0.9rem; font-weight:600; margin-bottom:0.75rem;">Juz 30 Mastery Status:</h4>
-            <div style="display:flex; flex-direction:column; gap:0.5rem; margin-bottom:1.5rem;" id="stats-surahs-list">
-                <div style="display:flex; justify-content:space-between; font-size:0.85rem; padding:0.5rem 0.75rem; background:var(--bg-card-sub); border-radius:8px;">
-                    <span>114. An-Nas</span>
-                    <span style="color:#10b981; font-weight:600;">Verified (98%)</span>
-                </div>
-                <div style="display:flex; justify-content:space-between; font-size:0.85rem; padding:0.5rem 0.75rem; background:var(--bg-card-sub); border-radius:8px;">
-                    <span>113. Al-Falaq</span>
-                    <span style="color:#10b981; font-weight:600;">Verified (96%)</span>
-                </div>
-                <div style="display:flex; justify-content:space-between; font-size:0.85rem; padding:0.5rem 0.75rem; background:var(--bg-card-sub); border-radius:8px;">
-                    <span>112. Al-Ikhlas</span>
-                    <span style="color:#10b981; font-weight:600;">Verified (95%)</span>
-                </div>
-                <div style="display:flex; justify-content:space-between; font-size:0.85rem; padding:0.5rem 0.75rem; background:var(--bg-card-sub); border-radius:8px;">
-                    <span>109. Al-Kafirun</span>
-                    <span style="color:#10b981; font-weight:600;">Verified (94%)</span>
-                </div>
-            </div>
-            <button class="btn btn-primary" style="width:100%;" onclick="closeModal('stats-modal'); switchTab('map');">View Constellation Map</button>
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 style="font-weight: 700; font-size: 1.2rem">
+            Memorization Progress Breakdown
+          </h3>
+          <button class="modal-close" onclick="closeModal('stats-modal')">
+            &times;
+          </button>
         </div>
+        <div
+          style="
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+          "
+        >
+          <div
+            style="
+              background: var(--bg-card-sub);
+              padding: 1rem;
+              border-radius: 14px;
+              border: 1px solid var(--border-color);
+              text-align: center;
+            "
+          >
+            <span
+              style="
+                font-size: 0.75rem;
+                color: var(--text-secondary);
+                text-transform: uppercase;
+              "
+              >Surahs Mastered</span
+            >
+            <div
+              style="
+                font-size: 1.6rem;
+                font-weight: 700;
+                color: var(--primary-solid);
+              "
+              id="stats-mastered-count"
+            >
+              36 / 114
+            </div>
+          </div>
+          <div
+            style="
+              background: var(--bg-card-sub);
+              padding: 1rem;
+              border-radius: 14px;
+              border: 1px solid var(--border-color);
+              text-align: center;
+            "
+          >
+            <span
+              style="
+                font-size: 0.75rem;
+                color: var(--text-secondary);
+                text-transform: uppercase;
+              "
+              >Avg sample word match</span
+            >
+            <div
+              style="
+                font-size: 1.6rem;
+                font-weight: 700;
+                color: var(--accent-gold);
+              "
+              id="stats-avg-score"
+            >
+              94%
+            </div>
+          </div>
+        </div>
+        <h4 style="font-size: 0.9rem; font-weight: 600; margin-bottom: 0.75rem">
+          Sample practice history:
+        </h4>
+        <div
+          style="
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+          "
+          id="stats-surahs-list"
+        >
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              font-size: 0.85rem;
+              padding: 0.5rem 0.75rem;
+              background: var(--bg-card-sub);
+              border-radius: 8px;
+            "
+          >
+            <span>114. An-Nas</span>
+            <span style="color: #10b981; font-weight: 600">Verified (98%)</span>
+          </div>
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              font-size: 0.85rem;
+              padding: 0.5rem 0.75rem;
+              background: var(--bg-card-sub);
+              border-radius: 8px;
+            "
+          >
+            <span>113. Al-Falaq</span>
+            <span style="color: #10b981; font-weight: 600">Verified (96%)</span>
+          </div>
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              font-size: 0.85rem;
+              padding: 0.5rem 0.75rem;
+              background: var(--bg-card-sub);
+              border-radius: 8px;
+            "
+          >
+            <span>112. Al-Ikhlas</span>
+            <span style="color: #10b981; font-weight: 600">Verified (95%)</span>
+          </div>
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              font-size: 0.85rem;
+              padding: 0.5rem 0.75rem;
+              background: var(--bg-card-sub);
+              border-radius: 8px;
+            "
+          >
+            <span>109. Al-Kafirun</span>
+            <span style="color: #10b981; font-weight: 600">Verified (94%)</span>
+          </div>
+        </div>
+        <button
+          class="btn btn-primary"
+          style="width: 100%"
+          onclick="
+            closeModal('stats-modal');
+            switchTab('map');
+          "
+        >
+          View Constellation Map
+        </button>
+      </div>
     </div>
 
     <!-- DAY DETAILS MODAL -->
     <div class="modal-backdrop" id="day-details-modal">
-        <div class="modal-card">
-            <div class="modal-header">
-                <h3 style="font-weight:700; font-size:1.2rem;" id="day-modal-title">Wednesday Summary</h3>
-                <button class="modal-close" onclick="closeModal('day-details-modal')">&times;</button>
-            </div>
-            <div style="display:flex; flex-direction:column; gap:1rem; margin-bottom:1.5rem;">
-                <div style="display:flex; justify-content:space-between; padding:0.75rem; background:var(--bg-card-sub); border-radius:10px; border:1px solid var(--border-color);">
-                    <span style="color:var(--text-secondary);">Ayahs Memorized</span>
-                    <strong id="day-modal-ayahs" style="color:var(--text-primary);">4 Ayahs</strong>
-                </div>
-                <div style="display:flex; justify-content:space-between; padding:0.75rem; background:var(--bg-card-sub); border-radius:10px; border:1px solid var(--border-color);">
-                    <span style="color:var(--text-secondary);">Average Precision</span>
-                    <strong id="day-modal-precision" style="color:#10b981;">92%</strong>
-                </div>
-                <div style="display:flex; justify-content:space-between; padding:0.75rem; background:var(--bg-card-sub); border-radius:10px; border:1px solid var(--border-color);">
-                    <span style="color:var(--text-secondary);">Practice Session Time</span>
-                    <strong style="color:var(--text-primary);">18 Minutes</strong>
-                </div>
-            </div>
-            <button class="btn btn-primary" style="width:100%;" onclick="closeModal('day-details-modal')">Close Summary</button>
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 style="font-weight: 700; font-size: 1.2rem" id="day-modal-title">
+            Wednesday Summary
+          </h3>
+          <button class="modal-close" onclick="closeModal('day-details-modal')">
+            &times;
+          </button>
         </div>
+        <div
+          style="
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+          "
+        >
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              padding: 0.75rem;
+              background: var(--bg-card-sub);
+              border-radius: 10px;
+              border: 1px solid var(--border-color);
+            "
+          >
+            <span style="color: var(--text-secondary)">Ayahs Memorized</span>
+            <strong id="day-modal-ayahs" style="color: var(--text-primary)"
+              >4 Ayahs</strong
+            >
+          </div>
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              padding: 0.75rem;
+              background: var(--bg-card-sub);
+              border-radius: 10px;
+              border: 1px solid var(--border-color);
+            "
+          >
+            <span style="color: var(--text-secondary)">Average Precision</span>
+            <strong id="day-modal-precision" style="color: #10b981">92%</strong>
+          </div>
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              padding: 0.75rem;
+              background: var(--bg-card-sub);
+              border-radius: 10px;
+              border: 1px solid var(--border-color);
+            "
+          >
+            <span style="color: var(--text-secondary)"
+              >Practice Session Time</span
+            >
+            <strong style="color: var(--text-primary)">18 Minutes</strong>
+          </div>
+        </div>
+        <button
+          class="btn btn-primary"
+          style="width: 100%"
+          onclick="closeModal('day-details-modal')"
+        >
+          Close Summary
+        </button>
+      </div>
     </div>
 
     <!-- TOAST CONTAINER -->
-    <div class="toast-container" id="toast-container"></div>
+    <div
+      class="toast-container"
+      id="toast-container"
+      role="status"
+      aria-live="polite"
+    ></div>
 
-    <!-- MOBILE BOTTOM NAVIGATION -->
-    <nav class="mobile-bottom-nav">
-        <div class="mobile-nav-item active" data-tab="dashboard">
-            <svg viewBox="0 0 24 24"><path d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z"/></svg>
-            <span>Home</span>
-        </div>
-        <div class="mobile-nav-item" data-tab="map">
-            <svg viewBox="0 0 24 24"><path d="M15,3H21V9H19V5.41L12.41,12L19,18.59V15H21V21H15V19H18.59L12,12.41L5.41,19H9V21H3V15H5V18.59L11.59,12L5,5.41V9H3V3H9V5H5.41L12,11.59L18.59,5H15V3Z"/></svg>
-            <span>Map</span>
-        </div>
-        <div class="mobile-nav-item" data-tab="reciter">
-            <svg viewBox="0 0 24 24"><path d="M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M19,11C19,14.53 16.39,17.44 13,17.93V21H11V17.93C7.61,17.44 5,14.53 5,11H7A5,5 0 0,0 12,16A5,5 0 0,0 17,11H19Z"/></svg>
-            <span>Recite</span>
-        </div>
-        <div class="mobile-nav-item" data-tab="canvas">
-            <svg viewBox="0 0 24 24"><path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.07,6.19L3,17.25Z"/></svg>
-            <span>Write</span>
-        </div>
-        <div class="mobile-nav-item" data-tab="detox">
-            <svg viewBox="0 0 24 24"><path d="M12,17A2,2 0 0,0 14,15C14,13.89 13.1,13 12,13A2,2 0 0,0 10,15A2,2 0 0,0 12,17M18,8A2,2 0 0,1 20,10V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V10C4,8.89 4.9,8 6,8H7V6A5,5 0 0,1 12,1A5,5 0 0,1 17,6V8H18M12,3A3,3 0 0,0 9,6V8H15V6A3,3 0 0,0 12,3Z"/></svg>
-            <span>Detox</span>
-        </div>
+    <nav class="mobile-bottom-nav" aria-label="Mobile navigation">
+      <a href="#dashboard" class="mobile-nav-item active" data-tab="dashboard"
+        ><svg
+          class="hq-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.6"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="m3 10 9-7 9 7v10H3Z" />
+          <path d="M9 20v-7h6v7" /></svg
+        ><span>Home</span></a
+      ><a href="#together" class="mobile-nav-item" data-tab="together"
+        ><svg
+          class="hq-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.6"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <rect x="9" y="2" width="6" height="12" rx="3" />
+          <path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3m-4 0h8" /></svg
+        ><span>Together</span></a
+      ><a href="#revision" class="mobile-nav-item" data-tab="revision"
+        ><svg
+          class="hq-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.6"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path
+            d="M12 5v16M12 5C8 2 4 3 2 4v15c4-1 7 0 10 2 3-2 6-3 10-2V4c-4-1-7-1-10 1Z"
+          /></svg
+        ><span>Revision</span></a
+      ><a href="#matching" class="mobile-nav-item" data-tab="matching"
+        ><svg
+          class="hq-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.6"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <circle cx="9" cy="8" r="3" />
+          <path
+            d="M3 21v-3a6 6 0 0 1 12 0v3M16 5a3 3 0 0 1 0 6m2 4a5 5 0 0 1 3 5"
+          /></svg
+        ><span>Teachers</span></a
+      ><a href="#more" class="mobile-nav-item" data-tab="more"
+        ><svg
+          class="hq-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.6"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <rect x="3" y="3" width="6" height="6" rx="1" />
+          <rect x="15" y="3" width="6" height="6" rx="1" />
+          <rect x="3" y="15" width="6" height="6" rx="1" />
+          <rect x="15" y="15" width="6" height="6" rx="1" /></svg
+        ><span>More</span></a
+      >
     </nav>
-
     <script src="app.js"></script>
-</body>
+    <script src="community.js"></script>
+  </body>
 </html>

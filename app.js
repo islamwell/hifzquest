@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
             translation: '"Say, He is Allah, [who is] One"',
             guide: 'الله',
             audioUrl: 'https://cdn.islamic.network/quran/audio/128/ar.alafasy/6222.mp3',
-            insight: 'Ensure you bounce the letter Dal (د) in "Ahad" to apply the Qalqalah rule when stopping.'
+            insight: 'Bounce the Dal (د) in "Ahad" with a clear Qalqalah on stopping.'
         },
         'Al-Falaq': {
             number: 113,
@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
             translation: '"Say, I seek refuge in the Lord of daybreak"',
             guide: 'الفلق',
             audioUrl: 'https://cdn.islamic.network/quran/audio/128/ar.alafasy/6226.mp3',
-            insight: 'Apply strong Qalqalah on the final Qaf (ق) in "Al-Falaq".'
+            insight: 'Make a distinct Qalqalah bounce on the final Qaf (ق).'
         },
         'An-Nas': {
             number: 114,
@@ -153,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
             translation: '"Say, I seek refuge in the Lord of mankind"',
             guide: 'الناس',
             audioUrl: 'https://cdn.islamic.network/quran/audio/128/ar.alafasy/6231.mp3',
-            insight: 'Hold the Ghunnah on the Noon Mushaddadah (نّ) in "An-Nas" for 2 harakah.'
+            insight: 'Hold the nasal Ghunnah on Noon (نّ) for 2 counts.'
         },
         'Al-Kafirun': {
             number: 109,
@@ -161,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
             translation: '"Say, O disbelievers..."',
             guide: 'الكافرون',
             audioUrl: 'https://cdn.islamic.network/quran/audio/128/ar.alafasy/6205.mp3',
-            insight: 'Elongate the Madd Ja\'iz Munfasil in "Yaaa Ayyuha" for 4 counts.'
+            insight: 'Extend the Madd in "Yaaa Ayyuha" for 4 counts.'
         },
         'Al-Kawthar': {
             number: 108,
@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
             translation: '"Indeed, We have granted you, [O Muhammad], al-Kawthar."',
             guide: 'الكوثر',
             audioUrl: 'https://cdn.islamic.network/quran/audio/128/ar.alafasy/6202.mp3',
-            insight: 'Pronounce the Tha (ث) softly with the tip of your tongue between teeth.'
+            insight: 'Pronounce Tha (ث) softly with the tongue tip at upper teeth.'
         },
         'Al-Maun': {
             number: 107,
@@ -177,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
             translation: '"Have you seen the one who denies the Recompense?"',
             guide: 'الماعون',
             audioUrl: 'https://cdn.islamic.network/quran/audio/128/ar.alafasy/6195.mp3',
-            insight: 'Ensure clear distinction between the Hamzah and Ra in "Ara\'ayta".'
+            insight: 'Pronounce the Hamzah and Ra clearly in "Ara\'ayta".'
         },
         'Quraysh': {
             number: 106,
@@ -185,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
             translation: '"For the accustomed security of the Quraysh -"',
             guide: 'قريش',
             audioUrl: 'https://cdn.islamic.network/quran/audio/128/ar.alafasy/6191.mp3',
-            insight: 'Apply soft Leen elongation on the Ya (يْ) of "Quraysh".'
+            insight: 'Apply gentle Madd Leen on the Ya (يْ) when stopping.'
         },
         'Al-Fil': {
             number: 105,
@@ -193,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
             translation: '"Have you not considered, [O Muhammad], how your Lord dealt with the companions of the elephant?"',
             guide: 'الفيل',
             audioUrl: 'https://cdn.islamic.network/quran/audio/128/ar.alafasy/6186.mp3',
-            insight: 'Notice the Izhar Shafawi rule in "Alam tara" — do not hide the Meem.'
+            insight: 'Pronounce Meem clearly in "Alam tara" without hiding.'
         },
         'Al-Asr': {
             number: 103,
@@ -201,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
             translation: '"By time, indeed mankind is in loss."',
             guide: 'العصر',
             audioUrl: 'https://cdn.islamic.network/quran/audio/128/ar.alafasy/6177.mp3',
-            insight: 'Give the letter Sad (ص) its full heavy (Tafkheem) characteristic.'
+            insight: 'Give the letter Sad (ص) full thickness and heavy tone.'
         },
         'Al-Qadr': {
             number: 97,
@@ -209,7 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
             translation: '"Indeed, We sent the Quran down during the Night of Decree."',
             guide: 'القدر',
             audioUrl: 'https://cdn.islamic.network/quran/audio/128/ar.alafasy/6126.mp3',
-            insight: 'Apply strong Qalqalah on the Dal (د) of "Al-Qadr".'
+            insight: 'Bounce the Dal (د) in "Al-Qadr" with clear Qalqalah.'
         },
         'Ash-Sharh': {
             number: 94,
@@ -217,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
             translation: '"Did We not expand for you, [O Muhammad], your breast?"',
             guide: 'الشرح',
             audioUrl: 'https://cdn.islamic.network/quran/audio/128/ar.alafasy/6093.mp3',
-            insight: 'Give the letter Ha (ح) in "Nashrah" its natural breath release (Hams).'
+            insight: 'Release a soft breath on the letter Ha (ح) in "Nashrah".'
         },
         'Ad-Duha': {
             number: 93,
@@ -225,7 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
             translation: '"By the morning brightness, and [by] the night when it covers with darkness."',
             guide: 'الضحى',
             audioUrl: 'https://cdn.islamic.network/quran/audio/128/ar.alafasy/6082.mp3',
-            insight: 'Pronounce the Dad (ض) from the side of the tongue with Istitalah.'
+            insight: 'Pronounce Dad (ض) from the side of the tongue with depth.'
         },
         'An-Naba': {
             number: 78,
@@ -233,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
             translation: '"About what are they asking one another? About the great news -"',
             guide: 'النبأ',
             audioUrl: 'https://cdn.islamic.network/quran/audio/128/ar.alafasy/5673.mp3',
-            insight: 'Hold the Ghunnah on the Meem (مّ) in "\'Amma" for 2 harakah.'
+            insight: 'Hold the nasal Ghunnah on Meem (مّ) in "\'Amma" for 2 counts.'
         }
     };
 
@@ -271,12 +271,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const defaultWeeklyActivity = rollingWeek();
 
     const badgesCatalog = [
-        { id: 'first_recite', title: 'First Steps', desc: 'Complete your first verse recitation test', icon: '🌱' },
-        { id: 'streak_7', title: 'Steadfast Heart', desc: 'Maintain a 7+ day memorization streak', icon: '🔥' },
-        { id: 'writing_scholar', title: 'Calligrapher', desc: 'Verify handwriting scripture tests', icon: '✍️' },
-        { id: 'perfect_tajweed', title: 'Word Match', desc: 'Match the recognized words in one sample ayah', icon: '🌟' },
-        { id: 'juz30_explorer', title: 'Juz 30 Seeker', desc: 'Master 6+ Juz 30 Surahs', icon: '📖' },
-        { id: 'focus_master', title: 'Khushu Shield', desc: 'Complete a focused Wird timer session', icon: '🛡️' }
+        { id: 'first_recite', title: 'First Steps', desc: 'Complete your first recitation review', icon: '🌱' },
+        { id: 'streak_7', title: 'Steadfast', desc: 'Maintain a 7-day practice streak', icon: '🔥' },
+        { id: 'writing_scholar', title: 'Calligrapher', desc: 'Verify 3 handwriting scripture tests', icon: '✍️' },
+        { id: 'perfect_tajweed', title: 'Word Match', desc: 'Match recognized words with 100% accuracy', icon: '🌟' },
+        { id: 'juz30_explorer', title: 'Juz 30 Explorer', desc: 'Complete sample practice for 6+ Surahs', icon: '📖' },
+        { id: 'focus_master', title: 'Focus Guard', desc: 'Finish a timed focus session', icon: '🛡️' }
     ];
 
     const srsIntervals = {
@@ -415,10 +415,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const diffDays = Math.round((currDate - lastDate) / (1000 * 60 * 60 * 24));
             if (diffDays === 1) {
                 appState.streakCount += 1;
-                showToast(`🔥 Streak continued! ${appState.streakCount} Day Streak!`, 'success');
+                showToast(`🔥 Streak continued: ${appState.streakCount} days!`, 'success');
             } else if (diffDays > 1) {
                 appState.streakCount = 1;
-                showToast('Streak reset to 1. Daily consistency locks memorization!', 'warn');
+                showToast('Streak reset to 1 day. Keep practicing daily!', 'warn');
             }
         } else {
             appState.streakCount = 1;
@@ -460,7 +460,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 appState.hasanatXP += 100;
                 newlyUnlocked = true;
                 playSound('success');
-                showToast(`🏆 Milestone Unlocked: "${b.title}" (+100 XP)!`, 'success');
+                showToast(`🏆 Badge Unlocked: ${b.title} (+100 XP)`, 'success');
             }
         });
 
@@ -489,10 +489,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const interval = srsIntervals[prog.box] || 1;
             const dueTag = (isDue && prog.reviewCount > 0)
-                ? `<span class="revision-tag-due">Due for practice</span>`
+                ? `<span class="revision-tag-due">Due for review</span>`
                 : prog.reviewCount > 0
                     ? `<span class="revision-tag-ok">Next: ${prog.nextReview || 'Unscheduled'}</span>`
-                    : `<span style="font-size:0.75rem; color:var(--text-muted);">Not practised yet</span>`;
+                    : `<span style="font-size:0.75rem; color:var(--text-muted);">Not practiced yet</span>`;
 
             return `
                 <button type="button" class="revision-card ${(isDue && prog.reviewCount > 0) ? 'due' : ''}" onclick="startPracticeForSurah('${sName}')">
@@ -540,13 +540,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (banner) {
             banner.style.display = 'flex';
             const sub = document.getElementById('quiz-banner-subtitle');
-            if (sub) sub.textContent = `Testing Surah ${chosen}. Recite purely from memory without audio aids to advance its Spaced Repetition box!`;
+            if (sub) sub.textContent = `Surah ${chosen}: recite from memory to advance to the next review box.`;
         }
 
         if (playQariBtn) playQariBtn.style.display = 'none';
 
         playSound('chime');
-        showToast(`⚡ Active Recall Quiz initiated for Surah ${chosen}!`, 'info');
+        showToast(`Started memory quiz for Surah ${chosen}`, 'info');
 
         setTimeout(() => {
             const deck = document.getElementById('target-ayah-words-deck');
@@ -561,7 +561,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const banner = document.getElementById('reciter-quiz-banner');
         if (banner) banner.style.display = 'none';
         if (playQariBtn) playQariBtn.style.display = 'flex';
-        showToast('Exited Quiz Mode', 'info');
+        showToast('Exited quiz mode', 'info');
     };
 
     // Render Achievement Badges
@@ -856,7 +856,7 @@ document.addEventListener('DOMContentLoaded', () => {
         saveState();
         refreshAllDashboardAndRetentionUI();
         closeModal('profile-modal');
-        showToast('Profile & daily learning targets saved!', 'success');
+        showToast('Profile and goals saved.', 'success');
     };
 
     // Stats Modal with Dynamic Scores & Leitner Boxes
@@ -889,7 +889,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <span style="font-size:0.75rem; color:var(--text-secondary); margin-left:0.5rem;">Box ${prog.box}</span>
                         </div>
                         <span style="color:${isDone ? (isDue ? '#f59e0b' : '#10b981') : 'var(--text-secondary)'}; font-weight:600;">
-                            ${isDone ? (isDue ? '⚡ Due for Review' : `✓ Mastered (${prog.lastScore}%)`) : 'In Progress'}
+                            ${isDone ? (isDue ? '⚡ Due for Review' : `✓ Practiced (${prog.lastScore}%)`) : 'Not started'}
                         </span>
                     </div>
                 `;
@@ -915,7 +915,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (modal && title && subtitle) {
             title.textContent = `Practice Surah ${surahName}`;
-            subtitle.textContent = `Select a focus path to practice or test your memorization of Surah ${surahName}.`;
+            subtitle.textContent = `Choose how you want to practice Surah ${surahName}:`;
             modal.classList.add('active');
         }
     };
@@ -1108,8 +1108,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 mistakes.push({
                     type: 'mispronounced',
-                    title: 'Mispronounced / Substituted Word',
-                    detail: `Expected "${targetWord}" but detected "${spoken}".`,
+                    title: 'Pronunciation Mismatch',
+                    detail: `Expected "${targetWord}", heard "${spoken}".`,
                     arabic: targetWord,
                     heard: spoken
                 });
@@ -1120,12 +1120,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     status: 'missing',
                     similarity: 0,
                     spokenWord: null,
-                    errorReason: `Skipped or omitted word: ${targetWord}`
+                    errorReason: `Word omitted: ${targetWord}`
                 });
                 mistakes.push({
                     type: 'missing',
-                    title: 'Omitted / Skipped Word',
-                    detail: `Word "${targetWord}" was omitted in recitation.`,
+                    title: 'Missing Word',
+                    detail: `"${targetWord}" was omitted.`,
                     arabic: targetWord
                 });
             }
@@ -1142,8 +1142,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 qalqalahScore = Math.max(0, 100 - (missedQalqalah * 35));
                 mistakes.push({
                     type: 'tajweed',
-                    title: 'Qalqalah Articulation Warning',
-                    detail: 'Remember to make a distinct bounce on Qalqalah letters (ق ط ب ج د) when stopping.',
+                    title: 'Qalqalah Reminder',
+                    detail: 'Add a clear bounce on Qalqalah letters (ق ط ب ج د) on sukun or stopping.',
                     arabic: 'ق ط ب ج د'
                 });
             }
@@ -1204,7 +1204,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             chip.innerHTML = `<span>${word}</span>${statusTag}`;
             chip.addEventListener('click', () => {
-                showToast(`Word ${idx + 1}: ${word} (Surah ${surahName})`, 'info');
+                showToast(`Word ${idx + 1}: ${word} (${surahName})`, 'info');
             });
             deck.appendChild(chip);
         });
@@ -1216,7 +1216,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!listDeck) return;
 
         if (!evaluation || evaluation.wordResults.length === 0) {
-            listDeck.innerHTML = '<span style="font-size:0.8rem; color:var(--text-secondary);">Recite above or run a test scenario to view word-by-word mistake diagnostics.</span>';
+            listDeck.innerHTML = '<span style="font-size:0.8rem; color:var(--text-secondary);">Recite above or choose a test scenario to view word-by-word feedback.</span>';
             return;
         }
 
@@ -1224,7 +1224,7 @@ document.addEventListener('DOMContentLoaded', () => {
             listDeck.innerHTML = `
                 <div class="mistake-item-row err-success">
                     <div style="font-weight:600; color:#10b981; display:flex; align-items:center; gap:0.4rem;">
-                        <span>✓ Masha'Allah! Perfect Recitation</span>
+                        <span>✓ Perfect Word Match</span>
                     </div>
                     <div style="color:var(--text-secondary); font-size:0.8rem;">Recognized words match this sample. A teacher can assess pronunciation and Tajweed.</div>
                 </div>
@@ -1253,7 +1253,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function applyRecitationEvaluation(spokenText) {
         if (!spokenText?.trim()) {
-            showToast('No recognized words to compare. Listen back to your recording or try again; no score was saved.', 'info');
+            showToast('No recognized words to compare. Listen back to your recording or try again.', 'info');
             return;
         }
         const data = surahData[appState.selectedSurah] || surahData['Al-Ikhlas'];
@@ -1287,27 +1287,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (appState.isQuizMode) {
                 appState.hasanatXP += 25; // Bonus for active recall quiz!
-                showToast(`🎉 Muraja'ah Quiz Passed! Surah ${appState.selectedSurah} promoted to Box ${srsResult.newBox}! (+75 XP)`, 'success');
+                showToast(`🎉 Review passed! Surah ${appState.selectedSurah} moved to Box ${srsResult.newBox} (+75 XP)`, 'success');
             } else {
-                showToast(`Masha'Allah! Scored ${evaluation.accuracy}% on Surah ${appState.selectedSurah} (+50 XP)`, 'success');
+                showToast(`Scored ${evaluation.accuracy}% on Surah ${appState.selectedSurah} (+50 XP)`, 'success');
             }
 
             // Check if user solved a pending Detox Challenge
             if (appState.pendingDetoxChallenge) {
                 unlockDetoxScreen();
                 appState.pendingDetoxChallenge = false;
-                showToast('Focus challenge passed! Phone lockout dismissed.', 'success');
+                showToast('Challenge passed! Lockout lifted.', 'success');
             }
         } else if (evaluation.accuracy > 0) {
             playSound('alarm');
             if (appState.isQuizMode) {
-                showToast(`Quiz score: ${evaluation.accuracy}%. Review needed before advancing Box ${srsResult.newBox}.`, 'warn');
+                showToast(`Quiz score: ${evaluation.accuracy}%. Review needed before advancing to Box ${srsResult.newBox}.`, 'warn');
             } else {
-                showToast(`Recitation evaluated (${evaluation.accuracy}%). Caught ${evaluation.mistakes.length} mistakes. Check diagnostics.`, 'warn');
+                showToast(`Score: ${evaluation.accuracy}%. Found ${evaluation.mistakes.length} issue(s). Check feedback below.`, 'warn');
             }
         } else {
             playSound('alarm');
-            showToast('No clear recitation heard. Speak into your microphone or try the test buttons!', 'error');
+            showToast('No clear audio heard. Check your mic or try a test button.', 'error');
         }
 
         checkBadges();
@@ -1323,20 +1323,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (type === 'perfect') {
             testSpokenText = data.arabic;
-            showToast(`Testing: Perfect recitation of Surah ${appState.selectedSurah}`, 'success');
+            showToast(`Testing: Perfect recitation (${appState.selectedSurah})`, 'success');
         } else if (type === 'missing') {
             testSpokenText = words.slice(0, Math.max(1, words.length - 1)).join(' ');
-            showToast(`Testing: Omitted last word ("${words[words.length - 1]}")`, 'warn');
+            showToast(`Testing: Omitted "${words[words.length - 1]}"`, 'warn');
         } else if (type === 'substitute') {
             const modified = [...words];
             modified[modified.length - 1] = 'الناس';
             testSpokenText = modified.join(' ');
-            showToast(`Testing: Substituted last word with "الناس"`, 'warn');
+            showToast('Testing: Substituted last word with "الناس"', 'warn');
         } else if (type === 'custom') {
-            const input = prompt(`Enter spoken Arabic recitation to test against Surah ${appState.selectedSurah}:`, data.arabic);
+            const input = prompt(`Enter Arabic text to test against Surah ${appState.selectedSurah}:`, data.arabic);
             if (input === null) return;
             testSpokenText = input;
-            showToast('Evaluating custom Arabic recitation input', 'info');
+            showToast('Evaluating custom Arabic text...', 'info');
         }
 
         if (speechTranscript) {
@@ -1353,7 +1353,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('metric-ghunnah').textContent = '—';
         if (speechTranscript) speechTranscript.textContent = '';
         renderMistakesList(null);
-        showToast('Word evaluation reset', 'info');
+        showToast('Evaluation reset.', 'info');
     };
 
     function updateReciterSurah(surahName) {
@@ -1383,7 +1383,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isQariPlaying) {
             qariAudioPlayer.pause();
             isQariPlaying = false;
-            playQariLabel.textContent = 'Listen to Qari (Sheikh Alafasy)';
+            playQariLabel.textContent = 'Listen to Sheikh Alafasy';
         }
 
         document.getElementById('metric-accuracy').textContent = '—';
@@ -1432,27 +1432,27 @@ document.addEventListener('DOMContentLoaded', () => {
             if (isQariPlaying) {
                 qariAudioPlayer.pause();
                 isQariPlaying = false;
-                playQariLabel.textContent = 'Listen to Qari (Sheikh Alafasy)';
-                showToast('Qari recitation paused', 'info');
+                playQariLabel.textContent = 'Listen to Sheikh Alafasy';
+                showToast('Audio paused', 'info');
             } else {
                 qariAudioPlayer.src = data.audioUrl;
-                playQariLabel.textContent = 'Playing recitation... (Tap to Pause)';
+                playQariLabel.textContent = 'Playing... (Tap to pause)';
                 isQariPlaying = true;
                 qariAudioPlayer.play().then(() => {
-                    showToast(`Streaming Surah ${appState.selectedSurah} recitation`, 'success');
+                    showToast(`Playing Surah ${appState.selectedSurah}`, 'info');
                 }).catch(err => {
                     console.log('Audio playback: ', err);
-                    playQariLabel.textContent = 'Listen to Qari (Sheikh Alafasy)';
+                    playQariLabel.textContent = 'Listen to Sheikh Alafasy';
                     isQariPlaying = false;
-                    showToast('Playing recitation audio preview', 'info');
+                    showToast('Playing audio preview', 'info');
                 });
             }
         });
 
         qariAudioPlayer.addEventListener('ended', () => {
             isQariPlaying = false;
-            playQariLabel.textContent = 'Listen to Qari (Sheikh Alafasy)';
-            showToast('Qari recitation completed. Now it is your turn to recite!', 'success');
+            playQariLabel.textContent = 'Listen to Sheikh Alafasy';
+            showToast('Audio finished. Now it’s your turn to recite!', 'success');
         });
     }
 
@@ -1465,7 +1465,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 userAudioPlayer = new Audio(userAudioBlobUrl);
                 userAudioPlayer.play();
-                showToast('Playing your recorded recitation', 'info');
+                showToast('Playing your recording', 'info');
             }
         });
     }
@@ -1528,15 +1528,15 @@ document.addEventListener('DOMContentLoaded', () => {
     async function startAudioRecording() {
         appState.isRecording = true;
         micBtn.classList.add('recording');
-        recStatus.textContent = 'Listening... Recite aloud in Arabic';
+        recStatus.textContent = 'Listening... Recite clearly in Arabic';
         recognizedText = '';
-        if (speechTranscript) speechTranscript.textContent = 'Listening for your voice...';
+        if (speechTranscript) speechTranscript.textContent = 'Listening...';
         recordedAudioChunks = [];
 
         if (isQariPlaying) {
             qariAudioPlayer.pause();
             isQariPlaying = false;
-            playQariLabel.textContent = 'Listen to Qari (Sheikh Alafasy)';
+            playQariLabel.textContent = 'Listen to Sheikh Alafasy';
         }
 
         if (recognition) {
@@ -1648,7 +1648,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         setTimeout(() => {
-            recStatus.textContent = 'Recitation Evaluated. Tap to Record Again';
+            recStatus.textContent = 'Evaluation complete. Tap mic to record again.';
             drawStaticWave();
             
             const spokenText = (recognizedText || '').trim();
@@ -1845,10 +1845,10 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (canvasHistory.length === 0) {
                 badge.className = 'feedback-score score-error';
-                badge.textContent = 'Empty Board';
-                title.textContent = 'No Input Detected';
-                desc.textContent = 'Please write something on the drawing canvas before verifying.';
-                showToast('Canvas is empty. Draw Arabic letters first!', 'warn');
+                badge.textContent = 'Empty Canvas';
+                title.textContent = 'No Writing Detected';
+                desc.textContent = 'Write on the canvas before verifying.';
+                showToast('Canvas is empty. Draw the letters first.', 'warn');
                 return;
             }
 
@@ -1869,14 +1869,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (appState.pendingDetoxChallenge) {
                     unlockDetoxScreen();
                     appState.pendingDetoxChallenge = false;
-                    showToast('Focus writing challenge passed! Phone lockout dismissed.', 'success');
+                    showToast('Writing challenge passed. Lockout dismissed!', 'success');
                 } else {
-                    showToast(`Verified script! ${analysis.score}% accuracy (+40 XP)`, 'success');
+                    showToast(`Script verified! ${analysis.score}% accuracy (+40 XP)`, 'success');
                 }
                 saveState();
                 refreshAllDashboardAndRetentionUI();
             } else {
-                showToast('Script verified. Practice the stroke flow to improve accuracy.', 'warn');
+                showToast('Script evaluated. Practice stroke flow to improve accuracy.', 'warn');
             }
         });
     }
@@ -1940,20 +1940,20 @@ document.addEventListener('DOMContentLoaded', () => {
         let scoreClass, title, feedback;
         if (finalScore >= 90) {
             scoreClass = 'score-perfect';
-            title = 'Excellent Script!';
-            feedback = `Your handwriting of '${targetWord}' demonstrates strong stroke structure with ${strokeCount} strokes and good spatial coverage.`;
+            title = 'Excellent Script';
+            feedback = `Strong stroke structure and clear proportions for '${targetWord}'.`;
         } else if (finalScore >= 70) {
             scoreClass = 'score-warn';
             title = 'Good Attempt';
-            feedback = `Recognized attempt at '${targetWord}'. Keep practicing the Arabic ligatures for higher precision.`;
+            feedback = `Recognized script for '${targetWord}'. Practice ligatures for higher precision.`;
         } else if (finalScore >= 40) {
             scoreClass = 'score-warn';
             title = 'Needs Improvement';
-            feedback = `The writing partially matches '${targetWord}'. Try enabling trace guidelines and follow the stroke order.`;
+            feedback = `Partial match for '${targetWord}'. Turn on trace guidelines for stroke guidance.`;
         } else {
             scoreClass = 'score-error';
             title = 'Try Again';
-            feedback = `The input does not resemble '${targetWord}'. Enable trace guidelines and use deliberate strokes.`;
+            feedback = `Unrecognized shape. Follow the trace guide and try again.`;
         }
 
         return { score: finalScore, scoreClass, title, feedback };
@@ -2000,8 +2000,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const deck = document.getElementById('teacher-results-deck');
         deck.innerHTML = `
             <div style="text-align:center; padding:2rem; color:var(--text-secondary);">
-                <div style="font-weight:600; margin-bottom:0.25rem;">Running matching coordinates...</div>
-                <div style="font-size:0.8rem;">Filtering by language, skill level, and schedule alignment...</div>
+                <div style="font-weight:600; margin-bottom:0.25rem;">Finding compatible teachers...</div>
+                <div style="font-size:0.8rem;">Matching your language, level, and availability...</div>
             </div>
         `;
         
@@ -2009,7 +2009,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         setTimeout(() => {
             renderTeacherCards(teachersDb);
-            showToast(`Found ${teachersDb.length} compatible teacher matches!`, 'success');
+            showToast(`Found ${teachersDb.length} matching teachers.`, 'success');
         }, 800);
     };
 
@@ -2080,7 +2080,7 @@ document.addEventListener('DOMContentLoaded', () => {
         saveState();
         refreshAllDashboardAndRetentionUI();
         closeModal('booking-modal');
-        showToast(`Confirmed booking with ${teacherName} for ${date} at ${time}!`, 'success');
+        showToast(`Booked with ${teacherName} for ${date} at ${time}.`, 'success');
     };
 
     window.openBookingsListModal = function() {
@@ -2090,7 +2090,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (appState.bookings.length === 0) {
             deck.innerHTML = `
                 <div style="text-align:center; padding:2rem; color:var(--text-secondary);">
-                    <p>No booked mentorship sessions yet.</p>
+                    <p>No booked sessions yet.</p>
                     <button class="btn btn-primary" style="margin-top:1rem;" onclick="closeModal('my-bookings-modal'); nextWizardStep(1);">Find a Teacher</button>
                 </div>
             `;
@@ -2144,10 +2144,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (videoEl) {
                 videoEl.srcObject = stream;
             }
-            showToast('Connected to 1-on-1 Classroom with webcam & audio!', 'success');
+            showToast('Connected to classroom video and audio.', 'success');
         }).catch(err => {
             console.warn('Classroom media access note: ', err);
-            showToast('Connected in Audio-only simulator mode', 'info');
+            showToast('Connected in audio-only mode.', 'info');
         });
     };
 
@@ -2177,7 +2177,7 @@ document.addEventListener('DOMContentLoaded', () => {
             classroomStream = null;
         }
         closeModal('classroom-modal');
-        showToast('Classroom session completed. May Allah bless your Quran studies!', 'success');
+        showToast('Session ended. Great practice today!', 'success');
     };
 
     // ==========================================
@@ -2193,7 +2193,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const deck = document.getElementById('chat-messages-deck');
         deck.innerHTML = `
             <div class="chat-bubble teacher">
-                As-salamu alaykum, Muslim! How is your revision of Surah ${appState.selectedSurah} going today? Let me know if you need help with any Tajweed rule.
+                As-salamu alaykum! How is your revision of Surah ${appState.selectedSurah} going? Ask me any Tajweed question.
             </div>
         `;
 
@@ -2223,11 +2223,11 @@ document.addEventListener('DOMContentLoaded', () => {
             teacherBubble.className = 'chat-bubble teacher';
             
             if (text.toLowerCase().includes('tajweed') || text.toLowerCase().includes('qalqalah') || text.toLowerCase().includes('rule')) {
-                teacherBubble.textContent = `Barakallahu feek! When practicing Qalqalah, remember to make a clear bounce without adding a harakah vowel. Listen to the Qari audio in the Reciter tab to hear the exact tone.`;
+                teacherBubble.textContent = `Barakallahu feek! For Qalqalah, bounce the letter cleanly without adding a vowel sound. Check the audio tab to hear the exact tone.`;
             } else if (text.toLowerCase().includes('book') || text.toLowerCase().includes('session') || text.toLowerCase().includes('time')) {
-                teacherBubble.textContent = `I am available for our 1-on-1 lesson tomorrow evening! Click "Book Lesson" anytime and I will see you in the live classroom.`;
+                teacherBubble.textContent = `I'm available tomorrow evening. Click "Book Lesson" anytime to reserve a slot.`;
             } else {
-                teacherBubble.textContent = `Masha'Allah, excellent question. Consistent daily recitation (even 5 Ayahs) is the golden key to long-term Quran memorization. Keep up the great effort!`;
+                teacherBubble.textContent = `Masha'Allah, great question! Daily recitation—even just 5 Ayahs—is key to solid retention.`;
             }
             deck.appendChild(teacherBubble);
             deck.scrollTop = deck.scrollHeight;
@@ -2249,9 +2249,9 @@ document.addEventListener('DOMContentLoaded', () => {
         appState.focusDurationMins = mins;
         appState.focusRemainingSecs = mins * 60;
         updateFocusDisplay();
-        if (focusBtn) focusBtn.textContent = 'Start Focus Mode';
-        if (focusStatusLabel) focusStatusLabel.textContent = `${mins}m Target Ready`;
-        showToast(`Focus timer set to ${mins} minutes`, 'info');
+        if (focusBtn) focusBtn.textContent = 'Start Focus';
+        if (focusStatusLabel) focusStatusLabel.textContent = `${mins}m ready`;
+        showToast(`Focus timer set to ${mins}m.`, 'info');
     };
 
     window.toggleFocusSession = function() {
@@ -2265,7 +2265,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function startFocusSession() {
         appState.isFocusRunning = true;
         if (focusBtn) focusBtn.textContent = 'Pause Focus';
-        if (focusStatusLabel) focusStatusLabel.textContent = 'In Session 🔥';
+        if (focusStatusLabel) focusStatusLabel.textContent = 'Focusing 🔥';
         
         // Enter Fullscreen distraction-free mode if supported
         try {
@@ -2274,7 +2274,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (e) {}
 
-        showToast('Focus session started. Social apps shielded!', 'success');
+        showToast('Focus session started. Distractions blocked.', 'success');
 
         focusTimerInterval = setInterval(() => {
             appState.focusRemainingSecs -= 1;
@@ -2283,15 +2283,15 @@ document.addEventListener('DOMContentLoaded', () => {
             if (appState.focusRemainingSecs <= 0) {
                 clearInterval(focusTimerInterval);
                 appState.isFocusRunning = false;
-                if (focusBtn) focusBtn.textContent = 'Start Focus Mode';
-                if (focusStatusLabel) focusStatusLabel.textContent = 'Session Finished 🎉';
+                if (focusBtn) focusBtn.textContent = 'Start Focus';
+                if (focusStatusLabel) focusStatusLabel.textContent = 'Session complete 🎉';
                 appState.hasanatXP += 100;
                 appState.focusSessionsCompleted = (appState.focusSessionsCompleted || 0) + 1;
                 recordPracticeActivity();
                 checkBadges();
                 saveState();
                 playSound('success');
-                showToast(`Masha'Allah! ${appState.focusDurationMins}-minute focus Wird complete (+100 XP)`, 'success');
+                showToast(`${appState.focusDurationMins}-minute focus complete (+100 XP)!`, 'success');
                 refreshAllDashboardAndRetentionUI();
             }
         }, 1000);
@@ -2302,7 +2302,7 @@ document.addEventListener('DOMContentLoaded', () => {
         appState.isFocusRunning = false;
         if (focusBtn) focusBtn.textContent = 'Resume Focus';
         if (focusStatusLabel) focusStatusLabel.textContent = 'Paused';
-        showToast('Focus session paused', 'info');
+        showToast('Focus session paused.', 'info');
     }
 
     function updateFocusDisplay() {
@@ -2314,7 +2314,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // App Shield list manager
     window.promptAddCustomApp = function() {
-        const appName = prompt('Enter application or website to shield (e.g. Reddit, Twitter, Netflix):');
+        const appName = prompt('Enter app or site to block (e.g., YouTube, Reddit):');
         if (appName && appName.trim()) {
             const cleanName = appName.trim();
             const container = document.getElementById('blocked-apps-container');
@@ -2335,7 +2335,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </label>
                 `;
                 container.appendChild(item);
-                showToast(`Added ${cleanName} to shielded list!`, 'success');
+                showToast(`Blocked ${cleanName}.`, 'success');
             }
         }
     };
@@ -2381,24 +2381,24 @@ document.addEventListener('DOMContentLoaded', () => {
         if (type === 'write') {
             appState.selectedSurah = 'Al-Ikhlas';
             startPracticeMode('write');
-            showToast('Detox challenge: Score ≥70% on canvas to verify presence and unlock.', 'info');
+            showToast('Challenge: Score ≥70% on writing canvas to unlock early.', 'info');
         } else {
             appState.selectedSurah = 'Al-Ikhlas';
             startPracticeMode('recite');
-            showToast('Detox challenge: Recite Al-Ikhlas with ≥75% accuracy to unlock.', 'info');
+            showToast('Challenge: Recite Al-Ikhlas with ≥75% accuracy to unlock early.', 'info');
         }
     };
 
     window.dismissDetoxLock = function() {
         clearInterval(appState.detoxLockTimer);
         detoxPanel.classList.remove('active');
-        showToast('Detox lockout dismissed (Demo Mode).', 'info');
+        showToast('Lockout dismissed (demo mode).', 'info');
     };
 
     function unlockDetoxScreen() {
         clearInterval(appState.detoxLockTimer);
         detoxPanel.classList.remove('active');
-        showToast('Timeout complete. Access restored!', 'success');
+        showToast('Focus time complete. Access restored!', 'success');
     }
     if (window.location.hash) switchTab(window.location.hash.substring(1));
     document.addEventListener('hifzquest:refresh-request', refreshAllDashboardAndRetentionUI);

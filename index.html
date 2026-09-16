@@ -932,7 +932,7 @@
                 <span style="font-size: 1.1rem">⚡</span>
                 <div>
                   <strong style="color: #f59e0b; font-size: 0.9rem"
-                    >Daily Muraja'ah Quiz Active</strong
+                    >Daily Revision Quiz</strong
                   >
                   <p
                     style="
@@ -942,8 +942,7 @@
                     "
                     id="quiz-banner-subtitle"
                   >
-                    Recite from memory without audio aids to advance this
-                    Surah's Spaced Repetition box.
+                    Recite from memory to advance your spaced repetition level.
                   </p>
                 </div>
               </div>
@@ -957,8 +956,7 @@
             </div>
 
             <p class="recall-placeholder" role="status">
-              The ayah is hidden for recall. Choose “Exit Quiz” to reveal it
-              again.
+              Ayah hidden for recall. Tap “Exit Quiz” to show it.
             </p>
             <div class="ayah-box">
               <div
@@ -982,31 +980,31 @@
                   color: var(--text-secondary);
                   font-weight: 600;
                 "
-                >Mistake Diagnostics:</span
+                >Diagnostic Tests:</span
               >
               <button
                 class="test-pill-btn test-pill-success"
                 onclick="testRecitationScenario('perfect')"
               >
-                ✓ Test Perfect Recitation
+                ✓ Perfect Recitation
               </button>
               <button
                 class="test-pill-btn test-pill-danger"
                 onclick="testRecitationScenario('missing')"
               >
-                ✗ Test Omitted Word
+                ✗ Missing Word
               </button>
               <button
                 class="test-pill-btn test-pill-warn"
                 onclick="testRecitationScenario('substitute')"
               >
-                ⚠ Test Mispronounced Word
+                ⚠ Mismatched Word
               </button>
               <button
                 class="test-pill-btn"
                 onclick="testRecitationScenario('custom')"
               >
-                ✏ Type Custom Recitation
+                ✏ Custom Input
               </button>
               <button class="test-pill-btn" onclick="resetWordEvaluation()">
                 Reset
@@ -1020,7 +1018,7 @@
                   <path d="M8,5.14V19.14L19,12.14L8,5.14Z" />
                 </svg>
                 <span id="qari-audio-btn-label"
-                  >Listen to Qari (Sheikh Alafasy)</span
+                  >Listen to Sheikh Alafasy</span
                 >
               </button>
               <button
@@ -1089,11 +1087,11 @@
               "
             >
               <h3 style="font-size: 1.1rem; font-weight: 600">
-                Word comparison & guidance
+                Recitation Analysis
               </h3>
               <div class="feedback-badge-list" id="feedback-metrics-container">
                 <div class="feedback-item">
-                  <span>Recognized word match</span>
+                  <span>Word Match</span>
                   <span
                     class="feedback-score score-perfect"
                     id="metric-accuracy"
@@ -1101,13 +1099,13 @@
                   >
                 </div>
                 <div class="feedback-item">
-                  <span>Qalqalah reminder</span>
+                  <span>Qalqalah</span>
                   <span class="feedback-score score-warn" id="metric-qalqalah"
                     >—</span
                   >
                 </div>
                 <div class="feedback-item">
-                  <span>Ghunnah reminder</span>
+                  <span>Ghunnah</span>
                   <span class="feedback-score score-perfect" id="metric-ghunnah"
                     >—</span
                   >
@@ -1126,15 +1124,14 @@
                     color: var(--text-primary);
                   "
                 >
-                  Detailed Mistake Feed:
+                  Mistakes Breakdown:
                 </div>
                 <div
                   id="mistakes-list-deck"
                   style="display: flex; flex-direction: column; gap: 0.5rem"
                 >
                   <span style="font-size: 0.8rem; color: var(--text-secondary)"
-                    >Recite above or run a test scenario to view word-by-word
-                    mistake diagnostics.</span
+                    >Recite or run a diagnostic test to see word-by-word feedback.</span
                   >
                 </div>
               </div>
@@ -1157,11 +1154,10 @@
                     margin-bottom: 0.25rem;
                   "
                   id="coach-insight-title"
-                  >AI Coach Insights:</strong
+                  >Coach Insights:</strong
                 >
                 <span id="coach-insight-body"
-                  >Select an Ayah and tap record or listen to the Qari reference
-                  audio above.</span
+                  >Select an ayah and tap the mic to begin, or listen to the recitation above.</span
                 >
               </div>
             </div>
@@ -1172,10 +1168,9 @@
       <!-- WRITING CANVAS TAB -->
       <section id="canvas" class="app-section">
         <div class="section-header">
-          <h1 class="section-title">Finger & Stylus Writing Canvas</h1>
+          <h1 class="section-title">Writing Canvas</h1>
           <p class="section-subtitle">
-            Write out the Arabic verse from memory to test spelling and
-            memorization accuracy.
+            Write Arabic words from memory to reinforce spelling and retention.
           </p>
         </div>
 
@@ -1238,9 +1233,9 @@
                 id="canvas-brush-size"
                 style="width: auto; padding: 0.4rem 0.6rem; font-size: 0.85rem"
               >
-                <option value="2">Fine Pen (2px)</option>
+                <option value="2">Fine (2px)</option>
                 <option value="4" selected>Medium (4px)</option>
-                <option value="8">Calligraphy Brush (8px)</option>
+                <option value="8">Broad (8px)</option>
               </select>
             </div>
 
@@ -1259,7 +1254,7 @@
                   color: var(--text-secondary);
                   white-space: nowrap;
                 "
-                >Word Target:</label
+                >Target Word:</label
               >
               <select
                 class="form-select"
@@ -1290,7 +1285,7 @@
                   cursor: pointer;
                   white-space: nowrap;
                 "
-                >Show Trace</label
+                >Trace Guide</label
               >
               <button
                 class="btn btn-secondary"
@@ -1303,10 +1298,10 @@
                 >
                   <path d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z" />
                 </svg>
-                <span>Save Image</span>
+                <span>Save</span>
               </button>
               <button class="btn btn-primary" id="canvas-test-btn">
-                Verify Script
+                Verify Writing
               </button>
             </div>
           </div>
@@ -1339,7 +1334,7 @@
               "
             >
               <h4 id="canvas-result-title" style="font-weight: 600">
-                OCR Analysis
+                Writing Evaluation
               </h4>
               <span
                 id="canvas-result-badge"
@@ -1351,7 +1346,7 @@
               style="font-size: 0.9rem; color: var(--text-secondary)"
               id="canvas-result-text"
             >
-              OCR matched "الله" perfectly. Excellent script consistency!
+              Evaluation results will appear here.
             </p>
           </div>
         </div>
@@ -1361,10 +1356,9 @@
       <!-- DIGITAL DETOX TAB -->
       <section id="detox" class="app-section">
         <div class="section-header">
-          <h1 class="section-title">Digital Detox & Focus Studio</h1>
+          <h1 class="section-title">Focus & Digital Detox</h1>
           <p class="section-subtitle">
-            Set aside focused Quran time. App blocking below is a demonstration
-            and cannot block other apps.
+            Dedicate uninterrupted time to the Quran. App blocking is simulated.
           </p>
         </div>
 
@@ -1380,7 +1374,7 @@
                 "
               >
                 <h3 style="font-size: 1.1rem; font-weight: 600">
-                  App Shield Management
+                  App Blocklist (Simulator)
                 </h3>
                 <button
                   class="btn btn-secondary"
@@ -1391,8 +1385,7 @@
                 </button>
               </div>
               <p style="font-size: 0.85rem; color: var(--text-secondary)">
-                Toggle which applications to shield when you are practicing
-                Hifz.
+                Choose apps to block during your focus sessions.
               </p>
 
               <div class="blocked-apps-list" id="blocked-apps-container">
@@ -1417,7 +1410,7 @@
                       </h4>
                       <span
                         style="font-size: 0.75rem; color: var(--text-secondary)"
-                        >Shield category: Entertainment</span
+                        >Category: Entertainment</span
                       >
                     </div>
                   </div>
@@ -1448,7 +1441,7 @@
                       </h4>
                       <span
                         style="font-size: 0.75rem; color: var(--text-secondary)"
-                        >Shield category: Social</span
+                        >Category: Social</span
                       >
                     </div>
                   </div>
@@ -1479,7 +1472,7 @@
                       </h4>
                       <span
                         style="font-size: 0.75rem; color: var(--text-secondary)"
-                        >Shield category: Entertainment</span
+                        >Category: Entertainment</span
                       >
                     </div>
                   </div>
@@ -1498,7 +1491,7 @@
               style="display: flex; flex-direction: column; gap: 1.25rem"
             >
               <h3 style="font-size: 1.1rem; font-weight: 600">
-                Focus Session & Timer
+                Focus Timer
               </h3>
 
               <!-- Focus Pomodoro Dial -->
@@ -1535,7 +1528,7 @@
                   id="start-focus-session-btn"
                   onclick="toggleFocusSession()"
                 >
-                  Start Focus Mode
+                  Start Focus
                 </button>
                 <button
                   class="btn btn-secondary"
@@ -1568,10 +1561,10 @@
               >
                 <div>
                   <h4 style="font-size: 0.9rem; font-weight: 600">
-                    Ambient Rain / Waves
+                    Ambient Sound
                   </h4>
                   <span style="font-size: 0.75rem; color: var(--text-secondary)"
-                    >Relaxing white noise synthesizer</span
+                    >Background white noise</span
                   >
                 </div>
                 <label class="switch">
@@ -1596,7 +1589,7 @@
                   style="width: 100%"
                   id="trigger-detox-sim-btn"
                 >
-                  Simulate Block Lockout
+                  Simulate App Lockout
                 </button>
               </div>
             </div>
@@ -1607,22 +1600,21 @@
       <!-- GLOBAL FOOTER -->
       <footer class="app-footer">
         <span>&copy; 2026 HifzQuest. All rights reserved.</span>
-        <span id="footer-version-label">v1.1.0 · Community UI preview</span>
+        <span id="footer-version-label">v1.1.1 (updated 2026-09-16 06:27)</span>
       </footer>
     </main>
 
     <!-- FULL SCREEN PHONE LOCKOVERLAY SIMULATOR -->
     <div class="detox-lock-overlay" id="detox-lock-panel">
       <div class="lock-modal-box">
-        <h2 class="lock-title">FOCUS SHIELD ACTIVE</h2>
+        <h2 class="lock-title">Focus Shield Active</h2>
         <p class="lock-subtitle">
-          Islamic Timeout initiated. You have spent too much time on shielded
-          apps without completing your Quranic Wird.
+          Focus timeout active. Complete your Quran practice to restore access early.
         </p>
 
         <div class="challenge-box">
           <h4 style="font-weight: 600; font-size: 1rem; margin-bottom: 0.5rem">
-            Solve Challenge to Unlock Early
+            Unlock Early Challenge
           </h4>
           <p
             style="
@@ -1632,7 +1624,7 @@
             "
             id="detox-challenge-prompt"
           >
-            Write the word "الله" on the Writing Canvas to verify your presence.
+            Write the target word on the canvas or recite the ayah to unlock early.
           </p>
           <div
             style="
@@ -1646,26 +1638,26 @@
               class="btn btn-primary"
               onclick="solveLockChallenge('write')"
             >
-              Solve Writing Test
+              Writing Challenge
             </button>
             <button
               class="btn btn-secondary"
               onclick="solveLockChallenge('recite')"
             >
-              Solve Recitation Test
+              Recitation Challenge
             </button>
             <button
               class="btn btn-secondary"
               onclick="dismissDetoxLock()"
               style="border-color: rgba(239, 68, 68, 0.4); color: #f87171"
             >
-              Dismiss (Demo Mode)
+              Dismiss (Demo)
             </button>
           </div>
         </div>
 
         <div style="font-size: 0.85rem; color: var(--text-secondary)">
-          Remaining Lock Timer:
+          Time remaining:
           <div class="lock-timer" id="detox-countdown-timer">02:00</div>
         </div>
       </div>
@@ -1693,7 +1685,7 @@
           "
           id="practice-modal-subtitle"
         >
-          Choose how you want to memorize or test this constellation node.
+          Choose your practice mode for this surah.
         </p>
         <div style="display: flex; flex-direction: column; gap: 0.75rem">
           <button
@@ -1709,7 +1701,7 @@
                 d="M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M19,11C19,14.53 16.39,17.44 13,17.93V21H11V17.93C7.61,17.44 5,14.53 5,11H7A5,5 0 0,0 12,16A5,5 0 0,0 17,11H19Z"
               />
             </svg>
-            <span>Tajweed Practice & Recitation</span>
+            <span>Recite Aloud (Tajweed & Voice)</span>
           </button>
           <button
             class="btn btn-secondary"
@@ -1724,7 +1716,7 @@
                 d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.07,6.19L3,17.25Z"
               />
             </svg>
-            <span>Writing Test (Active Recall)</span>
+            <span>Write on Canvas (Active Recall)</span>
           </button>
         </div>
       </div>
@@ -1738,7 +1730,7 @@
             style="font-weight: 700; font-size: 1.2rem"
             id="booking-modal-title"
           >
-            Book Mentorship Session
+            Book Lesson
           </h3>
           <button class="modal-close" onclick="closeModal('booking-modal')">
             &times;
@@ -1787,7 +1779,7 @@
             >Preferred Date</label
           >
           <select class="form-select" id="booking-date-select">
-            <option value="Today">Today (Same Day)</option>
+            <option value="Today">Today</option>
             <option value="Tomorrow" selected>Tomorrow</option>
             <option value="Saturday">Saturday</option>
             <option value="Sunday">Sunday</option>
@@ -1810,11 +1802,11 @@
           >
           <select class="form-select" id="booking-session-type">
             <option value="Tajweed Correction" selected>
-              Tajweed & Makharij Correction
+              Tajweed & Makharij
             </option>
-            <option value="New Memorization">New Hifz Recitation</option>
+            <option value="New Memorization">New Memorization</option>
             <option value="Murajah Revision">
-              Murajah (Revision & Testing)
+              Revision & Muraja'ah
             </option>
           </select>
         </div>
@@ -1865,10 +1857,10 @@
               style="font-weight: 700; font-size: 1.2rem"
               id="classroom-title"
             >
-              Live 1-on-1 Quran Classroom
+              Live Classroom
             </h3>
             <span style="font-size: 0.8rem; color: #10b981; font-weight: 600"
-              >● Live Audio & Video Connected</span
+              >● Connected</span
             >
           </div>
           <button class="modal-close" onclick="endClassroomSession()">
@@ -1917,7 +1909,7 @@
               color: var(--text-secondary);
             "
           >
-            Classroom Whiteboard / Ayah:
+            Lesson Verse:
           </h4>
           <div
             style="
@@ -2005,7 +1997,7 @@
             type="text"
             class="form-input"
             id="chat-input-text"
-            placeholder="Type message to mentor..."
+            placeholder="Ask a question..."
             autocomplete="off"
           />
           <button
@@ -2041,13 +2033,13 @@
         </div>
         <div class="form-group">
           <label class="form-label" for="profile-target-select"
-            >Daily Wird Target</label
+            >Daily Target</label
           >
           <select class="form-select" id="profile-target-select">
-            <option value="3 Ayahs">3 Ayahs per day</option>
-            <option value="5 Ayahs" selected>5 Ayahs per day (Standard)</option>
-            <option value="10 Ayahs">10 Ayahs per day (Intensive)</option>
-            <option value="1 Page">1 Page per day (Hafiz Track)</option>
+            <option value="3 Ayahs">3 Ayahs / day</option>
+            <option value="5 Ayahs" selected>5 Ayahs / day (Standard)</option>
+            <option value="10 Ayahs">10 Ayahs / day (Intensive)</option>
+            <option value="1 Page">1 Page / day (Intensive)</option>
           </select>
         </div>
         <div class="form-group">
@@ -2088,7 +2080,7 @@
       <div class="modal-card">
         <div class="modal-header">
           <h3 style="font-weight: 700; font-size: 1.2rem">
-            Memorization Progress Breakdown
+            Progress Summary
           </h3>
           <button class="modal-close" onclick="closeModal('stats-modal')">
             &times;
@@ -2145,7 +2137,7 @@
                 color: var(--text-secondary);
                 text-transform: uppercase;
               "
-              >Avg sample word match</span
+              >Average Word Match</span
             >
             <div
               style="
@@ -2160,7 +2152,7 @@
           </div>
         </div>
         <h4 style="font-size: 0.9rem; font-weight: 600; margin-bottom: 0.75rem">
-          Sample practice history:
+          Recent Practice:
         </h4>
         <div
           style="

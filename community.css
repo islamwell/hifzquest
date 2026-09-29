@@ -323,10 +323,12 @@ a {
   position: relative;
   overflow: hidden;
   min-height: 302px;
-  background: #204d39;
+  background: linear-gradient(135deg, #1b4d36 0%, #103324 100%);
   color: #fff;
   border-radius: 14px;
   padding: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
 }
 .hero-copy {
   position: relative;
@@ -393,48 +395,32 @@ a {
   font-size: 9px;
   margin-top: 13px;
 }
+.hero-art,
 .arch-art {
   position: absolute;
-  right: -28px;
-  bottom: -30px;
-  width: 240px;
-  height: 295px;
-  border: 1px solid #ffffff29;
-  border-radius: 140px 140px 0 0;
-  transform: rotate(9deg);
-  padding: 15px;
-  background: linear-gradient(155deg, #40795a55, #122e24);
-}
-.arch-art:after {
-  content: "";
-  position: absolute;
-  inset: 30px -28px -12px 30px;
-  border-radius: 140px 140px 0 0;
-  border: 1px solid #ffffff1a;
-}
-.arch-inner {
-  height: 100%;
-  border: 1px solid #c8d5a643;
-  border-radius: 140px 140px 0 0;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 260px;
+  height: 250px;
   display: flex;
   align-items: center;
-  flex-direction: column;
   justify-content: center;
-  gap: 17px;
-  color: #d5dab6;
+  pointer-events: none;
+  z-index: 0;
+  border: none;
+  background: none;
+  padding: 0;
 }
-.arch-inner > span {
-  font-family: var(--font-arabic);
-  font-size: 42px;
+.hero-art:after,
+.arch-art:after {
+  display: none;
 }
-.art-book .hq-icon {
-  width: 65px;
-  height: 65px;
-  stroke-width: 0.7;
-}
-.arch-inner small {
-  font-size: 7px;
-  letter-spacing: 1.8px;
+.hero-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.45));
 }
 .section-row {
   display: flex;
@@ -998,10 +984,11 @@ form select {
   .recite-hero {
     min-height: 330px;
   }
+  .hero-art,
   .arch-art {
     right: 25px;
-    width: 270px;
-    height: 320px;
+    width: 285px;
+    height: 270px;
   }
   .hero-copy {
     max-width: 60%;
@@ -1028,9 +1015,12 @@ form select {
   .recite-hero {
     padding: 25px;
   }
+  .hero-art,
   .arch-art {
-    right: -55px;
-    opacity: 0.65;
+    right: -15px;
+    width: 220px;
+    height: 210px;
+    opacity: 0.8;
   }
   .hero-copy {
     max-width: 78%;
@@ -1103,9 +1093,12 @@ form select {
   .practice-row .btn {
     margin-left: 0;
   }
+  .hero-art,
   .arch-art {
     right: 10px;
-    opacity: 1;
+    width: 240px;
+    height: 230px;
+    opacity: 0.9;
   }
   .hero-copy {
     max-width: 62%;
@@ -1231,9 +1224,12 @@ form select {
   .hero-copy {
     max-width: 65%;
   }
+  .hero-art,
   .arch-art {
-    width: 220px;
-    right: -20px;
+    width: 190px;
+    height: 180px;
+    right: -15px;
+    opacity: 0.65;
   }
   .toast-container {
     bottom: 95px;
@@ -1279,11 +1275,15 @@ form select {
     max-width: 230px;
     font-size: 12px;
   }
+  .hero-art,
   .arch-art {
-    right: -124px;
-    bottom: -38px;
-    width: 240px;
-    opacity: 0.45;
+    right: -25px;
+    bottom: auto;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 160px;
+    height: 155px;
+    opacity: 0.38;
   }
   .hero-caption {
     font-size: 8px;

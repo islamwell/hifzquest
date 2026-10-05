@@ -767,8 +767,11 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     font-family: var(--font-arabic);
-    font-size: 7rem;
-    opacity: 0.05;
+    font-size: clamp(3.5rem, 11vw, 7rem);
+    max-width: 90%;
+    text-align: center;
+    white-space: nowrap;
+    opacity: 0.03;
     pointer-events: none;
     user-select: none;
     color: white;

@@ -1730,7 +1730,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Toggle guide letter overlay
     if (guideToggle) {
         guideToggle.addEventListener('change', () => {
-            canvasGuideText.style.opacity = guideToggle.checked ? '0.08' : '0.01';
+            canvasGuideText.style.opacity = guideToggle.checked ? '0.24' : '0.02';
         });
     }
 
@@ -1858,7 +1858,9 @@ document.addEventListener('DOMContentLoaded', () => {
             badge.className = `feedback-score ${analysis.scoreClass}`;
             badge.textContent = `${analysis.score}% Match`;
             title.textContent = analysis.title;
-            desc.textContent = analysis.feedback;
+            desc.textContent = (analysis.precision !== undefined && analysis.recall !== undefined)
+                ? `${analysis.feedback} (Coverage: ${analysis.recall}%, Precision: ${analysis.precision}%)`
+                : analysis.feedback;
 
             if (analysis.score >= 70) {
                 appState.hasanatXP += 40;
@@ -1881,82 +1883,364 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function analyzeHandwriting(strokes, canvasW, canvasH, targetWord) {
-        const totalPoints = strokes.reduce((sum, s) => sum + s.length, 0);
-        const strokeCount = strokes.length;
+    // Expected stroke count ranges for authentic Arabic calligraphy words
+    const ARABIC_WORD_STROKE_RANGES = {
+        'الله': [1, 5],
+        'الناس': [2, 7],
+        'الفلق': [2, 7],
+        'الكافرون': [2, 9],
+        'الكوثر': [2, 8],
+        'الماعون': [2, 9],
+        'قريش': [2, 7],
+        'الفيل': [2, 7],
+        'العصر': [2, 7],
+        'القدر': [2, 7]
+    };
 
+    function createReferenceMask(targetWord, canvasWidth, canvasHeight, guideElement) {
+        const offCanvas = document.createElement('canvas');
+        offCanvas.width = canvasWidth;
+        offCanvas.height = canvasHeight;
+        const offCtx = offCanvas.getContext('2d');
+        if (!offCtx) return null;
+
+        let guideX = canvasWidth / 2;
+        let guideY = canvasHeight / 2;
+        let fontSize = Math.min(canvasHeight * 0.45, 115);
+
+        if (guideElement && canvas) {
+            const guideRect = guideElement.getBoundingClientRect();
+            const canvasRect = canvas.getBoundingClientRect();
+            if (canvasRect.width > 0 && guideRect.width > 0) {
+                guideX = guideRect.left - canvasRect.left + guideRect.width / 2;
+                guideY = guideRect.top - canvasRect.top + guideRect.height / 2;
+            }
+            const comp = window.getComputedStyle(guideElement);
+            if (comp && comp.fontSize) {
+                const parsed = parseFloat(comp.fontSize);
+                if (!isNaN(parsed) && parsed > 20) fontSize = parsed;
+            }
+        }
+
+        offCtx.clearRect(0, 0, canvasWidth, canvasHeight);
+        offCtx.font = `bold ${Math.round(fontSize)}px 'Amiri', 'Traditional Arabic', 'Scheherazade New', serif`;
+        offCtx.textAlign = 'center';
+        offCtx.textBaseline = 'middle';
+        offCtx.fillStyle = '#ffffff';
+        if ('direction' in offCtx) {
+            offCtx.direction = 'rtl';
+        }
+        offCtx.fillText(targetWord, guideX, guideY);
+
+        return { offCanvas, offCtx, guideX, guideY, fontSize };
+    }
+
+    function getStrokeBoundingBox(strokes) {
+        if (!strokes || strokes.length === 0) return null;
         let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+        let count = 0;
         strokes.forEach(stroke => {
             stroke.forEach(pt => {
+                count++;
                 if (pt.x < minX) minX = pt.x;
                 if (pt.x > maxX) maxX = pt.x;
                 if (pt.y < minY) minY = pt.y;
                 if (pt.y > maxY) maxY = pt.y;
             });
         });
-        const bboxWidth = maxX - minX;
-        const bboxHeight = maxY - minY;
-        const coverageRatio = (bboxWidth * bboxHeight) / (canvasW * canvasH);
+        if (count === 0 || minX === Infinity) return null;
+        return {
+            minX, minY, maxX, maxY,
+            width: Math.max(1, maxX - minX),
+            height: Math.max(1, maxY - minY)
+        };
+    }
 
-        let totalPathLength = 0;
-        strokes.forEach(stroke => {
-            for (let i = 1; i < stroke.length; i++) {
-                const dx = stroke[i].x - stroke[i - 1].x;
-                const dy = stroke[i].y - stroke[i - 1].y;
-                totalPathLength += Math.sqrt(dx * dx + dy * dy);
+    function getCanvasPixelBoundingBox(targetCtx, width, height) {
+        try {
+            const imgData = targetCtx.getImageData(0, 0, width, height).data;
+            let minX = width, maxX = 0, minY = height, maxY = 0;
+            let found = false;
+            const step = 2;
+            for (let y = 0; y < height; y += step) {
+                for (let x = 0; x < width; x += step) {
+                    if (imgData[(y * width + x) * 4 + 3] > 30) {
+                        found = true;
+                        if (x < minX) minX = x;
+                        if (x > maxX) maxX = x;
+                        if (y < minY) minY = y;
+                        if (y > maxY) maxY = y;
+                    }
+                }
             }
-        });
+            if (!found) return null;
+            return {
+                minX, minY, maxX, maxY,
+                width: Math.max(1, maxX - minX + 1),
+                height: Math.max(1, maxY - minY + 1)
+            };
+        } catch (e) {
+            return null;
+        }
+    }
 
-        let directionChanges = 0;
-        strokes.forEach(stroke => {
-            for (let i = 2; i < stroke.length; i++) {
-                const prevDx = stroke[i - 1].x - stroke[i - 2].x;
-                const prevDy = stroke[i - 1].y - stroke[i - 2].y;
-                const currDx = stroke[i].x - stroke[i - 1].x;
-                const currDy = stroke[i].y - stroke[i - 1].y;
-                const cross = prevDx * currDy - prevDy * currDx;
-                if (Math.abs(cross) > 15) directionChanges++;
-            }
-        });
-
-        const expectedStrokes = Math.max(targetWord.length, 2);
-        const expectedPoints = expectedStrokes * 40;
-        const expectedPathLen = expectedStrokes * 120;
-
-        const strokeScore = Math.min(strokeCount / expectedStrokes, 1.5) * 20;
-        const densityScore = Math.min(totalPoints / expectedPoints, 1.5) * 20;
-        const pathScore = Math.min(totalPathLength / expectedPathLen, 1.5) * 15;
-        const coverageScore = Math.min(coverageRatio / 0.15, 1.2) * 10;
-        const dirScore = Math.min(directionChanges / (expectedStrokes * 8), 1.3) * 10;
-
-        let rawScore = strokeScore + densityScore + pathScore + coverageScore + dirScore;
+    function extractNormalizedGrid(targetCtx, bbox, gridSize = 48) {
+        const grid = Array.from({ length: gridSize }, () => new Uint8Array(gridSize));
+        if (!bbox || bbox.width < 6 || bbox.height < 6) return grid;
         
-        if (strokeCount <= 1 && totalPoints < 20) rawScore *= 0.3;
-        else if (totalPoints < 15) rawScore *= 0.5;
-        if (coverageRatio < 0.01) rawScore *= 0.6;
+        try {
+            const { minX, minY, width: bWidth, height: bHeight } = bbox;
+            const imgData = targetCtx.getImageData(minX, minY, bWidth, bHeight).data;
+            
+            const maxDim = gridSize - 8;
+            const scale = Math.min(maxDim / bWidth, maxDim / bHeight);
+            const targetW = Math.max(1, Math.round(bWidth * scale));
+            const targetH = Math.max(1, Math.round(bHeight * scale));
+            const offsetX = Math.floor((gridSize - targetW) / 2);
+            const offsetY = Math.floor((gridSize - targetH) / 2);
+            
+            for (let gy = 0; gy < targetH; gy++) {
+                const sy = Math.floor(gy / scale);
+                if (sy >= bHeight) continue;
+                for (let gx = 0; gx < targetW; gx++) {
+                    const sx = Math.floor(gx / scale);
+                    if (sx >= bWidth) continue;
+                    const alpha = imgData[(sy * bWidth + sx) * 4 + 3];
+                    if (alpha > 35) {
+                        grid[offsetY + gy][offsetX + gx] = 1;
+                    }
+                }
+            }
+        } catch (e) {
+            console.warn('Grid extraction error', e);
+        }
+        return grid;
+    }
+
+    function extractDirectGrid(targetCtx, targetBox, gridSize = 48) {
+        const grid = Array.from({ length: gridSize }, () => new Uint8Array(gridSize));
+        if (!targetBox || targetBox.width < 6 || targetBox.height < 6) return grid;
+        
+        try {
+            const sx = Math.max(0, Math.floor(targetBox.minX));
+            const sy = Math.max(0, Math.floor(targetBox.minY));
+            const sw = Math.min(targetCtx.canvas.width - sx, Math.ceil(targetBox.width));
+            const sh = Math.min(targetCtx.canvas.height - sy, Math.ceil(targetBox.height));
+            if (sw <= 0 || sh <= 0) return grid;
+            
+            const imgData = targetCtx.getImageData(sx, sy, sw, sh).data;
+            for (let gy = 0; gy < gridSize; gy++) {
+                const py = Math.floor((gy / gridSize) * sh);
+                for (let gx = 0; gx < gridSize; gx++) {
+                    const px = Math.floor((gx / gridSize) * sw);
+                    const alpha = imgData[(py * sw + px) * 4 + 3];
+                    if (alpha > 35) {
+                        grid[gy][gx] = 1;
+                    }
+                }
+            }
+        } catch (e) {
+            console.warn('Direct grid extraction error', e);
+        }
+        return grid;
+    }
+
+    function dilateGrid(grid, radius = 2) {
+        const size = grid.length;
+        const dilated = Array.from({ length: size }, () => new Uint8Array(size));
+        const rSq = radius * radius + 1;
+        for (let y = 0; y < size; y++) {
+            for (let x = 0; x < size; x++) {
+                if (grid[y][x] === 1) {
+                    for (let dy = -radius; dy <= radius; dy++) {
+                        const ny = y + dy;
+                        if (ny < 0 || ny >= size) continue;
+                        for (let dx = -radius; dx <= radius; dx++) {
+                            const nx = x + dx;
+                            if (nx < 0 || nx >= size) continue;
+                            if (dx * dx + dy * dy <= rSq) {
+                                dilated[ny][nx] = 1;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return dilated;
+    }
+
+    function compareGrids(userGrid, refGrid, radius = 2) {
+        const size = userGrid.length;
+        const userDilated = dilateGrid(userGrid, radius);
+        const refDilated = dilateGrid(refGrid, radius);
+        
+        let userPixelCount = 0;
+        let refPixelCount = 0;
+        let coveredRefPixels = 0;
+        let relevantUserPixels = 0;
+        
+        for (let y = 0; y < size; y++) {
+            for (let x = 0; x < size; x++) {
+                const u = userGrid[y][x];
+                const r = refGrid[y][x];
+                if (u === 1) {
+                    userPixelCount++;
+                    if (refDilated[y][x] === 1) relevantUserPixels++;
+                }
+                if (r === 1) {
+                    refPixelCount++;
+                    if (userDilated[y][x] === 1) coveredRefPixels++;
+                }
+            }
+        }
+        
+        if (refPixelCount === 0 || userPixelCount === 0) {
+            return { precision: 0, recall: 0, f1: 0, userPixelCount, refPixelCount };
+        }
+        
+        const recall = coveredRefPixels / refPixelCount;       // Coverage of target strokes
+        const precision = relevantUserPixels / userPixelCount; // Accuracy of user's strokes
+        const f1 = (2 * precision * recall) / (precision + recall + 1e-6);
+        
+        return { precision, recall, f1, userPixelCount, refPixelCount };
+    }
+
+    function analyzeHandwriting(strokes, canvasW, canvasH, targetWord) {
+        if (!strokes || strokes.length === 0) {
+            return {
+                score: 0,
+                scoreClass: 'score-error',
+                title: 'No Writing Detected',
+                feedback: 'Write on the canvas before verifying.'
+            };
+        }
+
+        const strokeCount = strokes.length;
+        const totalPoints = strokes.reduce((sum, s) => sum + s.length, 0);
+
+        if (totalPoints < 10) {
+            return {
+                score: 15,
+                scoreClass: 'score-error',
+                title: 'Too Short',
+                feedback: `Writing is too brief. Write the full word '${targetWord}'.`
+            };
+        }
+
+        // Render reference template onto offscreen canvas
+        const refObj = createReferenceMask(targetWord, canvasW, canvasH, canvasGuideText);
+        if (!refObj) {
+            return {
+                score: 50,
+                scoreClass: 'score-warn',
+                title: 'Evaluation Unavailable',
+                feedback: 'Could not create reference template.'
+            };
+        }
+
+        // Bounding boxes
+        const userBBox = getStrokeBoundingBox(strokes);
+        const refBBox = getCanvasPixelBoundingBox(refObj.offCtx, canvasW, canvasH);
+
+        if (!userBBox || !refBBox) {
+            return {
+                score: 20,
+                scoreClass: 'score-error',
+                title: 'Unrecognized',
+                feedback: 'Unable to evaluate stroke boundaries. Please try again.'
+            };
+        }
+
+        // 1. Direct trace comparison (when writing in-place over the guide)
+        const directUserGrid = extractDirectGrid(ctx, refBBox, 48);
+        const directRefGrid = extractDirectGrid(refObj.offCtx, refBBox, 48);
+        const directComp = compareGrids(directUserGrid, directRefGrid, 2);
+
+        // 2. Normalized shape comparison (scale-invariant & position-invariant)
+        const normUserGrid = extractNormalizedGrid(ctx, userBBox, 48);
+        const normRefGrid = extractNormalizedGrid(refObj.offCtx, refBBox, 48);
+        const normComp = compareGrids(normUserGrid, normRefGrid, 2);
+
+        // Stronger match between in-place trace and normalized freehand
+        const isDirectBetter = directComp.f1 > normComp.f1 && directComp.recall > 0.4;
+        const bestComp = isDirectBetter ? directComp : normComp;
+
+        // 3. Aspect ratio / proportions check
+        const userRatio = userBBox.width / Math.max(1, userBBox.height);
+        const refRatio = refBBox.width / Math.max(1, refBBox.height);
+        const ratioDiff = Math.abs(userRatio - refRatio);
+        const ratioMatch = Math.max(0, 1 - (ratioDiff / Math.max(refRatio, 1.4)));
+
+        // 4. Stroke count sanity check
+        const expectedRange = ARABIC_WORD_STROKE_RANGES[targetWord] || [1, Math.max(4, targetWord.length * 2)];
+        const [minStrokes, maxStrokes] = expectedRange;
+        let strokeFactor = 1.0;
+        if (strokeCount < minStrokes && bestComp.recall < 0.65) {
+            strokeFactor = 0.82;
+        } else if (strokeCount > maxStrokes * 2) {
+            strokeFactor = Math.max(0.65, 1.0 - (strokeCount - maxStrokes * 2) * 0.05);
+        }
+
+        // 5. Density sanity check (penalize coloring whole canvas)
+        const densityRatio = bestComp.userPixelCount / Math.max(1, bestComp.refPixelCount);
+        let densityFactor = 1.0;
+        if (densityRatio > 2.5) {
+            densityFactor = Math.max(0.4, 1.0 - (densityRatio - 2.5) * 0.2);
+        } else if (densityRatio < 0.25) {
+            densityFactor = Math.max(0.35, densityRatio / 0.25);
+        }
+
+        // 6. Compute final score
+        const baseAccuracy = (0.72 * bestComp.f1) + (0.28 * Math.min(bestComp.precision, bestComp.recall));
+        const ratioFactor = 0.85 + (0.15 * ratioMatch);
+        let rawScore = baseAccuracy * ratioFactor * strokeFactor * densityFactor * 100;
+
+        if (bestComp.precision < 0.35 || bestComp.recall < 0.35) {
+            rawScore *= 0.65;
+        }
 
         const finalScore = Math.round(Math.max(0, Math.min(100, rawScore)));
 
+        // 7. Contextual feedback
         let scoreClass, title, feedback;
-        if (finalScore >= 90) {
+        if (finalScore >= 85) {
             scoreClass = 'score-perfect';
             title = 'Excellent Script';
-            feedback = `Strong stroke structure and clear proportions for '${targetWord}'.`;
+            feedback = `Accurate stroke flow and clear calligraphic proportions for '${targetWord}'.`;
         } else if (finalScore >= 70) {
             scoreClass = 'score-warn';
             title = 'Good Attempt';
-            feedback = `Recognized script for '${targetWord}'. Practice ligatures for higher precision.`;
-        } else if (finalScore >= 40) {
+            if (bestComp.precision < 0.6) {
+                feedback = `Recognized '${targetWord}'. Tighten stroke lines to follow the letter contours.`;
+            } else if (bestComp.recall < 0.7) {
+                feedback = `Recognized '${targetWord}'. Ensure all connecting ligatures and curves are complete.`;
+            } else {
+                feedback = `Good script for '${targetWord}'. Keep practicing for smoother flow.`;
+            }
+        } else if (finalScore >= 45) {
             scoreClass = 'score-warn';
             title = 'Needs Improvement';
-            feedback = `Partial match for '${targetWord}'. Turn on trace guidelines for stroke guidance.`;
+            if (bestComp.recall < 0.45) {
+                feedback = `Key letter strokes for '${targetWord}' appear incomplete. Turn on Trace Guide to practice.`;
+            } else if (bestComp.precision < 0.45) {
+                feedback = `Strokes wander outside the letter contours of '${targetWord}'. Use Trace Guide for alignment.`;
+            } else {
+                feedback = `Partial match for '${targetWord}'. Align your strokes with the letter contours.`;
+            }
         } else {
             scoreClass = 'score-error';
             title = 'Try Again';
-            feedback = `Unrecognized shape. Follow the trace guide and try again.`;
+            feedback = `Shape does not match '${targetWord}'. Turn on the Trace Guide and follow the letter paths.`;
         }
 
-        return { score: finalScore, scoreClass, title, feedback };
+        return {
+            score: finalScore,
+            scoreClass,
+            title,
+            feedback,
+            precision: Math.round(bestComp.precision * 100),
+            recall: Math.round(bestComp.recall * 100)
+        };
     }
 
     // ==========================================

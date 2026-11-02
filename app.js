@@ -1683,6 +1683,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function initCanvasSize() {
         if (!canvas) return;
         const wrapper = canvas.parentElement;
+        if (!wrapper || wrapper.clientWidth === 0 || wrapper.clientHeight === 0) return;
         canvas.width = wrapper.clientWidth;
         canvas.height = wrapper.clientHeight;
         ctx.lineCap = 'round';
@@ -1691,6 +1692,12 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.strokeStyle = currentPenColor;
         redrawCanvasHistory();
     }
+
+    window.addEventListener('resize', () => {
+        if (appState.currentTab === 'canvas') {
+            initCanvasSize();
+        }
+    });
 
     // Pen Color Palette Selection
     colorDots.forEach(dot => {
@@ -1894,7 +1901,10 @@ document.addEventListener('DOMContentLoaded', () => {
         'قريش': [2, 7],
         'الفيل': [2, 7],
         'العصر': [2, 7],
-        'القدر': [2, 7]
+        'القدر': [2, 7],
+        'الشرح': [2, 7],
+        'الضحى': [2, 7],
+        'النبأ': [2, 7]
     };
 
     function createReferenceMask(targetWord, canvasWidth, canvasHeight, guideElement) {
@@ -1935,10 +1945,11 @@ document.addEventListener('DOMContentLoaded', () => {
         return { offCanvas, offCtx, guideX, guideY, fontSize };
     }
 
-    function getStrokeBoundingBox(strokes) {
+    function getStrokeBoundingBox(strokes, maxW = Infinity, maxH = Infinity) {
         if (!strokes || strokes.length === 0) return null;
         let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
         let count = 0;
+        const pad = 6;
         strokes.forEach(stroke => {
             stroke.forEach(pt => {
                 count++;
@@ -1949,10 +1960,17 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
         if (count === 0 || minX === Infinity) return null;
+        const x0 = Math.max(0, Math.floor(minX - pad));
+        const y0 = Math.max(0, Math.floor(minY - pad));
+        const x1 = Math.min(maxW, Math.ceil(maxX + pad));
+        const y1 = Math.min(maxH, Math.ceil(maxY + pad));
         return {
-            minX, minY, maxX, maxY,
-            width: Math.max(1, maxX - minX),
-            height: Math.max(1, maxY - minY)
+            minX: x0,
+            minY: y0,
+            maxX: x1,
+            maxY: y1,
+            width: Math.max(1, x1 - x0),
+            height: Math.max(1, y1 - y0)
         };
     }
 
@@ -1989,8 +2007,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!bbox || bbox.width < 6 || bbox.height < 6) return grid;
         
         try {
-            const { minX, minY, width: bWidth, height: bHeight } = bbox;
-            const imgData = targetCtx.getImageData(minX, minY, bWidth, bHeight).data;
+            const sx = Math.max(0, Math.floor(bbox.minX));
+            const sy = Math.max(0, Math.floor(bbox.minY));
+            const sw = Math.min(targetCtx.canvas.width - sx, Math.ceil(bbox.width));
+            const sh = Math.min(targetCtx.canvas.height - sy, Math.ceil(bbox.height));
+            if (sw < 4 || sh < 4) return grid;
+
+            const imgObj = targetCtx.getImageData(sx, sy, sw, sh);
+            const imgData = imgObj.data;
+            const bWidth = imgObj.width;
+            const bHeight = imgObj.height;
             
             const maxDim = gridSize - 8;
             const scale = Math.min(maxDim / bWidth, maxDim / bHeight);
@@ -1999,14 +2025,23 @@ document.addEventListener('DOMContentLoaded', () => {
             const offsetX = Math.floor((gridSize - targetW) / 2);
             const offsetY = Math.floor((gridSize - targetH) / 2);
             
+            // Box pooling so thin strokes (2px-4px) are never skipped between sample points
             for (let gy = 0; gy < targetH; gy++) {
-                const sy = Math.floor(gy / scale);
-                if (sy >= bHeight) continue;
+                const sy0 = Math.max(0, Math.floor(gy / scale));
+                const sy1 = Math.min(bHeight - 1, Math.max(sy0, Math.ceil((gy + 1) / scale) - 1));
                 for (let gx = 0; gx < targetW; gx++) {
-                    const sx = Math.floor(gx / scale);
-                    if (sx >= bWidth) continue;
-                    const alpha = imgData[(sy * bWidth + sx) * 4 + 3];
-                    if (alpha > 35) {
+                    const sx0 = Math.max(0, Math.floor(gx / scale));
+                    const sx1 = Math.min(bWidth - 1, Math.max(sx0, Math.ceil((gx + 1) / scale) - 1));
+                    let hasInk = false;
+                    for (let py = sy0; py <= sy1 && !hasInk; py++) {
+                        for (let px = sx0; px <= sx1; px++) {
+                            if (imgData[(py * bWidth + px) * 4 + 3] > 30) {
+                                hasInk = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (hasInk) {
                         grid[offsetY + gy][offsetX + gx] = 1;
                     }
                 }
@@ -2028,13 +2063,27 @@ document.addEventListener('DOMContentLoaded', () => {
             const sh = Math.min(targetCtx.canvas.height - sy, Math.ceil(targetBox.height));
             if (sw <= 0 || sh <= 0) return grid;
             
-            const imgData = targetCtx.getImageData(sx, sy, sw, sh).data;
+            const imgObj = targetCtx.getImageData(sx, sy, sw, sh);
+            const imgData = imgObj.data;
+            const imgW = imgObj.width;
+            const imgH = imgObj.height;
+
             for (let gy = 0; gy < gridSize; gy++) {
-                const py = Math.floor((gy / gridSize) * sh);
+                const py0 = Math.max(0, Math.floor((gy / gridSize) * imgH));
+                const py1 = Math.min(imgH - 1, Math.max(py0, Math.ceil(((gy + 1) / gridSize) * imgH) - 1));
                 for (let gx = 0; gx < gridSize; gx++) {
-                    const px = Math.floor((gx / gridSize) * sw);
-                    const alpha = imgData[(py * sw + px) * 4 + 3];
-                    if (alpha > 35) {
+                    const px0 = Math.max(0, Math.floor((gx / gridSize) * imgW));
+                    const px1 = Math.min(imgW - 1, Math.max(px0, Math.ceil(((gx + 1) / gridSize) * imgW) - 1));
+                    let hasInk = false;
+                    for (let py = py0; py <= py1 && !hasInk; py++) {
+                        for (let px = px0; px <= px1; px++) {
+                            if (imgData[(py * imgW + px) * 4 + 3] > 30) {
+                                hasInk = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (hasInk) {
                         grid[gy][gx] = 1;
                     }
                 }
@@ -2138,8 +2187,8 @@ document.addEventListener('DOMContentLoaded', () => {
             };
         }
 
-        // Bounding boxes
-        const userBBox = getStrokeBoundingBox(strokes);
+        // Bounding boxes (prefer actual rendered pixel bounding box, fallback to padded stroke bounds)
+        const userBBox = getCanvasPixelBoundingBox(ctx, canvasW, canvasH) || getStrokeBoundingBox(strokes, canvasW, canvasH);
         const refBBox = getCanvasPixelBoundingBox(refObj.offCtx, canvasW, canvasH);
 
         if (!userBBox || !refBBox) {
@@ -2151,9 +2200,21 @@ document.addEventListener('DOMContentLoaded', () => {
             };
         }
 
-        // 1. Direct trace comparison (when writing in-place over the guide)
-        const directUserGrid = extractDirectGrid(ctx, refBBox, 48);
-        const directRefGrid = extractDirectGrid(refObj.offCtx, refBBox, 48);
+        // 1. Direct trace comparison (union of user & reference bounds so stray scribbles outside the guide are penalized)
+        const unionMinX = Math.min(userBBox.minX, refBBox.minX);
+        const unionMinY = Math.min(userBBox.minY, refBBox.minY);
+        const unionMaxX = Math.max(userBBox.maxX, refBBox.maxX);
+        const unionMaxY = Math.max(userBBox.maxY, refBBox.maxY);
+        const directBox = {
+            minX: unionMinX,
+            minY: unionMinY,
+            maxX: unionMaxX,
+            maxY: unionMaxY,
+            width: Math.max(1, unionMaxX - unionMinX + 1),
+            height: Math.max(1, unionMaxY - unionMinY + 1)
+        };
+        const directUserGrid = extractDirectGrid(ctx, directBox, 48);
+        const directRefGrid = extractDirectGrid(refObj.offCtx, directBox, 48);
         const directComp = compareGrids(directUserGrid, directRefGrid, 2);
 
         // 2. Normalized shape comparison (scale-invariant & position-invariant)
